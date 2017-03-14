@@ -2,6 +2,7 @@ package com.formation.cdb.model;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.formation.cdb.persistence.PersistenceManager;
 
@@ -105,7 +106,13 @@ public class Computer {
 
 		computerDao.delete(computer);
 		System.out.println("Try to delete " + computer + " : " + computerDao.findByName(computer.getName()));
-
+		
+		//try find all
+		List<Computer> computerList = computerDao.findAll();
+		System.out.println(computerList.size());
+		
 		PersistenceManager.getInstance().close();
+		
+		
 	}
 }

@@ -1,21 +1,35 @@
 package com.formation.cdb.model;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class ComputerDao extends Dao<Computer> {
 
+	final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+	
 	public ComputerDao(Connection conn) {
 		super(conn);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Methode pour trouver un computer en base en fonction de son id, renvoit
+	 * le premier resultat
+	 * 
+	 * @param id
+	 *            l'id du computer à trouver
+	 * @return computer
+	 */
 	@Override
 	public Computer find(int id) {
 		Computer computer = new Computer();
@@ -42,8 +56,13 @@ public class ComputerDao extends Dao<Computer> {
 		return computer;
 	}
 
-	// return a new computer with [id=0, name=null, introduced=null,
-	// companyId=0, discontinued=null] if not found
+	/**
+	 * Methode pour trouver un computer en fonction de son nom.
+	 * 
+	 * @param name
+	 *            le nom du computer à trouver
+	 * @return computer
+	 */
 	public Computer findByName(String name) {
 		Computer computer = new Computer();
 		String sql;
@@ -69,6 +88,46 @@ public class ComputerDao extends Dao<Computer> {
 		return computer;
 	}
 
+	/**
+	 * Methode pour avoir une liste de tous les computer en base
+	 * 
+	 * @return computerList
+	 */
+	public List<Computer> findAll() {
+		List<Computer> computerList = new ArrayList<Computer>();
+		Computer computer;
+		String sql = "SELECT * FROM computer";
+		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+
+		try {
+			while (rs.next()) {
+				computer = new Computer();
+				computer.setId(rs.getInt("id"));
+				computer.setName(rs.getString("name"));
+				computer.setCompanyId(rs.getInt("company_id"));
+				if (rs.getDate("introduced") != null)
+					computer.setIntroduced(rs.getDate("introduced").toLocalDate());
+				if (rs.getDate("discontinued") != null) {
+					computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+				}
+				computerList.add(computer);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return computerList;
+	}
+
+	/**
+	 * Methode pour trouver l'id d'un computer en fonction de son nom. renvoit
+	 * le premier resultat
+	 * 
+	 * @param name
+	 *            le nom du computer à trouver
+	 * @return id
+	 */
 	public int findIdByName(String name) {
 		String sql;
 		int id = 0;
@@ -86,10 +145,17 @@ public class ComputerDao extends Dao<Computer> {
 		return id;
 	}
 
-	// Dates must be yyyy-mm-dd hh-mm-ss
+	/**
+	 * Methode pour creer un nouveau computer en base, renvoit l'id de la ligne
+	 * dans la bdd
+	 * 
+	 * @param computer
+	 *            le computer à créer
+	 * @return id
+	 */
 	@Override
 	public int create(Computer cmpt) {
-		String sql;
+		// String sql;
 		// java.sql.Date.valueOf(cmpt.getDiscontinued())
 		// sql = "INSERT INTO computer(name,introduced,discontinued,company_id)
 		// VALUES ('" + cmpt.getName() + "', '"
@@ -113,7 +179,7 @@ public class ComputerDao extends Dao<Computer> {
 				preparedStatement.setNull(4, Types.INTEGER);
 			else
 				preparedStatement.setInt(4, cmpt.getCompanyid());
-			System.out.println("Try to exec : " + preparedStatement.toString());
+			logger.info("Try to exec : " + preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -123,6 +189,14 @@ public class ComputerDao extends Dao<Computer> {
 		return findIdByName(cmpt.getName());
 	}
 
+	/**
+	 * Methode pour delete un computer en fonction de son id. renvoit le result
+	 * de sendToExec
+	 * 
+	 * @param computer
+	 *            le computer à delete
+	 * @return result
+	 */
 	@Override
 	public boolean delete(Computer cmpt) {
 		String sql;
@@ -131,12 +205,20 @@ public class ComputerDao extends Dao<Computer> {
 		return false;
 	}
 
+	/**
+	 * Methode pour update un computer en fonction de son id. Renvoit le result
+	 * de sendToExec. Attention avec l'id.
+	 * 
+	 * @param computer
+	 *            le computer à update
+	 * @return result
+	 */
 	// Careful with the computer's id
 	@Override
 	public boolean update(Computer cmpt) {
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
-					.prepareStatement("UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn().prepareStatement(
+					"UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
 
 			preparedStatement.setString(1, cmpt.getName());
 			if (cmpt.getIntroduced() == null)
@@ -152,7 +234,7 @@ public class ComputerDao extends Dao<Computer> {
 			else
 				preparedStatement.setInt(4, cmpt.getCompanyid());
 			preparedStatement.setInt(5, cmpt.getId());
-			System.out.println("Try to exec : " + preparedStatement.toString());
+			logger.info("Try to exec : " + preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {

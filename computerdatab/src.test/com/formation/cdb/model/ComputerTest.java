@@ -1,4 +1,4 @@
-package com.formation.cdb.Model;
+package com.formation.cdb.model;
 
 import static org.junit.Assert.*;
 

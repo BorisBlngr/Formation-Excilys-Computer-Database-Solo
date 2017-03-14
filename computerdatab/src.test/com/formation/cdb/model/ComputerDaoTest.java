@@ -1,4 +1,4 @@
-package com.formation.cdb.Model;
+package com.formation.cdb.model;
 
 import java.sql.Date;
 import java.time.LocalDate;

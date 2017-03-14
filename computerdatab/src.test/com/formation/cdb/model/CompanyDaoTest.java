@@ -1,9 +1,4 @@
-package com.formation.cdb.Model;
-
-import static org.junit.Assert.*;
-
-import java.sql.Date;
-import java.time.LocalDate;
+package com.formation.cdb.model;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,8 +9,6 @@ import org.junit.Test;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.CompanyDao;
-import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.ComputerDao;
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class CompanyDaoTest {

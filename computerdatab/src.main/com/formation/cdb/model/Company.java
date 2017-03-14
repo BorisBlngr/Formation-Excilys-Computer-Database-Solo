@@ -1,7 +1,6 @@
 package com.formation.cdb.model;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.List;
 
 import com.formation.cdb.persistence.PersistenceManager;
 
@@ -58,6 +57,10 @@ public class Company {
 		companyDao.delete(company2);
 		System.out.println("Try to delete " + company2 + " : " + companyDao.findByName(company2.getName()));
 
+		// try find all
+		List<Company> companyList = companyDao.findAll();
+		System.out.println(companyList.size());
+		
 		PersistenceManager.getInstance().close();
 
 	}
