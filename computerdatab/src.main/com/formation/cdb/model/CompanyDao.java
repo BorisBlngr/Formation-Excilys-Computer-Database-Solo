@@ -1,6 +1,7 @@
 package com.formation.cdb.model;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,9 +31,16 @@ public class CompanyDao extends Dao<Company> {
 	 */
 	@Override
 	public int create(Company company) {
-		String sql;
-		sql = "INSERT INTO company(name) VALUES ('" + company.getName() + "')";
-		PersistenceManager.getInstance().sendToExec(sql);
+		try {
+			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+					.prepareStatement("INSERT INTO company(name) VALUES (?)");
+			
+			preparedStatement.setString(1, company.getName());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return findIdByName(company.getName());
 	}
 
@@ -52,17 +60,25 @@ public class CompanyDao extends Dao<Company> {
 	}
 
 	/**
-	 * Methode pour mettre à jour une company, renvoit le result de sendToExec.
+	 * Methode pour mettre à jour une company.
 	 * 
 	 * @param company
 	 *            La company à update.
-	 * @return result
+	 * @return false
 	 */
 	@Override
 	public boolean update(Company company) {
-		String sql;
-		sql = "UPDATE company SET name = '" + company.getName() + "' WHERE id = " + company.getId();
-		return PersistenceManager.getInstance().sendToExec(sql);
+		try {
+			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+					.prepareStatement("UPDATE company SET name = ? WHERE id = ? ");
+			preparedStatement.setString(1, company.getName());
+			preparedStatement.setInt(2, company.getId());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**

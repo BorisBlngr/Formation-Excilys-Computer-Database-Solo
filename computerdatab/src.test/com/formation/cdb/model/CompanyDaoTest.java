@@ -50,6 +50,8 @@ public class CompanyDaoTest {
 	public void createValid() {
 		company.setId(companyDao.create(company));
 		Company companyFound = companyDao.find(company.getId());
+		System.out.println(companyFound);
+		System.out.println(company);		
 		Assert.assertTrue(companyFound.toString().equals(company.toString()));
 		companyDao.delete(company);
 	}

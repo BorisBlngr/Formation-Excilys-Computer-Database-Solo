@@ -32,7 +32,7 @@ public class PersistenceManager {
 	 * Methode se connecter à DB_URL.
 	 * 
 	 */
-	public void connectToDb() {
+	public Connection connectToDb() {
 		// Register JDBC driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -47,6 +47,7 @@ public class PersistenceManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return conn;
 	}
 
 	/**

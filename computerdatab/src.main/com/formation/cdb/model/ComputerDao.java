@@ -16,7 +16,7 @@ import com.formation.cdb.persistence.PersistenceManager;
 public class ComputerDao extends Dao<Computer> {
 
 	final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-	
+
 	public ComputerDao(Connection conn) {
 		super(conn);
 		// TODO Auto-generated constructor stub
@@ -24,10 +24,10 @@ public class ComputerDao extends Dao<Computer> {
 
 	/**
 	 * Methode pour trouver un computer en base en fonction de son id, renvoit
-	 * le premier resultat
+	 * le premier resultat.
 	 * 
 	 * @param id
-	 *            l'id du computer à trouver
+	 *            L'id du computer à trouver.
 	 * @return computer
 	 */
 	@Override
@@ -60,7 +60,7 @@ public class ComputerDao extends Dao<Computer> {
 	 * Methode pour trouver un computer en fonction de son nom.
 	 * 
 	 * @param name
-	 *            le nom du computer à trouver
+	 *            Le nom du computer à trouver.
 	 * @return computer
 	 */
 	public Computer findByName(String name) {
@@ -89,7 +89,7 @@ public class ComputerDao extends Dao<Computer> {
 	}
 
 	/**
-	 * Methode pour avoir une liste de tous les computer en base
+	 * Methode pour avoir une liste de tous les computer en base.
 	 * 
 	 * @return computerList
 	 */
@@ -122,10 +122,10 @@ public class ComputerDao extends Dao<Computer> {
 
 	/**
 	 * Methode pour trouver l'id d'un computer en fonction de son nom. renvoit
-	 * le premier resultat
+	 * le premier resultat.
 	 * 
 	 * @param name
-	 *            le nom du computer à trouver
+	 *            Le nom du computer à trouver.
 	 * @return id
 	 */
 	public int findIdByName(String name) {
@@ -147,10 +147,10 @@ public class ComputerDao extends Dao<Computer> {
 
 	/**
 	 * Methode pour creer un nouveau computer en base, renvoit l'id de la ligne
-	 * dans la bdd
+	 * dans la bdd.
 	 * 
 	 * @param computer
-	 *            le computer à créer
+	 *            Le computer à créer.
 	 * @return id
 	 */
 	@Override
@@ -191,18 +191,31 @@ public class ComputerDao extends Dao<Computer> {
 
 	/**
 	 * Methode pour delete un computer en fonction de son id. renvoit le result
-	 * de sendToExec
+	 * de sendToExec.
 	 * 
 	 * @param computer
-	 *            le computer à delete
+	 *            Le computer à delete.
 	 * @return result
 	 */
 	@Override
 	public boolean delete(Computer cmpt) {
 		String sql;
 		sql = "DELETE FROM computer WHERE id = " + cmpt.getId();
-		PersistenceManager.getInstance().sendToExec(sql);
-		return false;
+		return PersistenceManager.getInstance().sendToExec(sql);
+	}
+
+	/**
+	 * Methode pour delete un computer en fonction de son id. renvoit le result
+	 * de sendToExec
+	 * 
+	 * @param id
+	 *            L'id du computer à delete
+	 * @return result
+	 */
+	public boolean delete(int id) {
+		String sql;
+		sql = "DELETE FROM computer WHERE id = " + id;
+		return PersistenceManager.getInstance().sendToExec(sql);
 	}
 
 	/**
@@ -210,7 +223,7 @@ public class ComputerDao extends Dao<Computer> {
 	 * de sendToExec. Attention avec l'id.
 	 * 
 	 * @param computer
-	 *            le computer à update
+	 *            Le computer à update.
 	 * @return result
 	 */
 	// Careful with the computer's id

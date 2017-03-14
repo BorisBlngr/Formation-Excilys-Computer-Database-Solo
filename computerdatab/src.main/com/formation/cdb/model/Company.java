@@ -32,6 +32,10 @@ public class Company {
 
 	public static void main(String[] args) {
 		PersistenceManager.getInstance().connectToDb();
+		
+		
+		
+		
 
 		Company company = new Company();
 		company.setName("boitetropbien");
@@ -60,7 +64,7 @@ public class Company {
 		// try find all
 		List<Company> companyList = companyDao.findAll();
 		System.out.println(companyList.size());
-		
+				
 		PersistenceManager.getInstance().close();
 
 	}
