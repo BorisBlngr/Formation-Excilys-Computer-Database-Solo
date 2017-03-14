@@ -1,13 +1,15 @@
 package com.formation.cdb.model;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class ComputerDao extends Dao<Computer> {
-
 
 	public ComputerDao(Connection conn) {
 		super(conn);
@@ -33,7 +35,6 @@ public class ComputerDao extends Dao<Computer> {
 					computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
 				}
 			}
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,18 +84,42 @@ public class ComputerDao extends Dao<Computer> {
 			e.printStackTrace();
 		}
 		return id;
-
 	}
 
 	// Dates must be yyyy-mm-dd hh-mm-ss
 	@Override
 	public int create(Computer cmpt) {
 		String sql;
-		sql = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES ('" + cmpt.getName() + "', '"
-				+ java.sql.Date.valueOf(cmpt.getIntroduced()) + "','" + java.sql.Date.valueOf(cmpt.getDiscontinued())
-				+ "','" + cmpt.getCompanyid() + "')";
-		PersistenceManager.getInstance().sendToExec(sql);
-		System.out.println("Try to exec : " + sql);
+		// java.sql.Date.valueOf(cmpt.getDiscontinued())
+		// sql = "INSERT INTO computer(name,introduced,discontinued,company_id)
+		// VALUES ('" + cmpt.getName() + "', '"
+		// + java.sql.Date.valueOf(cmpt.getIntroduced()) + "','"
+		// + java.sql.Date.valueOf(cmpt.getDiscontinued()) + "','" +
+		// cmpt.getCompanyid() + "')";
+		try {
+			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+					.prepareStatement("INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)");
+
+			preparedStatement.setString(1, cmpt.getName());
+			if (cmpt.getIntroduced() == null)
+				preparedStatement.setNull(2, Types.TIMESTAMP);
+			else
+				preparedStatement.setDate(2, java.sql.Date.valueOf(cmpt.getIntroduced()));
+			if (cmpt.getDiscontinued() == null)
+				preparedStatement.setNull(3, Types.TIMESTAMP);
+			else
+				preparedStatement.setDate(3, java.sql.Date.valueOf(cmpt.getDiscontinued()));
+			if (cmpt.getCompanyid() == 0)
+				preparedStatement.setNull(4, Types.INTEGER);
+			else
+				preparedStatement.setInt(4, cmpt.getCompanyid());
+			System.out.println("Try to exec : " + preparedStatement.toString());
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return findIdByName(cmpt.getName());
 	}
 
@@ -106,15 +131,34 @@ public class ComputerDao extends Dao<Computer> {
 		return false;
 	}
 
-	//Careful with the computer's id
+	// Careful with the computer's id
 	@Override
 	public boolean update(Computer cmpt) {
-		String sql;
-		sql = "UPDATE computer SET name = '" + cmpt.getName() + "', introduced = '"
-				+ java.sql.Date.valueOf(cmpt.getIntroduced()) + "', discontinued = '"
-				+ java.sql.Date.valueOf(cmpt.getDiscontinued()) + "', company_id = " + cmpt.getCompanyid()
-				+ " WHERE id = " + cmpt.getId();
-		PersistenceManager.getInstance().sendToExec(sql);
+		try {
+			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+					.prepareStatement("UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+
+			preparedStatement.setString(1, cmpt.getName());
+			if (cmpt.getIntroduced() == null)
+				preparedStatement.setNull(2, Types.TIMESTAMP);
+			else
+				preparedStatement.setDate(2, java.sql.Date.valueOf(cmpt.getIntroduced()));
+			if (cmpt.getDiscontinued() == null)
+				preparedStatement.setNull(3, Types.TIMESTAMP);
+			else
+				preparedStatement.setDate(3, java.sql.Date.valueOf(cmpt.getDiscontinued()));
+			if (cmpt.getCompanyid() == 0)
+				preparedStatement.setNull(4, Types.INTEGER);
+			else
+				preparedStatement.setInt(4, cmpt.getCompanyid());
+			preparedStatement.setInt(5, cmpt.getId());
+			System.out.println("Try to exec : " + preparedStatement.toString());
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 
