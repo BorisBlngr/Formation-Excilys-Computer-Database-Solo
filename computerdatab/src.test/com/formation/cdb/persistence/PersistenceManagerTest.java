@@ -9,12 +9,10 @@ import org.junit.Test;
 public class PersistenceManagerTest {
 	@BeforeClass
 	public static void executerBeforeClass() throws Exception {
-		PersistenceManager.INSTANCE.connectToDb();
 	}
 
 	@AfterClass
 	public static void executerAfterClass() throws Exception {
-		PersistenceManager.INSTANCE.close();
 	}
 
 	@Before

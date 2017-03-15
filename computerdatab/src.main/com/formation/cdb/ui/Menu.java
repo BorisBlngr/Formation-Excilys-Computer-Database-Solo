@@ -247,14 +247,12 @@ public class Menu {
 		printMenu();
 		int choice = execute(selectItemMenu(1, 7));
 		if (choice == 7) {
-			cleanAndClose();
 			return;
 		} else {
 			printMenu();
 			while (execute(selectItemMenu(1, 7)) != 7) {
 				printMenu();
 			}
-			cleanAndClose();
 		}
 	}
 
@@ -264,13 +262,6 @@ public class Menu {
 	public void setConnectionAndDao() {
 		PersistenceManager.INSTANCE.connectToDb();
 
-	}
-
-	/**
-	 * Close the connection.
-	 */
-	public void cleanAndClose() {
-		PersistenceManager.INSTANCE.close();
 	}
 
 	public static void main(String[] args) {

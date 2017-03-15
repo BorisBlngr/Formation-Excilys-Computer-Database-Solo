@@ -3,18 +3,17 @@ package com.formation.cdb.model;
 import java.util.List;
 
 import com.formation.cdb.persistence.CompanyDao;
-import com.formation.cdb.persistence.PersistenceManager;
 
 public class Company {
 
-	private int id = 0;
+	private long id = 0;
 	private String name = null;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -32,12 +31,7 @@ public class Company {
 	}
 
 	public static void main(String[] args) {
-		PersistenceManager.INSTANCE.connectToDb();
 		
-		
-		
-		
-
 		Company company = new Company();
 		company.setName("boitetropbien");
 		System.out.println(company.toString());
@@ -64,8 +58,7 @@ public class Company {
 		// try find all
 		List<Company> companyList = CompanyDao.INSTANCE.findAll();
 		System.out.println(companyList.size());
-				
-		PersistenceManager.INSTANCE.close();
+
 
 	}
 

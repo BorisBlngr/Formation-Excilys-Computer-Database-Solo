@@ -23,9 +23,9 @@ public enum PersistenceManager {
 	InputStream input = null;
 
 
-	Connection conn = null;
-	Statement stmt = null;
-	ResultSet rs = null;
+	// Connection conn = null;
+	// Statement stmt = null;
+	// ResultSet rs = null;
 
 	private PersistenceManager() {
 		try {
@@ -43,10 +43,11 @@ public enum PersistenceManager {
 	}
 
 	/**
-	 * Methode se connecter à DB_URL.
+	 * Methode se connecter à DB_URL et renvoi la Connection.
 	 * 
 	 */
 	public Connection connectToDb() {
+		Connection conn = null;
 		// Register JDBC driver
 		try {
 			System.out.println(prop.getProperty("jdbc.driver"));
@@ -67,17 +68,26 @@ public enum PersistenceManager {
 
 	/**
 	 * Methode pour faire un sendQuery avec l'instruction sql. Renvoit un
-	 * ResultSet.
+	 * ResultSet. No protection against sql injection.
 	 * 
 	 * @param sql
 	 *            Chaine à exécuter.
 	 * @return resultSet
 	 */
+	@Deprecated
 	public ResultSet sendQuery(String sql) {
+		Connection conn = connectToDb();
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
+			
 			stmt = conn.createStatement();
 			logger.info("SendQuery : {}", sql);
 			rs = stmt.executeQuery(sql);
+			
+			rs.close();
+			stmt.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,64 +96,27 @@ public enum PersistenceManager {
 	}
 
 	/**
-	 * Methode pour faire un execute(sql). Renvoit le result.
+	 * Methode pour faire un execute(sql). Renvoit le result. No protection against sql protection.
 	 * 
 	 * @param id
 	 *            L'id du computer à trouver.
 	 * @return computer
 	 */
+	@Deprecated
 	public boolean sendToExec(String sql) {
+		Connection conn = connectToDb();
+		Statement stmt = null;
 		boolean result = false;
 		try {
 			stmt = conn.createStatement();
 			logger.info("execute : {}", sql);
 			result = stmt.execute(sql);
+			stmt.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return result;
-	}
-
-	/**
-	 * Ferme la connection, le resultSet et le statement.
-	 * 
-	 */
-	public void close() {
-		try {
-			if (rs != null)
-				rs.close();
-			if (stmt != null)
-				stmt.close();
-			conn.close();
-			logger.info("Connection closed");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public Connection getConn() {
-		return conn;
-	}
-
-	public Statement getStmt() {
-		return stmt;
-	}
-
-	public ResultSet getRs() {
-		return rs;
-	}
-
-	public void setConn(Connection conn) {
-		this.conn = conn;
-	}
-
-	public void setStmt(Statement stmt) {
-		this.stmt = stmt;
-	}
-
-	public void setRs(ResultSet rs) {
-		this.rs = rs;
 	}
 }

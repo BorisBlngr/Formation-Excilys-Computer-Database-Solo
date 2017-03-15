@@ -1,17 +1,15 @@
 package com.formation.cdb.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 import com.formation.cdb.persistence.ComputerDao;
-import com.formation.cdb.persistence.PersistenceManager;
 
 public class Computer {
-	private int id = 0;
+	private long id = 0;
 	private String name;
 	private LocalDate introduced = null;
-	private int companyId = 0;
+	private long companyId = 0;
 	private LocalDate discontinued = null;
 
 	public Computer() {
@@ -26,11 +24,11 @@ public class Computer {
 
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -50,11 +48,11 @@ public class Computer {
 		this.introduced = introduced;
 	}
 
-	public int getCompanyid() {
+	public long getCompanyid() {
 		return companyId;
 	}
 
-	public void setCompanyId(int companyId) {
+	public void setCompanyId(long companyId) {
 		this.companyId = companyId;
 	}
 
@@ -73,18 +71,15 @@ public class Computer {
 	}
 
 	public static void main(String[] args) {
-		PersistenceManager.INSTANCE.connectToDb();
 
 		LocalDate introduced = LocalDate.of(1980, 10, 10);
 		LocalDate discontinued = LocalDate.of(1990, 10, 10);
-		Date introducedD = Date.valueOf(introduced);
-		Date discontinuedD = Date.valueOf(discontinued);
 
 		Computer computer = new Computer();
 		computer.setCompanyId(2);
 		computer.setName("Orditropbien");
-		computer.setIntroduced(introducedD.toLocalDate());
-		computer.setDiscontinued(discontinuedD.toLocalDate());
+		computer.setIntroduced(introduced);
+		computer.setDiscontinued(discontinued);
 		System.out.println(computer.toString());
 		System.out.println(java.sql.Date.valueOf(computer.getIntroduced()));
 		Computer computer2 = ComputerDao.INSTANCE.find(600);
@@ -111,7 +106,6 @@ public class Computer {
 		List<Computer> computerList = ComputerDao.INSTANCE.findAll();
 		System.out.println(computerList.size());
 		
-		PersistenceManager.INSTANCE.close();
 		
 		
 	}

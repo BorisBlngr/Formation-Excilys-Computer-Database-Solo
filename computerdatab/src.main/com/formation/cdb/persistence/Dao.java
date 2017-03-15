@@ -9,7 +9,7 @@ public abstract interface Dao<T> {
 	 *            object à créer
 	 * @return id
 	 */
-	public abstract int create(T obj);
+	public abstract long create(T obj);
 
 	/**
 	 * Méthode pour effacer.
@@ -36,5 +36,5 @@ public abstract interface Dao<T> {
 	 *            id de l'object que l'on veut trouver
 	 * @return T
 	 */
-	public abstract T find(int id);
+	public abstract T find(long id);
 }

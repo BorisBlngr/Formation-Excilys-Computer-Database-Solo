@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import com.formation.cdb.model.Computer;
 public enum ComputerDao implements Dao<Computer> {
 	INSTANCE;
 	final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-	//protected Connection connect = null;
+	// protected Connection connect = null;
 
 	private ComputerDao() {
 	}
@@ -30,13 +31,17 @@ public enum ComputerDao implements Dao<Computer> {
 	 * @return computer
 	 */
 	@Override
-	public Computer find(int id) {
+	public Computer find(long id) {
 		Computer computer = new Computer();
-
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
-			String sql;
-			sql = "SELECT * FROM computer WHERE id = " + id;
-			ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			String sql = "SELECT * FROM computer WHERE id = " + id;
+			stmt = conn.createStatement();
+			logger.info("SendQuery : {}", sql);
+			rs = stmt.executeQuery(sql);
 			// Extract data from result set
 			if (rs.first()) {
 				computer.setId(id);
@@ -51,6 +56,31 @@ public enum ComputerDao implements Dao<Computer> {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return computer;
 	}
@@ -64,11 +94,15 @@ public enum ComputerDao implements Dao<Computer> {
 	 */
 	public Computer findByName(String name) {
 		Computer computer = new Computer();
-		String sql;
-		sql = "SELECT * FROM computer WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
-
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");
+			preparedStatement.setString(1, name);
+			preparedStatement.execute();
+			rs = preparedStatement.getResultSet();
 			if (rs.first()) {
 				computer.setId(rs.getInt("id"));
 				computer.setName(rs.getString("name"));
@@ -80,10 +114,33 @@ public enum ComputerDao implements Dao<Computer> {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-
 		return computer;
 	}
 
@@ -95,10 +152,16 @@ public enum ComputerDao implements Dao<Computer> {
 	public List<Computer> findAll() {
 		List<Computer> computerList = new ArrayList<Computer>();
 		Computer computer;
-		String sql = "SELECT * FROM computer";
-		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
+		Connection conn = PersistenceManager.INSTANCE.connectToDb();
+		Statement stmt = null;
+		ResultSet rs = null;
+		// ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 
 		try {
+			String sql = "SELECT * FROM computer";
+			stmt = conn.createStatement();
+			logger.info("SendQuery : {}", sql);
+			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				computer = new Computer();
 				computer.setId(rs.getInt("id"));
@@ -114,8 +177,29 @@ public enum ComputerDao implements Dao<Computer> {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-
 		return computerList;
 	}
 
@@ -127,19 +211,47 @@ public enum ComputerDao implements Dao<Computer> {
 	 *            Le nom du computer à trouver.
 	 * @return id
 	 */
-	public int findIdByName(String name) {
-		String sql;
-		int id = 0;
-		sql = "SELECT * FROM computer WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
-
+	public long findIdByName(String name) {
+		long id = (long) 0;
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
 		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");
+			preparedStatement.setString(1, name);
+			preparedStatement.execute();
+			rs = preparedStatement.getResultSet();
 			if (rs.first()) {
-				id = rs.getInt("id");
+				id = rs.getLong("id");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return id;
 	}
@@ -153,16 +265,13 @@ public enum ComputerDao implements Dao<Computer> {
 	 * @return id
 	 */
 	@Override
-	public int create(Computer cmpt) {
-		// String sql;
-		// java.sql.Date.valueOf(cmpt.getDiscontinued())
-		// sql = "INSERT INTO computer(name,introduced,discontinued,company_id)
-		// VALUES ('" + cmpt.getName() + "', '"
-		// + java.sql.Date.valueOf(cmpt.getIntroduced()) + "','"
-		// + java.sql.Date.valueOf(cmpt.getDiscontinued()) + "','" +
-		// cmpt.getCompanyid() + "')";
+	public long create(Computer cmpt) {
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn()
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn
 					.prepareStatement("INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)");
 
 			preparedStatement.setString(1, cmpt.getName());
@@ -177,13 +286,30 @@ public enum ComputerDao implements Dao<Computer> {
 			if (cmpt.getCompanyid() == 0)
 				preparedStatement.setNull(4, Types.INTEGER);
 			else
-				preparedStatement.setInt(4, cmpt.getCompanyid());
+				preparedStatement.setLong(4, cmpt.getCompanyid());
 			logger.info("Try to exec : " + preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return findIdByName(cmpt.getName());
 	}
@@ -197,10 +323,39 @@ public enum ComputerDao implements Dao<Computer> {
 	 * @return result
 	 */
 	@Override
-	public boolean delete(Computer cmpt) {
-		String sql;
-		sql = "DELETE FROM computer WHERE id = " + cmpt.getId();
-		return PersistenceManager.INSTANCE.sendToExec(sql);
+	public boolean delete(Computer computer) {
+		boolean result = false;
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+			preparedStatement.setLong(1, computer.getId());
+			preparedStatement.executeUpdate();
+
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -211,10 +366,39 @@ public enum ComputerDao implements Dao<Computer> {
 	 *            L'id du computer à delete
 	 * @return result
 	 */
-	public boolean delete(int id) {
-		String sql;
-		sql = "DELETE FROM computer WHERE id = " + id;
-		return PersistenceManager.INSTANCE.sendToExec(sql);
+	public boolean delete(long id) {
+		boolean result = false;
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+			preparedStatement.setLong(1, id);
+			preparedStatement.executeUpdate();
+
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -228,8 +412,11 @@ public enum ComputerDao implements Dao<Computer> {
 	// Careful with the computer's id
 	@Override
 	public boolean update(Computer cmpt) {
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn().prepareStatement(
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement(
 					"UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
 
 			preparedStatement.setString(1, cmpt.getName());
@@ -244,16 +431,32 @@ public enum ComputerDao implements Dao<Computer> {
 			if (cmpt.getCompanyid() == 0)
 				preparedStatement.setNull(4, Types.INTEGER);
 			else
-				preparedStatement.setInt(4, cmpt.getCompanyid());
-			preparedStatement.setInt(5, cmpt.getId());
+				preparedStatement.setLong(4, cmpt.getCompanyid());
+			preparedStatement.setLong(5, cmpt.getId());
 			logger.info("Try to exec : " + preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return false;
 	}
-
 }
