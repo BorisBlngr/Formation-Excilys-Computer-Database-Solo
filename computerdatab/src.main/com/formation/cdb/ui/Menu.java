@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.persistence.CompanyDao;
-import com.formation.cdb.persistence.ComputerDao;
-import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.service.MenuActions;
 
 public class Menu {
 	final Logger logger = LoggerFactory.getLogger(Menu.class);
@@ -22,7 +20,6 @@ public class Menu {
 	Computer computerFound = new Computer();
 
 	public Menu() {
-		setConnectionAndDao();
 	}
 
 	/**
@@ -52,6 +49,23 @@ public class Menu {
 
 		// tant qu'on a pas un int
 		while (!input.hasNextInt()) {
+			logger.info("Not a number.");
+			input.next();
+		}
+		return input.nextInt();
+	}
+
+	/**
+	 * Methode pour récupérer un long choisi par l'utilisateur. Demande jusqu'a
+	 * avoir un long.
+	 * 
+	 * @return long
+	 */
+	public long selectLong() {
+		Scanner input = new Scanner(System.in);
+
+		// tant qu'on a pas un int
+		while (!input.hasNextLong()) {
 			logger.info("Not a number.");
 			input.next();
 		}
@@ -111,7 +125,7 @@ public class Menu {
 		case 1:
 			logger.info("Case List Computers");
 			computerList.clear();
-			computerList = ComputerDao.INSTANCE.findAll();
+			computerList = MenuActions.INSTANCE.findAllComputer();
 			for (Computer computer : computerList) {
 				System.out.println(" id : [" + computer.getId() + "]\t| name : " + computer.getName());
 			}
@@ -119,7 +133,7 @@ public class Menu {
 		case 2:
 			logger.info("Case List Companies");
 			companyList.clear();
-			companyList = CompanyDao.INSTANCE.findAll();
+			companyList = MenuActions.INSTANCE.findAllCompany();
 			for (Company company : companyList) {
 				System.out.println(" id : [" + company.getId() + "]\t| name : " + company.getName());
 			}
@@ -127,7 +141,7 @@ public class Menu {
 		case 3:
 			logger.info("Case Show computer details");
 			System.out.println("id : ");
-			computerFound = ComputerDao.INSTANCE.find(selectInt());
+			computerFound = MenuActions.INSTANCE.findComputer(selectLong());
 			System.out.println(computerFound);
 
 			break;
@@ -142,7 +156,7 @@ public class Menu {
 		case 6:
 			logger.info("Case Delete a computer");
 			System.out.println("id : ");
-			ComputerDao.INSTANCE.delete(selectInt());
+			MenuActions.INSTANCE.deleteComputer(selectLong());
 			break;
 		case 7:
 			logger.info("Case 7 EXIT");
@@ -164,7 +178,7 @@ public class Menu {
 		Computer newComputer = new Computer();
 
 		System.out.println("computer ID : ");
-		computerFound = ComputerDao.INSTANCE.find(selectInt());
+		computerFound = MenuActions.INSTANCE.findComputer(selectLong());
 		newComputer.setId(computerFound.getId());
 		System.out.println("new name[" + computerFound.getName() + "] : ");
 		newComputer.setName(selectString());
@@ -186,17 +200,12 @@ public class Menu {
 		System.out.println("discontinued day [" + computerFound.getDiscontinued().getDayOfMonth() + "] : ");
 		int dday = selectInt();
 
-		LocalDate introduced = LocalDate.of(iyear, imonth, iday);
-		LocalDate discontinued = LocalDate.of(dyear, dmonth, dday);
-		Date introducedD = Date.valueOf(introduced);
-		Date discontinuedD = Date.valueOf(discontinued);
-
-		newComputer.setIntroduced(introducedD.toLocalDate());
-		newComputer.setDiscontinued(discontinuedD.toLocalDate());
+		newComputer.setIntroduced(LocalDate.of(iyear, imonth, iday));
+		newComputer.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
 		System.out.println(newComputer);
-		ComputerDao.INSTANCE.update(newComputer);
-		newComputer = ComputerDao.INSTANCE.find(newComputer.getId());
+		MenuActions.INSTANCE.updateComputer(newComputer);
+		newComputer = MenuActions.INSTANCE.findComputer(newComputer.getId());
 		System.out.println(newComputer);
 
 	}
@@ -226,16 +235,11 @@ public class Menu {
 		System.out.println("discontinued day : ");
 		int dday = selectInt();
 
-		LocalDate introduced = LocalDate.of(iyear, imonth, iday);
-		LocalDate discontinued = LocalDate.of(dyear, dmonth, dday);
-		Date introducedD = Date.valueOf(introduced);
-		Date discontinuedD = Date.valueOf(discontinued);
-
-		computerFound.setIntroduced(introducedD.toLocalDate());
-		computerFound.setDiscontinued(discontinuedD.toLocalDate());
+		computerFound.setIntroduced(LocalDate.of(iyear, imonth, iday));
+		computerFound.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
 		System.out.println(computerFound);
-		computerFound.setId(ComputerDao.INSTANCE.create(computerFound));
+		computerFound.setId(MenuActions.INSTANCE.createComputer(computerFound));
 
 		System.out.println(computerFound);
 	}
@@ -254,14 +258,6 @@ public class Menu {
 				printMenu();
 			}
 		}
-	}
-
-	/**
-	 * Set the connection and the Daos.
-	 */
-	public void setConnectionAndDao() {
-		PersistenceManager.INSTANCE.connectToDb();
-
 	}
 
 	public static void main(String[] args) {
