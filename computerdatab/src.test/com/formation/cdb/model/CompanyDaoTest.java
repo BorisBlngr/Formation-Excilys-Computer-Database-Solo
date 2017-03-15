@@ -65,8 +65,8 @@ public class CompanyDaoTest {
 	public void deleteValid() {
 		Company nullCompany = new Company();
 		Company companyFound = CompanyDao.INSTANCE.findByName("boitetropbien");
-		System.out.println(nullCompany.toString());
-		System.out.println(companyFound.toString());
+		// System.out.println(nullCompany.toString());
+		// System.out.println(companyFound.toString());
 		Assert.assertTrue(companyFound.toString().equals(nullCompany.toString()));
 	}
 

@@ -70,16 +70,102 @@ public class Computer {
 				+ ", discontinued=" + discontinued + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (companyId ^ (companyId >>> 32));
+		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Computer other = (Computer) obj;
+		if (companyId != other.companyId)
+			return false;
+		if (discontinued == null) {
+			if (other.discontinued != null)
+				return false;
+		} else if (!discontinued.equals(other.discontinued))
+			return false;
+		if (id != other.id)
+			return false;
+		if (introduced == null) {
+			if (other.introduced != null)
+				return false;
+		} else if (!introduced.equals(other.introduced))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
+	public Computer(ComputerBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.introduced = builder.introduced;
+		this.discontinued = builder.discontinued;
+		this.companyId = builder.companyId;
+	}
+
+	public static class ComputerBuilder {
+		String name;
+		long id;
+		LocalDate introduced = null;
+		long companyId = 0;
+		LocalDate discontinued = null;
+
+		public ComputerBuilder() {
+		}
+
+		public ComputerBuilder id(long id) {
+			this.id = id;
+			return this;
+		}
+
+		public ComputerBuilder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public ComputerBuilder introduced(LocalDate introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		public ComputerBuilder discontinued(LocalDate discontinued) {
+			this.introduced = discontinued;
+			return this;
+		}
+
+		public ComputerBuilder companyId(long companyId) {
+			this.companyId = companyId;
+			return this;
+		}
+
+		public Computer build() {
+			return new Computer(this);
+		}
+
+	}
+
 	public static void main(String[] args) {
 
-		LocalDate introduced = LocalDate.of(1980, 10, 10);
-		LocalDate discontinued = LocalDate.of(1990, 10, 10);
-
-		Computer computer = new Computer();
-		computer.setCompanyId(2);
-		computer.setName("Orditropbien");
-		computer.setIntroduced(introduced);
-		computer.setDiscontinued(discontinued);
+		Computer computer = new Computer.ComputerBuilder().companyId(2).name("Orditropbien")
+				.introduced(LocalDate.of(1980, 10, 10)).discontinued(LocalDate.of(1990, 10, 10)).build();
 		System.out.println(computer.toString());
 		System.out.println(java.sql.Date.valueOf(computer.getIntroduced()));
 		Computer computer2 = ComputerDao.INSTANCE.find(600);
@@ -101,12 +187,10 @@ public class Computer {
 
 		ComputerDao.INSTANCE.delete(computer);
 		System.out.println("Try to delete " + computer + " : " + ComputerDao.INSTANCE.findByName(computer.getName()));
-		
-		//try find all
+
+		// try find all
 		List<Computer> computerList = ComputerDao.INSTANCE.findAll();
 		System.out.println(computerList.size());
-		
-		
-		
+
 	}
 }

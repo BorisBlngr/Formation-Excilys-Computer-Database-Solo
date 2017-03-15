@@ -26,13 +26,8 @@ public class ComputerDaoTest {
 
 	@Before
 	public void executerAvantChaqueTest() {
-		computer = new Computer();
-		LocalDate introduced = LocalDate.of(1980, 10, 10);
-		LocalDate discontinued = LocalDate.of(1990, 10, 10);
-		computer.setCompanyId(2);
-		computer.setName("test nom ordi random");
-		computer.setIntroduced(introduced);
-		computer.setDiscontinued(discontinued);
+		computer = new Computer.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
+				.discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random").companyId(2).build();
 	}
 
 	@After
@@ -56,7 +51,7 @@ public class ComputerDaoTest {
 		Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
 		ComputerDao.INSTANCE.delete(newComputer);
 	}
-	
+
 	@Test
 	public void updateValid() {
 		Computer newComputer = new Computer();
@@ -65,21 +60,17 @@ public class ComputerDaoTest {
 		newComputer.setName("Test unitaire create name2");
 		ComputerDao.INSTANCE.update(newComputer);
 		Computer computerFound = ComputerDao.INSTANCE.find(newComputer.getId());
-		System.out.println(computerFound.toString());
-		System.out.println(newComputer.toString());
+		// System.out.println(computerFound.toString());
+		// System.out.println(newComputer.toString());
 		Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
 		ComputerDao.INSTANCE.delete(newComputer);
 	}
-	
-	
-	
+
 	@Test
 	public void deleteValid() {
 		Computer nullComputer = new Computer();
 		Computer computerFound = ComputerDao.INSTANCE.findByName("Test unitaire create name");
-		Assert.assertTrue(computerFound.toString().equals(nullComputer.toString()));	
+		Assert.assertTrue(computerFound.toString().equals(nullComputer.toString()));
 	}
-	
-	
 
 }
