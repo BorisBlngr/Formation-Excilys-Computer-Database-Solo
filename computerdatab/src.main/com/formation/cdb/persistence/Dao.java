@@ -1,13 +1,6 @@
-package com.formation.cdb.model;
+package com.formation.cdb.persistence;
 
-import java.sql.Connection;
-
-public abstract class Dao<T> {
-	protected Connection connect = null;
-
-	public Dao(Connection conn) {
-		this.connect = conn;
-	}
+public abstract interface Dao<T> {
 
 	/**
 	 * Méthode de création.

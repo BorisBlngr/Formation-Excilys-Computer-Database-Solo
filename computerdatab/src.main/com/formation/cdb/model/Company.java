@@ -2,6 +2,7 @@ package com.formation.cdb.model;
 
 import java.util.List;
 
+import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class Company {
@@ -31,7 +32,7 @@ public class Company {
 	}
 
 	public static void main(String[] args) {
-		PersistenceManager.getInstance().connectToDb();
+		PersistenceManager.INSTANCE.connectToDb();
 		
 		
 		
@@ -40,32 +41,31 @@ public class Company {
 		Company company = new Company();
 		company.setName("boitetropbien");
 		System.out.println(company.toString());
-		CompanyDao companyDao = new CompanyDao(PersistenceManager.getInstance().getConn());
-		Company company2 = companyDao.find(1);
+		Company company2 = CompanyDao.INSTANCE.find(1);
 		System.out.println(company2.toString());
 
 		// test create
-		company2.setId(companyDao.create(company));
-		company2 = companyDao.findByName(company.getName());
+		company2.setId(CompanyDao.INSTANCE.create(company));
+		company2 = CompanyDao.INSTANCE.findByName(company.getName());
 		System.out.println("Try to create : " + company.toString());
 		System.out.println("Try to find " + company.getName() + " : " + company2);
 
 		// try to update
 		company2.setName("boitetropbien2");
-		companyDao.update(company2);
+		CompanyDao.INSTANCE.update(company2);
 		System.out.println("Try to update : \n" + company + "\n to \n" + company2);
-		System.out.println("Find : " + companyDao.findByName(company2.getName()));
+		System.out.println("Find : " + CompanyDao.INSTANCE.findByName(company2.getName()));
 
 		// try to delete
 
-		companyDao.delete(company2);
-		System.out.println("Try to delete " + company2 + " : " + companyDao.findByName(company2.getName()));
+		CompanyDao.INSTANCE.delete(company2);
+		System.out.println("Try to delete " + company2 + " : " + CompanyDao.INSTANCE.findByName(company2.getName()));
 
 		// try find all
-		List<Company> companyList = companyDao.findAll();
+		List<Company> companyList = CompanyDao.INSTANCE.findAll();
 		System.out.println(companyList.size());
 				
-		PersistenceManager.getInstance().close();
+		PersistenceManager.INSTANCE.close();
 
 	}
 

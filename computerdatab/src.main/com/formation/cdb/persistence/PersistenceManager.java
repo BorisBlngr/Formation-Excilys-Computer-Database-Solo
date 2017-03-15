@@ -1,31 +1,45 @@
 package com.formation.cdb.persistence;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PersistenceManager {
+public enum PersistenceManager {
 
+	INSTANCE;
+	
 	final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
+	final Properties prop = new Properties();
+	InputStream input = null;
 
-	private static PersistenceManager INSTANCE = new PersistenceManager();
-	// JDBC driver name and database URL
-	static final String JDBC_DRIVER = "com.mysql.jc.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost/computer-database-db?zeroDateTimeBehavior=convertToNull";
 
-	// Database credentials
-	static final String USER = "root";
-	static final String PASS = "root";
 	Connection conn = null;
 	Statement stmt = null;
 	ResultSet rs = null;
 
 	private PersistenceManager() {
+		try {
+			input = new FileInputStream("src.main/resource/conf.properties");
+			
+			prop.load(input);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -35,10 +49,11 @@ public class PersistenceManager {
 	public Connection connectToDb() {
 		// Register JDBC driver
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println(prop.getProperty("jdbc.driver"));
+			Class.forName(prop.getProperty("jdbc.driver"));
 			// Open a connection
 			logger.info("Connecting to db .... ");
-			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"));
 			logger.info("Connection opened");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -130,9 +145,5 @@ public class PersistenceManager {
 
 	public void setRs(ResultSet rs) {
 		this.rs = rs;
-	}
-
-	public static PersistenceManager getInstance() {
-		return INSTANCE;
 	}
 }

@@ -10,17 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.model.CompanyDao;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.ComputerDao;
+import com.formation.cdb.persistence.CompanyDao;
+import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class Menu {
 	final Logger logger = LoggerFactory.getLogger(Menu.class);
 	private List<Company> companyList = new ArrayList<Company>();
 	private List<Computer> computerList = new ArrayList<Computer>();
-	private ComputerDao computerDao = null;
-	private CompanyDao companyDao = null;
 	Computer computerFound = new Computer();
 
 	public Menu() {
@@ -113,7 +111,7 @@ public class Menu {
 		case 1:
 			logger.info("Case List Computers");
 			computerList.clear();
-			computerList = computerDao.findAll();
+			computerList = ComputerDao.INSTANCE.findAll();
 			for (Computer computer : computerList) {
 				System.out.println(" id : [" + computer.getId() + "]\t| name : " + computer.getName());
 			}
@@ -121,7 +119,7 @@ public class Menu {
 		case 2:
 			logger.info("Case List Companies");
 			companyList.clear();
-			companyList = companyDao.findAll();
+			companyList = CompanyDao.INSTANCE.findAll();
 			for (Company company : companyList) {
 				System.out.println(" id : [" + company.getId() + "]\t| name : " + company.getName());
 			}
@@ -129,7 +127,7 @@ public class Menu {
 		case 3:
 			logger.info("Case Show computer details");
 			System.out.println("id : ");
-			computerFound = computerDao.find(selectInt());
+			computerFound = ComputerDao.INSTANCE.find(selectInt());
 			System.out.println(computerFound);
 
 			break;
@@ -144,7 +142,7 @@ public class Menu {
 		case 6:
 			logger.info("Case Delete a computer");
 			System.out.println("id : ");
-			computerDao.delete(selectInt());
+			ComputerDao.INSTANCE.delete(selectInt());
 			break;
 		case 7:
 			logger.info("Case 7 EXIT");
@@ -166,7 +164,7 @@ public class Menu {
 		Computer newComputer = new Computer();
 
 		System.out.println("computer ID : ");
-		computerFound = computerDao.find(selectInt());
+		computerFound = ComputerDao.INSTANCE.find(selectInt());
 		newComputer.setId(computerFound.getId());
 		System.out.println("new name[" + computerFound.getName() + "] : ");
 		newComputer.setName(selectString());
@@ -197,8 +195,8 @@ public class Menu {
 		newComputer.setDiscontinued(discontinuedD.toLocalDate());
 
 		System.out.println(newComputer);
-		computerDao.update(newComputer);
-		newComputer = computerDao.find(newComputer.getId());
+		ComputerDao.INSTANCE.update(newComputer);
+		newComputer = ComputerDao.INSTANCE.find(newComputer.getId());
 		System.out.println(newComputer);
 
 	}
@@ -237,7 +235,7 @@ public class Menu {
 		computerFound.setDiscontinued(discontinuedD.toLocalDate());
 
 		System.out.println(computerFound);
-		computerFound.setId(computerDao.create(computerFound));
+		computerFound.setId(ComputerDao.INSTANCE.create(computerFound));
 
 		System.out.println(computerFound);
 	}
@@ -264,9 +262,7 @@ public class Menu {
 	 * Set the connection and the Daos.
 	 */
 	public void setConnectionAndDao() {
-		PersistenceManager.getInstance().connectToDb();
-		companyDao = new CompanyDao(PersistenceManager.getInstance().getConn());
-		computerDao = new ComputerDao(PersistenceManager.getInstance().getConn());
+		PersistenceManager.INSTANCE.connectToDb();
 
 	}
 
@@ -274,7 +270,7 @@ public class Menu {
 	 * Close the connection.
 	 */
 	public void cleanAndClose() {
-		PersistenceManager.getInstance().close();
+		PersistenceManager.INSTANCE.close();
 	}
 
 	public static void main(String[] args) {

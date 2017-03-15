@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class Computer {
@@ -72,7 +73,7 @@ public class Computer {
 	}
 
 	public static void main(String[] args) {
-		PersistenceManager.getInstance().connectToDb();
+		PersistenceManager.INSTANCE.connectToDb();
 
 		LocalDate introduced = LocalDate.of(1980, 10, 10);
 		LocalDate discontinued = LocalDate.of(1990, 10, 10);
@@ -86,32 +87,31 @@ public class Computer {
 		computer.setDiscontinued(discontinuedD.toLocalDate());
 		System.out.println(computer.toString());
 		System.out.println(java.sql.Date.valueOf(computer.getIntroduced()));
-		ComputerDao computerDao = new ComputerDao(PersistenceManager.getInstance().getConn());
-		Computer computer2 = computerDao.find(600);
+		Computer computer2 = ComputerDao.INSTANCE.find(600);
 		System.out.println(computer2.toString());
 
 		// test create
-		computer.setId(computerDao.create(computer));
-		computer2 = computerDao.findByName(computer.getName());
+		computer.setId(ComputerDao.INSTANCE.create(computer));
+		computer2 = ComputerDao.INSTANCE.findByName(computer.getName());
 		System.out.println("Try to create : " + computer.toString());
 		System.out.println("Try to find " + computer.getName() + " : " + computer2);
 
 		// try to update
 		computer.setCompanyId(8);
-		computerDao.update(computer);
+		ComputerDao.INSTANCE.update(computer);
 		System.out.println("Try to update : \n" + computer2 + "\n to \n" + computer);
-		System.out.println("Find : " + computerDao.findByName(computer.getName()));
+		System.out.println("Find : " + ComputerDao.INSTANCE.findByName(computer.getName()));
 
 		// try to delete
 
-		computerDao.delete(computer);
-		System.out.println("Try to delete " + computer + " : " + computerDao.findByName(computer.getName()));
+		ComputerDao.INSTANCE.delete(computer);
+		System.out.println("Try to delete " + computer + " : " + ComputerDao.INSTANCE.findByName(computer.getName()));
 		
 		//try find all
-		List<Computer> computerList = computerDao.findAll();
+		List<Computer> computerList = ComputerDao.INSTANCE.findAll();
 		System.out.println(computerList.size());
 		
-		PersistenceManager.getInstance().close();
+		PersistenceManager.INSTANCE.close();
 		
 		
 	}

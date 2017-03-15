@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.ComputerDao;
+import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.PersistenceManager;
 
 public class ComputerDaoTest {
@@ -21,18 +21,17 @@ public class ComputerDaoTest {
 
 	@BeforeClass
 	public static void executerBeforeClass() throws Exception {
-		PersistenceManager.getInstance().connectToDb();
+		PersistenceManager.INSTANCE.connectToDb();
 	}
 
 	@AfterClass
 	public static void executerAfterClass() throws Exception {
-		PersistenceManager.getInstance().close();
+		PersistenceManager.INSTANCE.close();
 	}
 
 	@Before
 	public void executerAvantChaqueTest() {
 		computer = new Computer();
-		computerDao = new ComputerDao(PersistenceManager.getInstance().getConn());
 		LocalDate introduced = LocalDate.of(1980, 10, 10);
 		LocalDate discontinued = LocalDate.of(1990, 10, 10);
 		Date introducedD = Date.valueOf(introduced);

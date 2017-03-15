@@ -1,4 +1,4 @@
-package com.formation.cdb.model;
+package com.formation.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,15 +11,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.model.Computer;
 
-public class ComputerDao extends Dao<Computer> {
-
+public enum ComputerDao implements Dao<Computer> {
+	INSTANCE;
 	final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+	//protected Connection connect = null;
 
-	public ComputerDao(Connection conn) {
-		super(conn);
-		// TODO Auto-generated constructor stub
+	private ComputerDao() {
 	}
 
 	/**
@@ -37,7 +36,7 @@ public class ComputerDao extends Dao<Computer> {
 		try {
 			String sql;
 			sql = "SELECT * FROM computer WHERE id = " + id;
-			ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+			ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 			// Extract data from result set
 			if (rs.first()) {
 				computer.setId(id);
@@ -67,7 +66,7 @@ public class ComputerDao extends Dao<Computer> {
 		Computer computer = new Computer();
 		String sql;
 		sql = "SELECT * FROM computer WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 
 		try {
 			if (rs.first()) {
@@ -97,7 +96,7 @@ public class ComputerDao extends Dao<Computer> {
 		List<Computer> computerList = new ArrayList<Computer>();
 		Computer computer;
 		String sql = "SELECT * FROM computer";
-		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 
 		try {
 			while (rs.next()) {
@@ -132,7 +131,7 @@ public class ComputerDao extends Dao<Computer> {
 		String sql;
 		int id = 0;
 		sql = "SELECT * FROM computer WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 
 		try {
 			if (rs.first()) {
@@ -163,7 +162,7 @@ public class ComputerDao extends Dao<Computer> {
 		// + java.sql.Date.valueOf(cmpt.getDiscontinued()) + "','" +
 		// cmpt.getCompanyid() + "')";
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn()
 					.prepareStatement("INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)");
 
 			preparedStatement.setString(1, cmpt.getName());
@@ -201,7 +200,7 @@ public class ComputerDao extends Dao<Computer> {
 	public boolean delete(Computer cmpt) {
 		String sql;
 		sql = "DELETE FROM computer WHERE id = " + cmpt.getId();
-		return PersistenceManager.getInstance().sendToExec(sql);
+		return PersistenceManager.INSTANCE.sendToExec(sql);
 	}
 
 	/**
@@ -215,7 +214,7 @@ public class ComputerDao extends Dao<Computer> {
 	public boolean delete(int id) {
 		String sql;
 		sql = "DELETE FROM computer WHERE id = " + id;
-		return PersistenceManager.getInstance().sendToExec(sql);
+		return PersistenceManager.INSTANCE.sendToExec(sql);
 	}
 
 	/**
@@ -230,7 +229,7 @@ public class ComputerDao extends Dao<Computer> {
 	@Override
 	public boolean update(Computer cmpt) {
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn().prepareStatement(
+			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn().prepareStatement(
 					"UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
 
 			preparedStatement.setString(1, cmpt.getName());

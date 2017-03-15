@@ -1,4 +1,4 @@
-package com.formation.cdb.model;
+package com.formation.cdb.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,15 +10,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.model.Company;
 
-public class CompanyDao extends Dao<Company> {
-
+public enum CompanyDao implements Dao<Company> {
+	INSTANCE;
 	final Logger logger = LoggerFactory.getLogger(CompanyDao.class);
 
-	public CompanyDao(Connection conn) {
-		super(conn);
-		// TODO Auto-generated constructor stub
+	private CompanyDao() {
 	}
 
 	/**
@@ -32,7 +30,7 @@ public class CompanyDao extends Dao<Company> {
 	@Override
 	public int create(Company company) {
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn()
 					.prepareStatement("INSERT INTO company(name) VALUES (?)");
 			
 			preparedStatement.setString(1, company.getName());
@@ -56,7 +54,7 @@ public class CompanyDao extends Dao<Company> {
 	public boolean delete(Company company) {
 		String sql;
 		sql = "DELETE FROM company WHERE id = " + company.getId();
-		return PersistenceManager.getInstance().sendToExec(sql);
+		return PersistenceManager.INSTANCE.sendToExec(sql);
 	}
 
 	/**
@@ -69,7 +67,7 @@ public class CompanyDao extends Dao<Company> {
 	@Override
 	public boolean update(Company company) {
 		try {
-			PreparedStatement preparedStatement = PersistenceManager.getInstance().getConn()
+			PreparedStatement preparedStatement = PersistenceManager.INSTANCE.getConn()
 					.prepareStatement("UPDATE company SET name = ? WHERE id = ? ");
 			preparedStatement.setString(1, company.getName());
 			preparedStatement.setInt(2, company.getId());
@@ -95,7 +93,7 @@ public class CompanyDao extends Dao<Company> {
 		try {
 			String sql;
 			sql = "SELECT * FROM company WHERE id = " + id;
-			ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+			ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 			// Extract data from result set
 			if (rs.first()) {
 				company.setId(id);
@@ -118,7 +116,7 @@ public class CompanyDao extends Dao<Company> {
 		List<Company> companyList = new ArrayList<Company>();
 		try {
 			String sql = "SELECT * FROM company";
-			ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+			ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 			Company company;
 			while (rs.next()) {
 				company = new Company();
@@ -144,7 +142,7 @@ public class CompanyDao extends Dao<Company> {
 		Company company = new Company();
 		String sql;
 		sql = "SELECT * FROM company WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 
 		try {
 			if (rs.first()) {
@@ -170,7 +168,7 @@ public class CompanyDao extends Dao<Company> {
 		String sql;
 		int id = 0;
 		sql = "SELECT * FROM company WHERE name = '" + name + "'";
-		ResultSet rs = PersistenceManager.getInstance().sendQuery(sql);
+		ResultSet rs = PersistenceManager.INSTANCE.sendQuery(sql);
 		try {
 			if (rs.first()) {
 				id = rs.getInt("id");
