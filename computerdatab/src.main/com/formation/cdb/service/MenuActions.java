@@ -34,6 +34,10 @@ public enum MenuActions {
 		return ComputerDao.INSTANCE.findAll();
 	}
 
+	public List<Company> findCompaniesInRange(int index, int maxInPage){
+		return CompanyDao.INSTANCE.findInRange(index, maxInPage);
+	}
+	
 	public List<Company> findAllCompany() {
 		return CompanyDao.INSTANCE.findAll();
 	}

@@ -251,7 +251,7 @@ public enum CompanyDao implements Dao<Company> {
 	 * 
 	 * @return companyList
 	 */
-	public List<Company> findInRange(int indexPage) {
+	public List<Company> findInRange(int indexPage, int maxInPage) {
 		List<Company> companyList = new ArrayList<Company>();
 		if (indexPage < 0) {
 			return companyList;
@@ -259,12 +259,11 @@ public enum CompanyDao implements Dao<Company> {
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
-		int maxPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
 		try {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM company LIMIT ? OFFSET ?");
-			preparedStatement.setInt(1, maxPage);
-			preparedStatement.setInt(2, indexPage * maxPage);
+			preparedStatement.setInt(1, maxInPage);
+			preparedStatement.setInt(2, indexPage * maxInPage);
 			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
@@ -383,5 +382,42 @@ public enum CompanyDao implements Dao<Company> {
 			}
 		}
 		return id;
+	}
+	public int getRow() {
+		Connection conn = PersistenceManager.INSTANCE.connectToDb();
+		Statement stmt = null;
+		ResultSet rs = null;
+		int count = 0;
+
+		try {
+			String sql = "SELECT COUNT(*) FROM company";
+			stmt = conn.createStatement();
+			logger.debug("Send : {}", sql);
+			rs = stmt.executeQuery(sql);
+
+			if (rs.first()) {
+				count = rs.getInt("COUNT(*)");
+			}
+		} catch (
+
+		SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					PersistenceManager.INSTANCE.close(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
 	}
 }
