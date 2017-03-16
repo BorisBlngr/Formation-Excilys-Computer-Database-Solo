@@ -66,6 +66,10 @@ public enum PersistenceManager {
 		}
 		return conn;
 	}
+	public void close(Connection conn) throws SQLException{
+		conn.close();
+		logger.info("Connection closed");
+	}
 
 	/**
 	 * Methode pour faire un sendQuery avec l'instruction sql. Renvoit un

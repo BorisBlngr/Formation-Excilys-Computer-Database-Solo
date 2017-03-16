@@ -68,7 +68,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -106,7 +106,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -143,7 +143,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -188,7 +188,7 @@ public enum CompanyDao implements Dao<Company> {
 					stmt.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -232,7 +232,7 @@ public enum CompanyDao implements Dao<Company> {
 					stmt.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -284,7 +284,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -327,7 +327,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -370,7 +370,7 @@ public enum CompanyDao implements Dao<Company> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

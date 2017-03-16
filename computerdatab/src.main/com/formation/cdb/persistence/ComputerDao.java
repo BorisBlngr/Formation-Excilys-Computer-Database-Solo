@@ -85,7 +85,7 @@ public enum ComputerDao implements Dao<Computer> {
 					stmt.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -133,7 +133,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -185,7 +185,7 @@ public enum ComputerDao implements Dao<Computer> {
 					stmt.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -242,7 +242,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -284,7 +284,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -336,7 +336,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -375,7 +375,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -413,7 +413,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -467,7 +467,7 @@ public enum ComputerDao implements Dao<Computer> {
 					preparedStatement.close();
 				}
 				if (conn != null) {
-					conn.close();
+					PersistenceManager.INSTANCE.close(conn);
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
