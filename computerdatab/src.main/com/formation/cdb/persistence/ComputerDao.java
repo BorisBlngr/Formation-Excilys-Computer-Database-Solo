@@ -17,7 +17,9 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
+import com.formation.cdb.ui.ComputerUi;
 
 public enum ComputerDao implements Dao<Computer> {
 	INSTANCE;
@@ -92,6 +94,61 @@ public enum ComputerDao implements Dao<Computer> {
 			}
 		}
 		return computer;
+	}
+
+	/**
+	 * Methode pour trouver un computerUi en base en fonction de son id, renvoit
+	 * le premier resultat. Une seule requete.
+	 * 
+	 * @param id
+	 *            L'id du computer à trouver.
+	 * @return computerUi
+	 */
+
+	public ComputerUi findUi(long id) {
+		ComputerUi computerUi = new ComputerUi();
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
+					+ id;
+			stmt = conn.createStatement();
+			logger.debug("Send : {}", sql);
+			rs = stmt.executeQuery(sql);
+			// Extract data from result set
+			if (rs.first()) {
+				computerUi.setId(id);
+				computerUi.setName(rs.getString("c.name"));
+				computerUi.setCompany(
+						new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+				
+				if (rs.getDate("c.introduced") != null)
+					computerUi.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+				if (rs.getDate("c.discontinued") != null) {
+					computerUi.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					PersistenceManager.INSTANCE.close(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return computerUi;
 	}
 
 	/**
