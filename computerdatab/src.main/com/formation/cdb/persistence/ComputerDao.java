@@ -123,7 +123,7 @@ public enum ComputerDao implements Dao<Computer> {
 				computerUi.setName(rs.getString("c.name"));
 				computerUi.setCompany(
 						new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-				
+
 				if (rs.getDate("c.introduced") != null)
 					computerUi.setIntroduced(rs.getDate("c.introduced").toLocalDate());
 				if (rs.getDate("c.discontinued") != null) {
@@ -259,7 +259,7 @@ public enum ComputerDao implements Dao<Computer> {
 	 * 
 	 * @return companyList
 	 */
-	public List<Computer> findInRange(int indexPage) {
+	public List<Computer> findInRange(int indexPage, int maxInPage) {
 		List<Computer> computerList = new ArrayList<Computer>();
 		if (indexPage < 0) {
 			return computerList;
@@ -267,12 +267,11 @@ public enum ComputerDao implements Dao<Computer> {
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
-		int maxPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
 		try {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM computer LIMIT ? OFFSET ?");
-			preparedStatement.setInt(1, maxPage);
-			preparedStatement.setInt(2, indexPage * maxPage);
+			preparedStatement.setInt(1, maxInPage);
+			preparedStatement.setInt(2, indexPage * maxInPage);
 			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
@@ -351,6 +350,44 @@ public enum ComputerDao implements Dao<Computer> {
 			}
 		}
 		return id;
+	}
+
+	public int getRow() {
+		Connection conn = PersistenceManager.INSTANCE.connectToDb();
+		Statement stmt = null;
+		ResultSet rs = null;
+		int count = 0;
+
+		try {
+			String sql = "SELECT COUNT(*) FROM computer";
+			stmt = conn.createStatement();
+			logger.debug("Send : {}", sql);
+			rs = stmt.executeQuery(sql);
+
+			if (rs.first()) {
+				count = rs.getInt("COUNT(*)");
+			}
+		} catch (
+
+		SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					PersistenceManager.INSTANCE.close(conn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return count;
 	}
 
 	/**

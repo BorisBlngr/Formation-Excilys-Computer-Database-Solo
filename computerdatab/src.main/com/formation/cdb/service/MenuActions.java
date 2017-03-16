@@ -23,7 +23,9 @@ public enum MenuActions {
 	public Computer findComputer(long id) {
 		return ComputerDao.INSTANCE.find(id);
 	}
-	
+	public List<Computer> findComputersInRange(int index, int maxInPage){
+		return ComputerDao.INSTANCE.findInRange(index, maxInPage);
+	}
 	public ComputerUi findComputerUi(long id) {
 		return ComputerDao.INSTANCE.findUi(id);
 	}
