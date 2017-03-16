@@ -42,21 +42,16 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return findIdByName(company.getName());
@@ -85,21 +80,16 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -127,21 +117,16 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return false;
@@ -174,29 +159,18 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (stmt != null) {
-				try {
+				if (stmt != null) {
 					stmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return company;
@@ -229,26 +203,18 @@ public enum CompanyDao implements Dao<Company> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
-			}
-			if (stmt != null) {
-				try {
+				if (stmt != null) {
 					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return companyList;
@@ -280,29 +246,18 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (preparedStatement != null) {
-				try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return company;
@@ -334,29 +289,18 @@ public enum CompanyDao implements Dao<Company> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (preparedStatement != null) {
-				try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return id;

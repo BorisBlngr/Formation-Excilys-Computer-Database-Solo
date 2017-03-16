@@ -57,29 +57,18 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (stmt != null) {
-				try {
+				if (stmt != null) {
 					stmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return computer;
@@ -116,36 +105,26 @@ public enum ComputerDao implements Dao<Computer> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (preparedStatement != null) {
-				try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return computer;
 	}
 
 	/**
-	 * Methode pour avoir une liste de tous les computer en base.
+	 * Methode pour avoir une liste de tous les computer en base. Pas optimisée
+	 * pour les grosses bdd.
 	 * 
 	 * @return computerList
 	 */
@@ -178,26 +157,18 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
-			}
-			if (stmt != null) {
-				try {
+				if (stmt != null) {
 					stmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return computerList;
@@ -228,29 +199,18 @@ public enum ComputerDao implements Dao<Computer> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
+			try {
+				if (rs != null) {
 					rs.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (preparedStatement != null) {
-				try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return id;
@@ -294,21 +254,16 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return findIdByName(cmpt.getName());
@@ -338,21 +293,16 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -381,21 +331,16 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -440,21 +385,16 @@ public enum ComputerDao implements Dao<Computer> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (preparedStatement != null) {
-				try {
+			try {
+				if (preparedStatement != null) {
 					preparedStatement.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}
-			if (conn != null) {
-				try {
+				if (conn != null) {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return false;
