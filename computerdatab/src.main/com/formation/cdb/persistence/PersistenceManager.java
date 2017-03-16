@@ -51,12 +51,11 @@ public enum PersistenceManager {
 		Connection conn = null;
 		// Register JDBC driver
 		try {
-			System.out.println(prop.getProperty("jdbc.driver"));
 			Class.forName(prop.getProperty("jdbc.driver"));
 			// Open a connection
-			logger.info("Connecting to db .... ");
+			logger.debug("Connecting to db .... ");
 			conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"));
-			logger.info("Connection opened");
+			logger.debug("Connection opened");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,7 +67,7 @@ public enum PersistenceManager {
 	}
 	public void close(Connection conn) throws SQLException{
 		conn.close();
-		logger.info("Connection closed");
+		logger.debug("Connection closed");
 	}
 
 	/**

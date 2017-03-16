@@ -17,8 +17,10 @@ public class Menu {
 	private List<Company> companyList = new ArrayList<Company>();
 	private List<Computer> computerList = new ArrayList<Computer>();
 	Computer computerFound = new Computer();
+	Scanner input;
 
 	public Menu() {
+		input = new Scanner(System.in);
 	}
 
 	/**
@@ -44,15 +46,12 @@ public class Menu {
 	 * @return int
 	 */
 	public int selectInt() {
-		Scanner input = new Scanner(System.in);
-
 		// tant qu'on a pas un int
 		while (!input.hasNextInt()) {
 			logger.info("Not a number.");
 			input.next();
 		}
 		int number = input.nextInt();
-		input.close();
 		return number;
 	}
 
@@ -63,15 +62,12 @@ public class Menu {
 	 * @return long
 	 */
 	public long selectLong() {
-		Scanner input = new Scanner(System.in);
-
 		// tant qu'on a pas un int
 		while (!input.hasNextLong()) {
 			logger.info("Not a number.");
 			input.next();
 		}
 		long lg = input.nextLong();
-		input.close();
 		return lg;
 	}
 
@@ -81,9 +77,7 @@ public class Menu {
 	 * @return string
 	 */
 	public String selectString() {
-		Scanner input = new Scanner(System.in);
 		String string = input.next();
-		input.close();
 		return string;
 	}
 
@@ -99,8 +93,6 @@ public class Menu {
 	 */
 	public int selectItemMenu(int min, int max) {
 		int selection;
-		Scanner input = new Scanner(System.in);
-
 		// tant qu'on a pas un int
 		while (!input.hasNextInt()) {
 			logger.info("Not a number.");
@@ -111,10 +103,8 @@ public class Menu {
 		// tant qu'on a pas un int valable
 		if (selection > max || selection < min) {
 			logger.info("Indeed a number but not this one.");
-			input.close();
 			return selectItemMenu(min, max);
 		}
-		input.close();
 		return selection;
 	}
 
@@ -167,6 +157,7 @@ public class Menu {
 			break;
 		case 7:
 			logger.info("Case 7 EXIT");
+			input.close();
 			break;
 		default:
 			// Cow Level

@@ -60,7 +60,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			String sql = "SELECT * FROM computer WHERE id = " + id;
 			stmt = conn.createStatement();
-			logger.info("SendQuery : {}", sql);
+			logger.debug("Send : {}", sql);
 			rs = stmt.executeQuery(sql);
 			// Extract data from result set
 			if (rs.first()) {
@@ -110,6 +110,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");
 			preparedStatement.setString(1, name);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			if (rs.first()) {
@@ -159,7 +160,7 @@ public enum ComputerDao implements Dao<Computer> {
 		try {
 			String sql = "SELECT * FROM computer";
 			stmt = conn.createStatement();
-			logger.info("SendQuery : {}", sql);
+			logger.debug("Send : {}", sql);
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				computer = new Computer();
@@ -215,6 +216,7 @@ public enum ComputerDao implements Dao<Computer> {
 			preparedStatement = conn.prepareStatement("SELECT * FROM computer LIMIT ? OFFSET ?");
 			preparedStatement.setInt(1, maxPage);
 			preparedStatement.setInt(2, indexPage * maxPage);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			Computer computer;
@@ -268,6 +270,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");
 			preparedStatement.setString(1, name);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			if (rs.first()) {
@@ -324,7 +327,7 @@ public enum ComputerDao implements Dao<Computer> {
 				preparedStatement.setNull(4, Types.INTEGER);
 			else
 				preparedStatement.setLong(4, cmpt.getCompanyid());
-			logger.info("Try to exec : " + preparedStatement.toString());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -363,6 +366,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
 			preparedStatement.setLong(1, computer.getId());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 			result = true;
@@ -401,6 +405,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
 			preparedStatement.setLong(1, id);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 			result = true;
@@ -455,7 +460,7 @@ public enum ComputerDao implements Dao<Computer> {
 			else
 				preparedStatement.setLong(4, cmpt.getCompanyid());
 			preparedStatement.setLong(5, cmpt.getId());
-			logger.info("Try to exec : " + preparedStatement.toString());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {

@@ -57,6 +57,7 @@ public enum CompanyDao implements Dao<Company> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("INSERT INTO company(name) VALUES (?)");
 			preparedStatement.setString(1, company.getName());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -94,6 +95,7 @@ public enum CompanyDao implements Dao<Company> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("DELETE FROM company WHERE id = ?");
 			preparedStatement.setLong(1, company.getId());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 			result = true;
@@ -132,6 +134,7 @@ public enum CompanyDao implements Dao<Company> {
 			preparedStatement = conn.prepareStatement("UPDATE company SET name = ? WHERE id = ? ");
 			preparedStatement.setString(1, company.getName());
 			preparedStatement.setLong(2, company.getId());
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -169,7 +172,7 @@ public enum CompanyDao implements Dao<Company> {
 		try {
 			String sql = "SELECT * FROM company WHERE id = " + id;
 			stmt = conn.createStatement();
-			logger.info("SendQuery : {}", sql);
+			logger.debug("Send : {}", stmt.toString());
 			rs = stmt.executeQuery(sql);
 			// Extract data from result set
 			if (rs.first()) {
@@ -211,7 +214,7 @@ public enum CompanyDao implements Dao<Company> {
 		try {
 			String sql = "SELECT * FROM company";
 			stmt = conn.createStatement();
-			logger.info("SendQuery : {}", sql);
+			logger.debug("Send : {}", sql);
 			rs = stmt.executeQuery(sql);
 			Company company;
 			while (rs.next()) {
@@ -262,6 +265,7 @@ public enum CompanyDao implements Dao<Company> {
 			preparedStatement = conn.prepareStatement("SELECT * FROM company LIMIT ? OFFSET ?");
 			preparedStatement.setInt(1, maxPage);
 			preparedStatement.setInt(2, indexPage * maxPage);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			Company company;
@@ -309,6 +313,7 @@ public enum CompanyDao implements Dao<Company> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
 			preparedStatement.setString(1, name);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			if (rs.first()) {
@@ -353,6 +358,7 @@ public enum CompanyDao implements Dao<Company> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
 			preparedStatement.setString(1, name);
+			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
 			if (rs.first()) {

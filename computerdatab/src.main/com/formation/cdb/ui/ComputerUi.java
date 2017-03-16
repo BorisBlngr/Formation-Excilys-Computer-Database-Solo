@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.Computer.ComputerBuilder;
 import com.formation.cdb.persistence.ComputerDao;
 
 public class ComputerUi {
