@@ -32,8 +32,8 @@ public class Menu {
 
 		InputStream in = null;
 		try {
-			in= InputStream.class.getResourceAsStream("resource");
-			//in = new FileInputStream("src/main/java/resource/conf.properties");
+			//in= InputStream.class.getResourceAsStream("resource");
+			in = new FileInputStream("src/main/resource/conf.properties");
 			prop.load(in);
 			maxInPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
 		} catch (FileNotFoundException e) {

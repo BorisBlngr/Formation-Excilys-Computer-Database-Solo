@@ -26,7 +26,7 @@ public enum CompanyDao implements Dao<Company> {
 	private CompanyDao() {
 		InputStream input = null;
 		try {
-			input = new FileInputStream("src.main/resource/conf.properties");
+			input = new FileInputStream("src/main/resource/conf.properties");
 			prop.load(input);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

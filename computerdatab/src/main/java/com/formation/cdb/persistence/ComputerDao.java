@@ -29,7 +29,7 @@ public enum ComputerDao implements Dao<Computer> {
 	private ComputerDao() {
 		InputStream input = null;
 		try {
-			input = new FileInputStream("src.main/resource/conf.properties");
+			input = new FileInputStream("src/main/resource/conf.properties");
 			prop.load(input);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
