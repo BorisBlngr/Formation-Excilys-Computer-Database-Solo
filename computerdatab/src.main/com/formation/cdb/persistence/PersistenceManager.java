@@ -20,25 +20,26 @@ public enum PersistenceManager {
 	
 	final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
 	final Properties prop = new Properties();
-	InputStream input = null;
-
 
 	// Connection conn = null;
 	// Statement stmt = null;
 	// ResultSet rs = null;
 
 	private PersistenceManager() {
+		InputStream input = null;
 		try {
 			input = new FileInputStream("src.main/resource/conf.properties");
-			
 			prop.load(input);
-			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

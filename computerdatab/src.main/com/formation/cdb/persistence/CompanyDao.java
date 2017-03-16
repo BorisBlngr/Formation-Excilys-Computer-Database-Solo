@@ -1,5 +1,9 @@
 package com.formation.cdb.persistence;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +21,24 @@ import com.formation.cdb.model.Company;
 public enum CompanyDao implements Dao<Company> {
 	INSTANCE;
 	final Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+	final Properties prop = new Properties();
 
 	private CompanyDao() {
+		InputStream input = null;
+		try {
+			input = new FileInputStream("src.main/resource/conf.properties");
+			prop.load(input);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -209,6 +230,58 @@ public enum CompanyDao implements Dao<Company> {
 				}
 				if (stmt != null) {
 					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return companyList;
+	}
+
+	/**
+	 * Methode pour avoir une liste de company de taille maximale définie dans
+	 * conf.properties. Selectionne les company en fonction de l'indexPage (page
+	 * 0 à x).
+	 * 
+	 * @return companyList
+	 */
+	public List<Company> findInRange(int indexPage) {
+		List<Company> companyList = new ArrayList<Company>();
+		if (indexPage < 0) {
+			return companyList;
+		}
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		int maxPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
+		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("SELECT * FROM company LIMIT ? OFFSET ?");
+			preparedStatement.setInt(1, maxPage);
+			preparedStatement.setInt(2, indexPage * maxPage);
+			preparedStatement.execute();
+			rs = preparedStatement.getResultSet();
+			Company company;
+			while (rs.next()) {
+				company = new Company();
+				company.setId(rs.getInt("id"));
+				company.setName(rs.getString("name"));
+				companyList.add(company);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
 				}
 				if (conn != null) {
 					conn.close();

@@ -51,7 +51,9 @@ public class Menu {
 			logger.info("Not a number.");
 			input.next();
 		}
-		return input.nextInt();
+		int number = input.nextInt();
+		input.close();
+		return number;
 	}
 
 	/**
@@ -68,7 +70,9 @@ public class Menu {
 			logger.info("Not a number.");
 			input.next();
 		}
-		return input.nextInt();
+		long lg = input.nextLong();
+		input.close();
+		return lg;
 	}
 
 	/**
@@ -78,7 +82,9 @@ public class Menu {
 	 */
 	public String selectString() {
 		Scanner input = new Scanner(System.in);
-		return input.next();
+		String string = input.next();
+		input.close();
+		return string;
 	}
 
 	/**
@@ -105,8 +111,10 @@ public class Menu {
 		// tant qu'on a pas un int valable
 		if (selection > max || selection < min) {
 			logger.info("Indeed a number but not this one.");
+			input.close();
 			return selectItemMenu(min, max);
 		}
+		input.close();
 		return selection;
 	}
 

@@ -1,5 +1,9 @@
 package com.formation.cdb.persistence;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +12,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +22,24 @@ import com.formation.cdb.model.Computer;
 public enum ComputerDao implements Dao<Computer> {
 	INSTANCE;
 	final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-	// protected Connection connect = null;
+	final Properties prop = new Properties();
 
 	private ComputerDao() {
+		InputStream input = null;
+		try {
+			input = new FileInputStream("src.main/resource/conf.properties");
+			prop.load(input);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -163,6 +183,63 @@ public enum ComputerDao implements Dao<Computer> {
 				}
 				if (stmt != null) {
 					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return computerList;
+	}
+
+	/**
+	 * Methode pour avoir une liste de company de taille maximale définie dans
+	 * conf.properties. Selectionne les company en fonction de l'indexPage (page
+	 * 0 à x).
+	 * 
+	 * @return companyList
+	 */
+	public List<Computer> findInRange(int indexPage) {
+		List<Computer> computerList = new ArrayList<Computer>();
+		if (indexPage < 0) {
+			return computerList;
+		}
+		Connection conn = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		int maxPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
+		try {
+			conn = PersistenceManager.INSTANCE.connectToDb();
+			preparedStatement = conn.prepareStatement("SELECT * FROM computer LIMIT ? OFFSET ?");
+			preparedStatement.setInt(1, maxPage);
+			preparedStatement.setInt(2, indexPage * maxPage);
+			preparedStatement.execute();
+			rs = preparedStatement.getResultSet();
+			Computer computer;
+			while (rs.next()) {
+				computer = new Computer();
+				computer.setId(rs.getInt("id"));
+				computer.setName(rs.getString("name"));
+				computer.setCompanyId(rs.getInt("company_id"));
+				if (rs.getDate("introduced") != null)
+					computer.setIntroduced(rs.getDate("introduced").toLocalDate());
+				if (rs.getDate("discontinued") != null) {
+					computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+				}
+				computerList.add(computer);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
 				}
 				if (conn != null) {
 					conn.close();
