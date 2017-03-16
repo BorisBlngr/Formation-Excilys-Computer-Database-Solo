@@ -1,6 +1,9 @@
 # Training
 Computer Database from https://github.com/excilys/training-java
 
+# Step
+4.3
+
 # Dependency
 * mysql-connector-java-5.0.8/mysql-connector-java-5.0.8-bin.jar
 * slf4j-1.7.24/slf4j-api-1.7.24.jar
