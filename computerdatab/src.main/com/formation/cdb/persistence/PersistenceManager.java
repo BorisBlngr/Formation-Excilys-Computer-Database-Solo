@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public enum PersistenceManager {
 
 	INSTANCE;
-	
+
 	final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
 	final Properties prop = new Properties();
 
@@ -54,7 +54,8 @@ public enum PersistenceManager {
 			Class.forName(prop.getProperty("jdbc.driver"));
 			// Open a connection
 			logger.debug("Connecting to db .... ");
-			conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"), prop.getProperty("PASS"));
+			conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"),
+					prop.getProperty("PASS"));
 			logger.debug("Connection opened");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -65,7 +66,8 @@ public enum PersistenceManager {
 		}
 		return conn;
 	}
-	public void close(Connection conn) throws SQLException{
+
+	public void close(Connection conn) throws SQLException {
 		conn.close();
 		logger.debug("Connection closed");
 	}
@@ -84,11 +86,11 @@ public enum PersistenceManager {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			
+
 			stmt = conn.createStatement();
 			logger.info("SendQuery : {}", sql);
 			rs = stmt.executeQuery(sql);
-			
+
 			rs.close();
 			stmt.close();
 			conn.close();
@@ -100,7 +102,8 @@ public enum PersistenceManager {
 	}
 
 	/**
-	 * Methode pour faire un execute(sql). Renvoit le result. No protection against sql protection.
+	 * Methode pour faire un execute(sql). Renvoit le result. No protection
+	 * against sql protection.
 	 * 
 	 * @param id
 	 *            L'id du computer à trouver.

@@ -255,13 +255,13 @@ public enum ComputerDao implements Dao<Computer> {
 	/**
 	 * Methode pour avoir une liste de company de taille maximale définie dans
 	 * conf.properties. Selectionne les company en fonction de l'indexPage (page
-	 * 0 à x).
+	 * 1 à x).
 	 * 
 	 * @return companyList
 	 */
 	public List<Computer> findInRange(int indexPage, int maxInPage) {
 		List<Computer> computerList = new ArrayList<Computer>();
-		if (indexPage < 0) {
+		if (indexPage < 1) {
 			return computerList;
 		}
 		Connection conn = null;
@@ -271,7 +271,7 @@ public enum ComputerDao implements Dao<Computer> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM computer LIMIT ? OFFSET ?");
 			preparedStatement.setInt(1, maxInPage);
-			preparedStatement.setInt(2, indexPage * maxInPage);
+			preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
 			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();

@@ -1,8 +1,13 @@
 package com.formation.cdb.ui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -13,14 +18,35 @@ import com.formation.cdb.model.Computer;
 import com.formation.cdb.service.MenuActions;
 
 public class Menu {
+	final Properties prop = new Properties();
 	final Logger logger = LoggerFactory.getLogger(Menu.class);
 	private List<Company> companyList = new ArrayList<Company>();
 	private List<Computer> computerList = new ArrayList<Computer>();
 	Computer computerFound = new Computer();
 	Scanner input;
+	int nbItem = 9;
+	int maxInPage = 0;
 
 	public Menu() {
 		input = new Scanner(System.in);
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream("src.main/resource/conf.properties");
+			prop.load(in);
+			maxInPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	/**
@@ -30,13 +56,15 @@ public class Menu {
 	public void printMenu() {
 		System.out.println("\nChoose from these choices");
 		System.out.println("-------------------------\n");
-		System.out.println("1 - List computers");
-		System.out.println("2 - List companies");
+		System.out.println("1 - List All computers");
+		System.out.println("2 - List All companies");
 		System.out.println("3 - Show computer details");
 		System.out.println("4 - Create a computer");
 		System.out.println("5 - Update a computer");
 		System.out.println("6 - Delete a computer");
-		System.out.println("7 - Quit");
+		System.out.println("7 - List Computers");
+		System.out.println("8 - List Companies");
+		System.out.println("9 - Quit");
 	}
 
 	/**
@@ -120,7 +148,7 @@ public class Menu {
 
 		switch (itemSelected) {
 		case 1:
-			logger.info("Case List Computers");
+			logger.info("Case List All Computers");
 			computerList.clear();
 			computerList = MenuActions.INSTANCE.findAllComputer();
 			for (Computer computer : computerList) {
@@ -128,7 +156,7 @@ public class Menu {
 			}
 			break;
 		case 2:
-			logger.info("Case List Companies");
+			logger.info("Case List All Companies");
 			companyList.clear();
 			companyList = MenuActions.INSTANCE.findAllCompany();
 			for (Company company : companyList) {
@@ -156,7 +184,31 @@ public class Menu {
 			MenuActions.INSTANCE.deleteComputer(selectLong());
 			break;
 		case 7:
-			logger.info("Case 7 EXIT");
+			logger.info("Case 7 List of Computers ");
+			int nbComputer = MenuActions.INSTANCE.getNbComputers();
+			int nbComputerPages = nbComputer / maxInPage;
+			if (nbComputer % maxInPage != 0) {
+				nbComputerPages++;
+			}
+			System.out.println("page[" + nbComputerPages + "] : ");
+			computerList.clear();
+			ComputerPage computerPage = new ComputerPage(selectInt());
+			System.out.println(computerPage.getList());
+			break;
+		case 8:
+			logger.info("Case 8 List of Companies");
+			int nbCompany = MenuActions.INSTANCE.getNbCompanies();
+			int nbCompanyPages = nbCompany / maxInPage;
+			if (nbCompany % maxInPage != 0) {
+				nbCompanyPages++;
+			}
+			System.out.println("page[" + nbCompanyPages + "] : ");
+			computerList.clear();
+			ComputerPage companyPage = new ComputerPage(selectInt());
+			System.out.println(companyPage.getList());
+			break;
+		case 9:
+			logger.info("Case 9 EXIT");
 			input.close();
 			break;
 		default:
@@ -247,12 +299,12 @@ public class Menu {
 	 */
 	public void showMeTheMagic() {
 		printMenu();
-		int choice = execute(selectItemMenu(1, 7));
-		if (choice == 7) {
+		int choice = execute(selectItemMenu(1, nbItem));
+		if (choice == 9) {
 			return;
 		} else {
 			printMenu();
-			while (execute(selectItemMenu(1, 7)) != 7) {
+			while (execute(selectItemMenu(1, nbItem)) != nbItem) {
 				printMenu();
 			}
 		}

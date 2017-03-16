@@ -12,20 +12,20 @@ public enum MenuActions {
 	INSTANCE;
 
 	private MenuActions() {
-
 	}
 
 	public List<Computer> listComputersAction() {
 		return null;
-
 	}
 
 	public Computer findComputer(long id) {
 		return ComputerDao.INSTANCE.find(id);
 	}
-	public List<Computer> findComputersInRange(int index, int maxInPage){
+
+	public List<Computer> findComputersInRange(int index, int maxInPage) {
 		return ComputerDao.INSTANCE.findInRange(index, maxInPage);
 	}
+
 	public ComputerUi findComputerUi(long id) {
 		return ComputerDao.INSTANCE.findUi(id);
 	}
@@ -34,10 +34,10 @@ public enum MenuActions {
 		return ComputerDao.INSTANCE.findAll();
 	}
 
-	public List<Company> findCompaniesInRange(int index, int maxInPage){
+	public List<Company> findCompaniesInRange(int index, int maxInPage) {
 		return CompanyDao.INSTANCE.findInRange(index, maxInPage);
 	}
-	
+
 	public List<Company> findAllCompany() {
 		return CompanyDao.INSTANCE.findAll();
 	}
@@ -52,6 +52,14 @@ public enum MenuActions {
 
 	public boolean deleteComputer(Long id) {
 		return ComputerDao.INSTANCE.delete(id);
+	}
+
+	public int getNbComputers() {
+		return ComputerDao.INSTANCE.getRow();
+	}
+
+	public int getNbCompanies() {
+		return CompanyDao.INSTANCE.getRow();
 	}
 
 	public static void main(String[] args) {

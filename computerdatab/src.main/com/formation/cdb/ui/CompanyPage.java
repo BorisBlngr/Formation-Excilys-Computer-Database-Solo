@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.service.MenuActions;
 
 public class CompanyPage extends Page<Company> {
@@ -38,7 +37,7 @@ public class CompanyPage extends Page<Company> {
 	public static void main(String[] args) {
 		CompanyPage page = new CompanyPage(2);
 		System.out.println(page.getList());
-		System.out.println(CompanyDao.INSTANCE.getRow());
+		System.out.println(MenuActions.INSTANCE.getNbCompanies());
 	}
 
 }

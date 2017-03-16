@@ -247,13 +247,13 @@ public enum CompanyDao implements Dao<Company> {
 	/**
 	 * Methode pour avoir une liste de company de taille maximale définie dans
 	 * conf.properties. Selectionne les company en fonction de l'indexPage (page
-	 * 0 à x).
+	 * 1 à x).
 	 * 
 	 * @return companyList
 	 */
 	public List<Company> findInRange(int indexPage, int maxInPage) {
 		List<Company> companyList = new ArrayList<Company>();
-		if (indexPage < 0) {
+		if (indexPage < 1) {
 			return companyList;
 		}
 		Connection conn = null;
@@ -263,7 +263,7 @@ public enum CompanyDao implements Dao<Company> {
 			conn = PersistenceManager.INSTANCE.connectToDb();
 			preparedStatement = conn.prepareStatement("SELECT * FROM company LIMIT ? OFFSET ?");
 			preparedStatement.setInt(1, maxInPage);
-			preparedStatement.setInt(2, indexPage * maxInPage);
+			preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
 			logger.debug("Send : {}", preparedStatement.toString());
 			preparedStatement.execute();
 			rs = preparedStatement.getResultSet();
@@ -383,6 +383,7 @@ public enum CompanyDao implements Dao<Company> {
 		}
 		return id;
 	}
+
 	public int getRow() {
 		Connection conn = PersistenceManager.INSTANCE.connectToDb();
 		Statement stmt = null;

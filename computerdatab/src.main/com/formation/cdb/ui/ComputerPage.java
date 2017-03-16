@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.service.MenuActions;
 
 public class ComputerPage extends Page<Computer> {
@@ -35,10 +34,11 @@ public class ComputerPage extends Page<Computer> {
 		indexMaPage = index;
 		this.list = MenuActions.INSTANCE.findComputersInRange(index, maxInPage);
 	}
+	
 
 	public static void main(String[] args) {
 		ComputerPage page = new ComputerPage (2);
 		System.out.println(page.getList());
-		System.out.println(ComputerDao.INSTANCE.getRow());
+		System.out.println(MenuActions.INSTANCE.getNbComputers());
 	}
 }
