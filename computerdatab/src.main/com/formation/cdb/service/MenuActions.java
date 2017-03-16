@@ -6,6 +6,7 @@ import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.persistence.ComputerDao;
+import com.formation.cdb.ui.ComputerUi;
 
 public enum MenuActions {
 	INSTANCE;
@@ -21,6 +22,10 @@ public enum MenuActions {
 
 	public Computer findComputer(long id) {
 		return ComputerDao.INSTANCE.find(id);
+	}
+	
+	public ComputerUi findComputerUi(long id) {
+		return ComputerDao.INSTANCE.findUi(id);
 	}
 
 	public List<Computer> findAllComputer() {

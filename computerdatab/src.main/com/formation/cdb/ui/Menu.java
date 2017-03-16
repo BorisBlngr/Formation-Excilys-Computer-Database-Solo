@@ -138,8 +138,8 @@ public class Menu {
 		case 3:
 			logger.info("Case Show computer details");
 			System.out.println("id : ");
-			computerFound = MenuActions.INSTANCE.findComputer(selectLong());
-			System.out.println(computerFound);
+			ComputerUi computerUiFound = MenuActions.INSTANCE.findComputerUi(selectLong());
+			System.out.println(computerUiFound);
 
 			break;
 		case 4:
@@ -259,6 +259,7 @@ public class Menu {
 	}
 
 	public static void main(String[] args) {
+		
 		Menu menu = new Menu();
 		menu.showMeTheMagic();
 
