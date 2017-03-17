@@ -1,6 +1,6 @@
 package com.formation.cdb.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 
@@ -10,44 +10,57 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.formation.cdb.model.Computer;
-
 public class ComputerTest {
 
-	Computer computer = null;
+    Computer computer = null;
 
-	@BeforeClass
-	public static void executerBeforeClass() throws Exception {
+    /**
+     * Execute before Class.
+     * @throws Exception Exceptions.
+     */
+    @BeforeClass
+    public static void executerBeforeClass() throws Exception {
 
-	}
+    }
 
-	@AfterClass
-	public static void executerAfterClass() throws Exception {
-	}
+    /**
+     * Execute after Class.
+     * @throws Exception Exceptions.
+     */
+    @AfterClass
+    public static void executerAfterClass() throws Exception {
+    }
 
-	@Before
-	public void executerAvantChaqueTest() {
-		computer = new Computer();
-		Date introducedD = new Date(12000);
-		Date discontinuedD = new Date(18000);
+    /**
+     * Execute before test.
+     */
+    @Before
+    public void executerAvantChaqueTest() {
+        computer = new Computer();
+        Date introducedD = new Date(12000);
+        Date discontinuedD = new Date(18000);
 
-		computer.setCompanyId(2);
-		computer.setId(3);
-		computer.setName("Orditropbien");
-		computer.setIntroduced(introducedD.toLocalDate());
-		computer.setDiscontinued(discontinuedD.toLocalDate());
-	}
-
-	@After
-	public void executerApresChaqueTest() {
-		computer = null;
-	}
-
-	@Test
-	public void testRandom() {
-		int a = 1;
-		int b = 1;
-		assertTrue(a == b);
-	}
+        computer.setCompanyId(2);
+        computer.setId(3);
+        computer.setName("Orditropbien");
+        computer.setIntroduced(introducedD.toLocalDate());
+        computer.setDiscontinued(discontinuedD.toLocalDate());
+    }
+    /**
+     * Execute after test.
+     */
+    @After
+    public void executerApresChaqueTest() {
+        computer = null;
+    }
+    /**
+     * Test Random.
+     */
+    @Test
+    public void testRandom() {
+        int a = 1;
+        int b = 1;
+        assertTrue(a == b);
+    }
 
 }

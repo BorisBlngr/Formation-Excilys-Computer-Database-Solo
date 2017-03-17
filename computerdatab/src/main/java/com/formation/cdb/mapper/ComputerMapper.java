@@ -5,31 +5,33 @@ import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.ui.ComputerUi;
 
 /**
- * Computer => ComputerUi ComputerUi => Computer
+ * Computer => ComputerUi ComputerUi => Computer.
  */
 public enum ComputerMapper {
-	INSTANCE;
+    INSTANCE;
 
-	public Computer map(ComputerUi computerUi) {
-		Computer computer = new Computer.ComputerBuilder()
-				.id(computerUi.getId())
-				.name(computerUi.getName())
-				.companyId(computerUi.getCompany().getId())
-				.discontinued(computerUi.getDiscontinued())
-				.introduced(computerUi.getIntroduced())
-				.build();
-		return computer;
-	}
+    /**
+     * Transforme un ComputerUi en Computer.
+     * @param computerUi ComputerUi.
+     * @return computer
+     */
+    public Computer map(ComputerUi computerUi) {
+        Computer computer = new Computer.ComputerBuilder().id(computerUi.getId()).name(computerUi.getName())
+                .companyId(computerUi.getCompany().getId()).discontinued(computerUi.getDiscontinued())
+                .introduced(computerUi.getIntroduced()).build();
+        return computer;
+    }
 
-	public ComputerUi map(Computer computer) {
-		ComputerUi computerUi = new ComputerUi.ComputerUiBuilder()
-				.id(computer.getId())
-				.name(computer.getName())
-				.company(CompanyDao.INSTANCE.find(computer.getCompanyid()))
-				.introduced(computer.getIntroduced())
-				.discontinued(computer.getDiscontinued())
-				.build();
-		return computerUi;
-	}
+    /**
+     * Transforme un Computer en ComputerUi.
+     * @param computer Computer.
+     * @return Computer
+     */
+    public ComputerUi map(Computer computer) {
+        ComputerUi computerUi = new ComputerUi.ComputerUiBuilder().id(computer.getId()).name(computer.getName())
+                .company(CompanyDao.INSTANCE.find(computer.getCompanyid())).introduced(computer.getIntroduced())
+                .discontinued(computer.getDiscontinued()).build();
+        return computerUi;
+    }
 
 }

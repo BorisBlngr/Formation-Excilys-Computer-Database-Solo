@@ -7,25 +7,42 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PersistenceManagerTest {
-	@BeforeClass
-	public static void executerBeforeClass() throws Exception {
-	}
+    /**
+     * Execute before Class.
+     * @throws Exception Exceptions.
+     */
+    @BeforeClass
+    public static void executerBeforeClass() throws Exception {
+    }
 
-	@AfterClass
-	public static void executerAfterClass() throws Exception {
-	}
+    /**
+     * Execute after Class.
+     * @throws Exception Exceptions.
+     */
+    @AfterClass
+    public static void executerAfterClass() throws Exception {
+    }
 
-	@Before
-	public void executerAvantChaqueTest() {
+    /**
+     * Execute before test.
+     */
+    @Before
+    public void executerAvantChaqueTest() {
 
-	}
+    }
 
-	@After
-	public void executerApresChaqueTest() {
-	}
+    /**
+     * Execute after test.
+     */
+    @After
+    public void executerApresChaqueTest() {
+    }
 
-	@Test
-	public void isAdmissible() {
-	}
+    /**
+     * Empty test.
+     */
+    @Test
+    public void isAdmissible() {
+    }
 
 }

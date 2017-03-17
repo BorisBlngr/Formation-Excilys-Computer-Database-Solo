@@ -1,40 +1,32 @@
 package com.formation.cdb.persistence;
 
-public abstract interface Dao<T> {
+public interface Dao<T> {
 
-	/**
-	 * Méthode de création.
-	 * 
-	 * @param obj
-	 *            object à créer
-	 * @return id
-	 */
-	public abstract long create(T obj);
+    /**
+     * Méthode de création.
+     * @param obj Object à créer.
+     * @return id
+     */
+    long create(T obj);
 
-	/**
-	 * Méthode pour effacer.
-	 * 
-	 * @param obj
-	 *            object à delete
-	 * @return boolean
-	 */
-	public abstract boolean delete(T obj);
+    /**
+     * Méthode pour effacer.
+     * @param obj Object à delete.
+     * @return boolean
+     */
+    boolean delete(T obj);
 
-	/**
-	 * Méthode de mise à jour
-	 * 
-	 * @param obj
-	 *            object à update
-	 * @return boolean
-	 */
-	public abstract boolean update(T obj);
+    /**
+     * Méthode de mise à jour.
+     * @param obj Object à update.
+     * @return boolean
+     */
+    boolean update(T obj);
 
-	/**
-	 * Méthode de recherche des informations
-	 * 
-	 * @param id
-	 *            id de l'object que l'on veut trouver
-	 * @return T
-	 */
-	public abstract T find(long id);
+    /**
+     * Méthode de recherche des informations.
+     * @param id Id de l'object que l'on veut trouver.
+     * @return T
+     */
+    T find(long id);
 }
