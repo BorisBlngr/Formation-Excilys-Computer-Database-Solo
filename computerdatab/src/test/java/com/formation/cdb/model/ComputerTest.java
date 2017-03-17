@@ -46,6 +46,7 @@ public class ComputerTest {
         computer.setIntroduced(introducedD.toLocalDate());
         computer.setDiscontinued(discontinuedD.toLocalDate());
     }
+
     /**
      * Execute after test.
      */
@@ -53,6 +54,7 @@ public class ComputerTest {
     public void executerApresChaqueTest() {
         computer = null;
     }
+
     /**
      * Test Random.
      */

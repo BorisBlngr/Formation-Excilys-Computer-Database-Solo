@@ -1,15 +1,16 @@
 package com.formation.cdb.ui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,9 @@ import com.formation.cdb.model.Computer;
 import com.formation.cdb.service.MenuActions;
 
 public class Menu {
-    final Properties prop = new Properties();
     final Logger logger = LoggerFactory.getLogger(Menu.class);
+    Parameters params = new Parameters();
+    Configuration config;
     private List<Company> companyList = new ArrayList<Company>();
     private List<Computer> computerList = new ArrayList<Computer>();
     Computer computerFound = new Computer();
@@ -33,23 +35,15 @@ public class Menu {
     public Menu() {
         input = new Scanner(System.in);
 
-        InputStream in = null;
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
+                PropertiesConfiguration.class).configure(params.properties().setFileName("conf.properties"));
         try {
-            // in= InputStream.class.getResourceAsStream("resource");
-            in = new FileInputStream("src/main/resource/conf.properties");
-            prop.load(in);
-            maxInPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            config = builder.getConfiguration();
+
+        } catch (ConfigurationException cex) {
+            // loading of the configuration file failed
         }
+        maxInPage = config.getInt("pagination.maxpage");
 
     }
 

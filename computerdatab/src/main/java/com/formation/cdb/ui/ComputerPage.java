@@ -1,43 +1,39 @@
 package com.formation.cdb.ui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.service.MenuActions;
 
 public class ComputerPage extends Page<Computer> {
 
-    final Properties prop = new Properties();
+    Parameters params = new Parameters();
+    Configuration config;
 
     /**
      * Constrcteur.
      * @param index Page index.
      */
     public ComputerPage(int index) {
-
-        InputStream input = null;
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
+                PropertiesConfiguration.class).configure(params.properties().setFileName("conf.properties"));
         try {
-            input = new FileInputStream("src.main/resource/conf.properties");
-            prop.load(input);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            config = builder.getConfiguration();
+
+        } catch (ConfigurationException cex) {
+            // loading of the configuration file failed
         }
-        maxInPage = Integer.parseInt(prop.getProperty("pagination.maxpage"));
+
+        maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
         this.list = MenuActions.INSTANCE.findComputersInRange(index, maxInPage);
     }
+
     /**
      * Main.
      * @param args Args.

@@ -1,9 +1,5 @@
 package com.formation.cdb.persistence;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +8,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,27 +19,11 @@ import com.formation.cdb.ui.ComputerUi;
 public enum ComputerDao implements Dao<Computer> {
     INSTANCE;
     final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
-    final Properties prop = new Properties();
 
     /**
      * Constructeur.
      */
     ComputerDao() {
-        InputStream input = null;
-        try {
-            input = new FileInputStream("src/main/resource/conf.properties");
-            prop.load(input);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

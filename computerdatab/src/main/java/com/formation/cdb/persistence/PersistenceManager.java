@@ -1,15 +1,17 @@
 package com.formation.cdb.persistence;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
+
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +20,9 @@ public enum PersistenceManager {
 
     INSTANCE;
 
+    Parameters params = new Parameters();
+    Configuration config;
     final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
-    final Properties prop = new Properties();
 
     // Connection conn = null;
     // Statement stmt = null;
@@ -29,20 +32,13 @@ public enum PersistenceManager {
      * Constructeur récupérant les propriétés du conf.
      */
     PersistenceManager() {
-        InputStream input = null;
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
+                PropertiesConfiguration.class).configure(params.properties().setFileName("conf.properties"));
         try {
-            input = new FileInputStream("src/main/resource/conf.properties");
-            prop.load(input);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            config = builder.getConfiguration();
+
+        } catch (ConfigurationException cex) {
+            // loading of the configuration file failed
         }
     }
 
@@ -54,11 +50,11 @@ public enum PersistenceManager {
         Connection conn = null;
         // Register JDBC driver
         try {
-            Class.forName(prop.getProperty("jdbc.driver"));
+            Class.forName(config.getString("jdbc.driver"));
             // Open a connection
             logger.debug("Connecting to db .... ");
-            conn = DriverManager.getConnection(prop.getProperty("DB_URL"), prop.getProperty("USER"),
-                    prop.getProperty("PASS"));
+            conn = DriverManager.getConnection(config.getString("DB_URL"), config.getString("USER"),
+                    config.getString("PASS"));
             logger.debug("Connection opened");
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
