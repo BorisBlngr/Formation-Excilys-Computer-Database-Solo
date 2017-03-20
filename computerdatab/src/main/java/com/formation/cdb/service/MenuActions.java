@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.persistence.CompanyDao;
-import com.formation.cdb.persistence.ComputerDao;
-import com.formation.cdb.ui.ComputerUi;
+import com.formation.cdb.model.dao.CompanyDao;
+import com.formation.cdb.model.dao.ComputerDao;
+import com.formation.cdb.model.dto.ComputerDto;
 
 public enum MenuActions {
     INSTANCE;
@@ -21,7 +21,7 @@ public enum MenuActions {
      * @param id Computer id.
      * @return computer
      * */
-    public Computer findComputer(long id) {
+    public ComputerDto findComputer(long id) {
         return ComputerDao.INSTANCE.find(id);
     }
     /**
@@ -30,7 +30,7 @@ public enum MenuActions {
      * @param maxInPage Number max in the list.
      * @return computerList
      * */
-    public List<Computer> findComputersInRange(int index, int maxInPage) {
+    public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         return ComputerDao.INSTANCE.findInRange(index, maxInPage);
     }
     /**
@@ -38,14 +38,14 @@ public enum MenuActions {
      * @param id Computer id.
      * @return computerUi
      * */
-    public ComputerUi findComputerUi(long id) {
+    public Computer findComputerUi(long id) {
         return ComputerDao.INSTANCE.findUi(id);
     }
     /**
      * Find all Computers.
      * @return computerList
      * */
-    public List<Computer> findAllComputer() {
+    public List<ComputerDto> findAllComputer() {
         return ComputerDao.INSTANCE.findAll();
     }
     /**
@@ -69,7 +69,7 @@ public enum MenuActions {
      * @param computer Computer to create.
      * @return idComputer
      * */
-    public long createComputer(Computer computer) {
+    public long createComputer(ComputerDto computer) {
         return ComputerDao.INSTANCE.create(computer);
     }
     /**
@@ -77,7 +77,7 @@ public enum MenuActions {
      * @param computer Computer to update.
      * @return result
      * */
-    public boolean updateComputer(Computer computer) {
+    public boolean updateComputer(ComputerDto computer) {
         return ComputerDao.INSTANCE.update(computer);
     }
     /**

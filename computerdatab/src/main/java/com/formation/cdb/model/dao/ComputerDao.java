@@ -1,4 +1,4 @@
-package com.formation.cdb.persistence;
+package com.formation.cdb.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.ui.ComputerUi;
+import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.persistence.PersistenceManager;
 
-public enum ComputerDao implements Dao<Computer> {
+public enum ComputerDao implements Dao<ComputerDto> {
     INSTANCE;
     final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 
@@ -33,8 +34,8 @@ public enum ComputerDao implements Dao<Computer> {
      * @return computer
      */
     @Override
-    public Computer find(long id) {
-        Computer computer = new Computer();
+    public ComputerDto find(long id) {
+        ComputerDto computer = new ComputerDto();
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -84,8 +85,8 @@ public enum ComputerDao implements Dao<Computer> {
      * @return computerUi
      */
 
-    public ComputerUi findUi(long id) {
-        ComputerUi computerUi = new ComputerUi();
+    public Computer findUi(long id) {
+        Computer computerUi = new Computer();
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -136,8 +137,8 @@ public enum ComputerDao implements Dao<Computer> {
      * @param name Le nom du computer à trouver.
      * @return computer
      */
-    public Computer findByName(String name) {
-        Computer computer = new Computer();
+    public ComputerDto findByName(String name) {
+        ComputerDto computer = new ComputerDto();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
@@ -184,9 +185,9 @@ public enum ComputerDao implements Dao<Computer> {
      * pour les grosses bdd.
      * @return computerList
      */
-    public List<Computer> findAll() {
-        List<Computer> computerList = new ArrayList<Computer>();
-        Computer computer;
+    public List<ComputerDto> findAll() {
+        List<ComputerDto> computerList = new ArrayList<ComputerDto>();
+        ComputerDto computer;
         Connection conn = PersistenceManager.INSTANCE.connectToDb();
         Statement stmt = null;
         ResultSet rs = null;
@@ -198,7 +199,7 @@ public enum ComputerDao implements Dao<Computer> {
             logger.debug("Send : {}", sql);
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                computer = new Computer();
+                computer = new ComputerDto();
                 computer.setId(rs.getInt("id"));
                 computer.setName(rs.getString("name"));
                 computer.setCompanyId(rs.getInt("company_id"));
@@ -238,8 +239,8 @@ public enum ComputerDao implements Dao<Computer> {
      * @param maxInPage Nombre d'item max dans la list.
      * @return companyList
      */
-    public List<Computer> findInRange(int indexPage, int maxInPage) {
-        List<Computer> computerList = new ArrayList<Computer>();
+    public List<ComputerDto> findInRange(int indexPage, int maxInPage) {
+        List<ComputerDto> computerList = new ArrayList<ComputerDto>();
         if (indexPage < 1) {
             return computerList;
         }
@@ -254,9 +255,9 @@ public enum ComputerDao implements Dao<Computer> {
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
             rs = preparedStatement.getResultSet();
-            Computer computer;
+            ComputerDto computer;
             while (rs.next()) {
-                computer = new Computer();
+                computer = new ComputerDto();
                 computer.setId(rs.getInt("id"));
                 computer.setName(rs.getString("name"));
                 computer.setCompanyId(rs.getInt("company_id"));
@@ -379,7 +380,7 @@ public enum ComputerDao implements Dao<Computer> {
      * @return id
      */
     @Override
-    public long create(Computer cmpt) {
+    public long create(ComputerDto cmpt) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
@@ -433,7 +434,7 @@ public enum ComputerDao implements Dao<Computer> {
      * @return result
      */
     @Override
-    public boolean delete(Computer computer) {
+    public boolean delete(ComputerDto computer) {
         boolean result = false;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -509,7 +510,7 @@ public enum ComputerDao implements Dao<Computer> {
      */
     // Careful with the computer's id
     @Override
-    public boolean update(Computer cmpt) {
+    public boolean update(ComputerDto cmpt) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {

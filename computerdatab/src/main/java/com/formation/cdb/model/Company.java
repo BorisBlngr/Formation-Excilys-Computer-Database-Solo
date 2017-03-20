@@ -2,7 +2,7 @@ package com.formation.cdb.model;
 
 import java.util.List;
 
-import com.formation.cdb.persistence.CompanyDao;
+import com.formation.cdb.model.dao.CompanyDao;
 
 public class Company {
 

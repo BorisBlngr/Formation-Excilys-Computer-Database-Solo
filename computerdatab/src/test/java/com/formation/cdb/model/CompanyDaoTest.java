@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.formation.cdb.persistence.CompanyDao;
+import com.formation.cdb.model.dao.CompanyDao;
 
 public class CompanyDaoTest {
 

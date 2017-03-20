@@ -10,9 +10,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.formation.cdb.model.dto.ComputerDto;
+
 public class ComputerTest {
 
-    Computer computer = null;
+    ComputerDto computer = null;
 
     /**
      * Execute before Class.
@@ -36,7 +38,7 @@ public class ComputerTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computer = new Computer();
+        computer = new ComputerDto();
         Date introducedD = new Date(12000);
         Date discontinuedD = new Date(18000);
 

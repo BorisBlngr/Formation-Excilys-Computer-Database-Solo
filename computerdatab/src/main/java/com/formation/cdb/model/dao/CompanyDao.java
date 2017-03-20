@@ -1,4 +1,4 @@
-package com.formation.cdb.persistence;
+package com.formation.cdb.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
+import com.formation.cdb.persistence.PersistenceManager;
 
 public enum CompanyDao implements Dao<Company> {
     INSTANCE;

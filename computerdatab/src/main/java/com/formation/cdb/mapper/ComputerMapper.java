@@ -1,8 +1,8 @@
 package com.formation.cdb.mapper;
 
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.persistence.CompanyDao;
-import com.formation.cdb.ui.ComputerUi;
+import com.formation.cdb.model.dao.CompanyDao;
+import com.formation.cdb.model.dto.ComputerDto;
 
 /**
  * Computer => ComputerUi ComputerUi => Computer.
@@ -11,27 +11,27 @@ public enum ComputerMapper {
     INSTANCE;
 
     /**
-     * Transforme un ComputerUi en Computer.
-     * @param computerUi ComputerUi.
-     * @return computer
+     * Transforme un Computer en ComputerDto.
+     * @param computer Computer.
+     * @return computerDto
      */
-    public Computer map(ComputerUi computerUi) {
-        Computer computer = new Computer.ComputerBuilder().id(computerUi.getId()).name(computerUi.getName())
-                .companyId(computerUi.getCompany().getId()).discontinued(computerUi.getDiscontinued())
-                .introduced(computerUi.getIntroduced()).build();
-        return computer;
+    public ComputerDto map(Computer computer) {
+        ComputerDto computerDto = new ComputerDto.ComputerBuilder().id(computer.getId()).name(computer.getName())
+                .companyId(computer.getCompany().getId()).discontinued(computer.getDiscontinued())
+                .introduced(computer.getIntroduced()).build();
+        return computerDto;
     }
 
     /**
-     * Transforme un Computer en ComputerUi.
-     * @param computer Computer.
+     * Transforme un ComputerDto en Computer.
+     * @param computerDto ComputerDto.
      * @return Computer
      */
-    public ComputerUi map(Computer computer) {
-        ComputerUi computerUi = new ComputerUi.ComputerUiBuilder().id(computer.getId()).name(computer.getName())
-                .company(CompanyDao.INSTANCE.find(computer.getCompanyid())).introduced(computer.getIntroduced())
-                .discontinued(computer.getDiscontinued()).build();
-        return computerUi;
+    public Computer map(ComputerDto computerDto) {
+        Computer computer = new Computer.ComputerUiBuilder().id(computerDto.getId()).name(computerDto.getName())
+                .company(CompanyDao.INSTANCE.find(computerDto.getCompanyid())).introduced(computerDto.getIntroduced())
+                .discontinued(computerDto.getDiscontinued()).build();
+        return computer;
     }
 
 }

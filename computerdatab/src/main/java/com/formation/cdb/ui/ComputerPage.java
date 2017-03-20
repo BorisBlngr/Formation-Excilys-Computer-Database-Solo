@@ -7,10 +7,10 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
-import com.formation.cdb.model.Computer;
+import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.MenuActions;
 
-public class ComputerPage extends Page<Computer> {
+public class ComputerPage extends Page<ComputerDto> {
 
     Parameters params = new Parameters();
     Configuration config;

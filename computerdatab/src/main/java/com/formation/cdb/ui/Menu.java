@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
+import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.MenuActions;
 
 public class Menu {
@@ -23,8 +24,8 @@ public class Menu {
     Parameters params = new Parameters();
     Configuration config;
     private List<Company> companyList = new ArrayList<Company>();
-    private List<Computer> computerList = new ArrayList<Computer>();
-    Computer computerFound = new Computer();
+    private List<ComputerDto> computerList = new ArrayList<ComputerDto>();
+    ComputerDto computerFound = new ComputerDto();
     Scanner input;
     int nbItem = 9;
     int maxInPage = 0;
@@ -140,7 +141,7 @@ public class Menu {
             logger.info("Case List All Computers");
             computerList.clear();
             computerList = MenuActions.INSTANCE.findAllComputer();
-            for (Computer computer : computerList) {
+            for (ComputerDto computer : computerList) {
                 System.out.println(" id : [" + computer.getId() + "]\t| name : " + computer.getName());
             }
             break;
@@ -155,7 +156,7 @@ public class Menu {
         case 3:
             logger.info("Case Show computer details");
             System.out.println("id : ");
-            ComputerUi computerUiFound = MenuActions.INSTANCE.findComputerUi(selectLong());
+            Computer computerUiFound = MenuActions.INSTANCE.findComputerUi(selectLong());
             System.out.println(computerUiFound);
 
             break;
@@ -212,8 +213,8 @@ public class Menu {
      * Action du choix update.
      */
     public void menuUpdateComputer() {
-        computerFound = new Computer();
-        Computer newComputer = new Computer();
+        computerFound = new ComputerDto();
+        ComputerDto newComputer = new ComputerDto();
 
         System.out.println("computer ID : ");
         computerFound = MenuActions.INSTANCE.findComputer(selectLong());
@@ -252,7 +253,7 @@ public class Menu {
      * Action du choix create.
      */
     public void menuCreate() {
-        computerFound = new Computer();
+        computerFound = new ComputerDto();
         System.out.println("name : ");
         computerFound.setName(selectString());
 
