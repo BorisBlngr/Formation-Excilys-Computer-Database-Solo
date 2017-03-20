@@ -17,15 +17,15 @@ import org.slf4j.LoggerFactory;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dto.ComputerDto;
-import com.formation.cdb.service.MenuActions;
+import com.formation.cdb.service.ComputerService;
 
 public class Menu {
     final Logger logger = LoggerFactory.getLogger(Menu.class);
     Parameters params = new Parameters();
     Configuration config;
     private List<Company> companyList = new ArrayList<Company>();
-    private List<ComputerDto> computerList = new ArrayList<ComputerDto>();
-    ComputerDto computerFound = new ComputerDto();
+    private List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+    ComputerDto computerDtoFound = new ComputerDto();
     Scanner input;
     int nbItem = 9;
     int maxInPage = 0;
@@ -139,16 +139,16 @@ public class Menu {
         switch (itemSelected) {
         case 1:
             logger.info("Case List All Computers");
-            computerList.clear();
-            computerList = MenuActions.INSTANCE.findAllComputer();
-            for (ComputerDto computer : computerList) {
+            computerDtoList.clear();
+            computerDtoList = ComputerService.INSTANCE.findAllComputer();
+            for (ComputerDto computer : computerDtoList) {
                 System.out.println(" id : [" + computer.getId() + "]\t| name : " + computer.getName());
             }
             break;
         case 2:
             logger.info("Case List All Companies");
             companyList.clear();
-            companyList = MenuActions.INSTANCE.findAllCompany();
+            companyList = ComputerService.INSTANCE.findAllCompany();
             for (Company company : companyList) {
                 System.out.println(" id : [" + company.getId() + "]\t| name : " + company.getName());
             }
@@ -156,8 +156,8 @@ public class Menu {
         case 3:
             logger.info("Case Show computer details");
             System.out.println("id : ");
-            Computer computerUiFound = MenuActions.INSTANCE.findComputerUi(selectLong());
-            System.out.println(computerUiFound);
+            Computer computerFound = ComputerService.INSTANCE.findComputer(selectLong());
+            System.out.println(computerFound);
 
             break;
         case 4:
@@ -171,29 +171,29 @@ public class Menu {
         case 6:
             logger.info("Case Delete a computer");
             System.out.println("id : ");
-            MenuActions.INSTANCE.deleteComputer(selectLong());
+            ComputerService.INSTANCE.deleteComputer(selectLong());
             break;
         case 7:
             logger.info("Case 7 List of Computers ");
-            int nbComputer = MenuActions.INSTANCE.getNbComputers();
+            int nbComputer = ComputerService.INSTANCE.getNbComputers();
             int nbComputerPages = nbComputer / maxInPage;
             if (nbComputer % maxInPage != 0) {
                 nbComputerPages++;
             }
             System.out.println("page[" + nbComputerPages + "] : ");
-            computerList.clear();
+            computerDtoList.clear();
             ComputerPage computerPage = new ComputerPage(selectInt());
             System.out.println(computerPage.getList());
             break;
         case 8:
             logger.info("Case 8 List of Companies");
-            int nbCompany = MenuActions.INSTANCE.getNbCompanies();
+            int nbCompany = ComputerService.INSTANCE.getNbCompanies();
             int nbCompanyPages = nbCompany / maxInPage;
             if (nbCompany % maxInPage != 0) {
                 nbCompanyPages++;
             }
             System.out.println("page[" + nbCompanyPages + "] : ");
-            computerList.clear();
+            computerDtoList.clear();
             ComputerPage companyPage = new ComputerPage(selectInt());
             System.out.println(companyPage.getList());
             break;
@@ -213,39 +213,39 @@ public class Menu {
      * Action du choix update.
      */
     public void menuUpdateComputer() {
-        computerFound = new ComputerDto();
-        ComputerDto newComputer = new ComputerDto();
+        computerDtoFound = new ComputerDto();
+        ComputerDto newComputerDto = new ComputerDto();
 
         System.out.println("computer ID : ");
-        computerFound = MenuActions.INSTANCE.findComputer(selectLong());
-        newComputer.setId(computerFound.getId());
-        System.out.println("new name[" + computerFound.getName() + "] : ");
-        newComputer.setName(selectString());
+        computerDtoFound = ComputerService.INSTANCE.findComputerDto(selectLong());
+        newComputerDto.setId(computerDtoFound.getId());
+        System.out.println("new name[" + computerDtoFound.getName() + "] : ");
+        newComputerDto.setName(selectString());
 
-        System.out.println("companyID [" + computerFound.getCompanyid() + "] : ");
-        newComputer.setCompanyId(selectInt());
+        System.out.println("company [" + computerDtoFound.getCompany() + "] : ");
+        newComputerDto.getCompany().setId(selectInt());
 
-        System.out.println("introduced year [" + computerFound.getIntroduced().getYear() + "] : ");
+        System.out.println("introduced year [" + computerDtoFound.getIntroduced().getYear() + "] : ");
         int iyear = selectInt();
-        System.out.println("introduced month [" + computerFound.getIntroduced().getMonthValue() + "] : ");
+        System.out.println("introduced month [" + computerDtoFound.getIntroduced().getMonthValue() + "] : ");
         int imonth = selectInt();
-        System.out.println("introduced day [" + computerFound.getIntroduced().getDayOfMonth() + "] : ");
+        System.out.println("introduced day [" + computerDtoFound.getIntroduced().getDayOfMonth() + "] : ");
         int iday = selectInt();
 
-        System.out.println("discontinued year [" + computerFound.getDiscontinued().getYear() + "] : ");
+        System.out.println("discontinued year [" + computerDtoFound.getDiscontinued().getYear() + "] : ");
         int dyear = selectInt();
-        System.out.println("discontinued month [" + computerFound.getDiscontinued().getMonthValue() + "] : ");
+        System.out.println("discontinued month [" + computerDtoFound.getDiscontinued().getMonthValue() + "] : ");
         int dmonth = selectInt();
-        System.out.println("discontinued day [" + computerFound.getDiscontinued().getDayOfMonth() + "] : ");
+        System.out.println("discontinued day [" + computerDtoFound.getDiscontinued().getDayOfMonth() + "] : ");
         int dday = selectInt();
 
-        newComputer.setIntroduced(LocalDate.of(iyear, imonth, iday));
-        newComputer.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
+        newComputerDto.setIntroduced(LocalDate.of(iyear, imonth, iday));
+        newComputerDto.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
-        System.out.println(newComputer);
-        MenuActions.INSTANCE.updateComputer(newComputer);
-        newComputer = MenuActions.INSTANCE.findComputer(newComputer.getId());
-        System.out.println(newComputer);
+        System.out.println(newComputerDto);
+        ComputerService.INSTANCE.updateComputer(newComputerDto);
+        newComputerDto = ComputerService.INSTANCE.findComputerDto(newComputerDto.getId());
+        System.out.println(newComputerDto);
 
     }
 
@@ -253,12 +253,12 @@ public class Menu {
      * Action du choix create.
      */
     public void menuCreate() {
-        computerFound = new ComputerDto();
+        computerDtoFound = new ComputerDto();
         System.out.println("name : ");
-        computerFound.setName(selectString());
+        computerDtoFound.setName(selectString());
 
         System.out.println("companyID : ");
-        computerFound.setCompanyId(selectInt());
+        computerDtoFound.getCompany().setId(selectInt());
 
         System.out.println("introduced year : ");
         int iyear = selectInt();
@@ -274,13 +274,13 @@ public class Menu {
         System.out.println("discontinued day : ");
         int dday = selectInt();
 
-        computerFound.setIntroduced(LocalDate.of(iyear, imonth, iday));
-        computerFound.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
+        computerDtoFound.setIntroduced(LocalDate.of(iyear, imonth, iday));
+        computerDtoFound.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
-        System.out.println(computerFound);
-        computerFound.setId(MenuActions.INSTANCE.createComputer(computerFound));
+        System.out.println(computerDtoFound);
+        computerDtoFound.setId(ComputerService.INSTANCE.createComputer(computerDtoFound));
 
-        System.out.println(computerFound);
+        System.out.println(computerDtoFound);
     }
 
     /**

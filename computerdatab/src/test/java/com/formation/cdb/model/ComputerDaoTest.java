@@ -38,7 +38,8 @@ public class ComputerDaoTest {
     @Before
     public void executerAvantChaqueTest() {
         computer = new ComputerDto.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
-                .discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random").companyId(2).build();
+                .discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random")
+                .company(new Company.CompanyBuilder().id(2).build()).build();
     }
 
     /**
@@ -54,9 +55,10 @@ public class ComputerDaoTest {
      */
     @Test
     public void findIsValid() {
-        ComputerDto computerFound = ComputerDao.INSTANCE.find(1);
-        Assert.assertTrue(computerFound.toString().equals(
-                "Computer [id=1, name=MacBook Pro 15.4 inch, introduced=null, companyId=1, discontinued=null]"));
+        ComputerDto computerDtoFound = ComputerDao.INSTANCE.find(1);
+        // System.out.println(computerDtoFound);
+        Assert.assertTrue(computerDtoFound.toString().equals(
+                "Computer [id=1, name=MacBook Pro 15.4 inch, introduced=null, company=Company [id=1, name=Apple Inc.], discontinued=null]"));
     }
 
     /**

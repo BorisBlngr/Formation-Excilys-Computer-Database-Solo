@@ -3,14 +3,16 @@ package com.formation.cdb.model.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.formation.cdb.model.Company;
+import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dao.ComputerDao;
 
 public class ComputerDto {
     private long id = 0;
     private String name;
     private LocalDate introduced = null;
-    private long companyId = 0;
     private LocalDate discontinued = null;
+    private Company company = new Company();
 
     /**
      * Constructeur.
@@ -23,14 +25,14 @@ public class ComputerDto {
      * @param id Id.
      * @param name Name.
      * @param introduced Introduction date.
-     * @param companyId Company id.
+     * @param company Company.
      * @param discontinued Discontinued date.
      */
-    public ComputerDto(int id, String name, LocalDate introduced, int companyId, LocalDate discontinued) {
+    public ComputerDto(int id, String name, LocalDate introduced, Company company, LocalDate discontinued) {
         this.id = id;
         this.name = name;
         this.introduced = introduced;
-        this.companyId = companyId;
+        this.company = company;
         this.discontinued = discontinued;
 
     }
@@ -59,12 +61,12 @@ public class ComputerDto {
         this.introduced = introduced;
     }
 
-    public long getCompanyid() {
-        return companyId;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCompanyId(long companyId) {
-        this.companyId = companyId;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public LocalDate getDiscontinued() {
@@ -77,7 +79,7 @@ public class ComputerDto {
 
     @Override
     public String toString() {
-        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", companyId=" + companyId
+        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", company=" + company
                 + ", discontinued=" + discontinued + "]";
     }
 
@@ -85,7 +87,7 @@ public class ComputerDto {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (companyId ^ (companyId >>> 32));
+        result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
@@ -105,7 +107,11 @@ public class ComputerDto {
             return false;
         }
         ComputerDto other = (ComputerDto) obj;
-        if (companyId != other.companyId) {
+        if (company == null) {
+            if (other.company != null) {
+                return false;
+            }
+        } else if (!company.equals(other.company)) {
             return false;
         }
         if (discontinued == null) {
@@ -144,14 +150,14 @@ public class ComputerDto {
         this.name = builder.name;
         this.introduced = builder.introduced;
         this.discontinued = builder.discontinued;
-        this.companyId = builder.companyId;
+        this.company = builder.company;
     }
 
     public static class ComputerBuilder {
         String name;
         long id;
         LocalDate introduced = null;
-        long companyId = 0;
+        Company company = new Company();
         LocalDate discontinued = null;
 
         /**
@@ -199,32 +205,36 @@ public class ComputerDto {
             this.introduced = discontinued;
             return this;
         }
+
         /**
          * Set companyId.
-         * @param companyId Company id.
+         * @param company Company.
          * @return this
          */
-        public ComputerBuilder companyId(long companyId) {
-            this.companyId = companyId;
+        public ComputerBuilder company(Company company) {
+            this.company = company;
             return this;
         }
+
         /**
          * Build.
          * @return this.
-         * */
+         */
         public ComputerDto build() {
             return new ComputerDto(this);
         }
 
     }
+
     /**
      * Main.
      * @param args Args.
-     * */
+     */
     public static void main(String[] args) {
 
-        ComputerDto computerDto = new ComputerDto.ComputerBuilder().companyId(2).name("Orditropbien")
-                .introduced(LocalDate.of(1980, 10, 10)).discontinued(LocalDate.of(1990, 10, 10)).build();
+        ComputerDto computerDto = new ComputerDto.ComputerBuilder().company(CompanyDao.INSTANCE.find(2))
+                .name("Orditropbien").introduced(LocalDate.of(1980, 10, 10)).discontinued(LocalDate.of(1990, 10, 10))
+                .build();
         System.out.println(computerDto.toString());
         System.out.println(java.sql.Date.valueOf(computerDto.getIntroduced()));
         ComputerDto computerDto2 = ComputerDao.INSTANCE.find(600);
@@ -237,7 +247,7 @@ public class ComputerDto {
         System.out.println("Try to find " + computerDto.getName() + " : " + computerDto2);
 
         // try to update
-        computerDto.setCompanyId(8);
+        computerDto.setCompany(CompanyDao.INSTANCE.find(8));
         ComputerDao.INSTANCE.update(computerDto);
         System.out.println("Try to update : \n" + computerDto2 + "\n to \n" + computerDto);
         System.out.println("Find : " + ComputerDao.INSTANCE.findByName(computerDto.getName()));
@@ -245,7 +255,8 @@ public class ComputerDto {
         // try to delete
 
         ComputerDao.INSTANCE.delete(computerDto);
-        System.out.println("Try to delete " + computerDto + " : " + ComputerDao.INSTANCE.findByName(computerDto.getName()));
+        System.out.println(
+                "Try to delete " + computerDto + " : " + ComputerDao.INSTANCE.findByName(computerDto.getName()));
 
         // try find all
         List<ComputerDto> computerDtoList = ComputerDao.INSTANCE.findAll();

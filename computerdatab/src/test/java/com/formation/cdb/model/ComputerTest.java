@@ -42,7 +42,7 @@ public class ComputerTest {
         Date introducedD = new Date(12000);
         Date discontinuedD = new Date(18000);
 
-        computer.setCompanyId(2);
+        computer.setCompany(new Company.CompanyBuilder().id(2).build());
         computer.setId(3);
         computer.setName("Orditropbien");
         computer.setIntroduced(introducedD.toLocalDate());

@@ -1,7 +1,6 @@
 package com.formation.cdb.mapper;
 
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dto.ComputerDto;
 
 /**
@@ -17,7 +16,7 @@ public enum ComputerMapper {
      */
     public ComputerDto map(Computer computer) {
         ComputerDto computerDto = new ComputerDto.ComputerBuilder().id(computer.getId()).name(computer.getName())
-                .companyId(computer.getCompany().getId()).discontinued(computer.getDiscontinued())
+                .company(computer.getCompany()).discontinued(computer.getDiscontinued())
                 .introduced(computer.getIntroduced()).build();
         return computerDto;
     }
@@ -29,7 +28,7 @@ public enum ComputerMapper {
      */
     public Computer map(ComputerDto computerDto) {
         Computer computer = new Computer.ComputerUiBuilder().id(computerDto.getId()).name(computerDto.getName())
-                .company(CompanyDao.INSTANCE.find(computerDto.getCompanyid())).introduced(computerDto.getIntroduced())
+                .company(computerDto.getCompany()).introduced(computerDto.getIntroduced())
                 .discontinued(computerDto.getDiscontinued()).build();
         return computer;
     }

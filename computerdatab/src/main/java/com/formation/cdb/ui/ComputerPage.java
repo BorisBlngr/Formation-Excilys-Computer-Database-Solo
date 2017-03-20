@@ -8,7 +8,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import com.formation.cdb.model.dto.ComputerDto;
-import com.formation.cdb.service.MenuActions;
+import com.formation.cdb.service.ComputerService;
 
 public class ComputerPage extends Page<ComputerDto> {
 
@@ -31,7 +31,7 @@ public class ComputerPage extends Page<ComputerDto> {
 
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
-        this.list = MenuActions.INSTANCE.findComputersInRange(index, maxInPage);
+        this.list = ComputerService.INSTANCE.findComputersInRange(index, maxInPage);
     }
 
     /**
@@ -41,6 +41,6 @@ public class ComputerPage extends Page<ComputerDto> {
     public static void main(String[] args) {
         ComputerPage page = new ComputerPage(2);
         System.out.println(page.getList());
-        System.out.println(MenuActions.INSTANCE.getNbComputers());
+        System.out.println(ComputerService.INSTANCE.getNbComputers());
     }
 }

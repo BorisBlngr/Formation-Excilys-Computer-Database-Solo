@@ -10,7 +10,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.service.MenuActions;
+import com.formation.cdb.service.ComputerService;
 
 public class CompanyPage extends Page<Company> {
     final Properties prop = new Properties();
@@ -32,7 +32,7 @@ public class CompanyPage extends Page<Company> {
 
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
-        this.list = MenuActions.INSTANCE.findCompaniesInRange(index, maxInPage);
+        this.list = ComputerService.INSTANCE.findCompaniesInRange(index, maxInPage);
     }
 
     /**
@@ -42,7 +42,7 @@ public class CompanyPage extends Page<Company> {
     public static void main(String[] args) {
         CompanyPage page = new CompanyPage(2);
         System.out.println(page.getList());
-        System.out.println(MenuActions.INSTANCE.getNbCompanies());
+        System.out.println(ComputerService.INSTANCE.getNbCompanies());
     }
 
 }
