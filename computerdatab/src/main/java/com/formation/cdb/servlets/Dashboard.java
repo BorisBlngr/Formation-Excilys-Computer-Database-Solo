@@ -24,6 +24,7 @@ import com.formation.cdb.ui.Page;
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
+    private final String selectionSplitter = ",";
     private int[] maxsInPage = {10, 50, 100};
 
     /**
@@ -93,8 +94,27 @@ public class Dashboard extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
+        // System.out.println(request.getParameterMap().keySet());
+        String selection = "";
+
+        if (request.getParameterMap().containsKey("selection") && !request.getParameter("selection").isEmpty()) {
+            selection = request.getParameter("selection");
+            // System.out.println(selection);
+        }
+
+        String[] idToDeleteStr = selection.split(selectionSplitter);
+        List<Long> idToDelete = new ArrayList<Long>();
+        for (String id : idToDeleteStr) {
+            if (id.matches(regex)) {
+                idToDelete.add(Long.parseLong(id));
+            }
+        }
+        System.out.println(idToDelete);
         doGet(request, response);
+
+        for (Long id : idToDelete) {
+            ComputerService.INSTANCE.deleteComputer(id);
+        }
     }
 
     /**

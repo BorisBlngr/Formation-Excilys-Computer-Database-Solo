@@ -75,7 +75,7 @@ public class AddComputer extends HttpServlet {
 
         // System.out.println(request.getParameterMap().keySet());
 
-        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("introduced").isEmpty()) {
+        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
             name = request.getParameter("computerName");
             // System.out.println(name);
         }
