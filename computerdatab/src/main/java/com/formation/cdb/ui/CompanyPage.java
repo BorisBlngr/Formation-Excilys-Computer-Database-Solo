@@ -1,5 +1,7 @@
 package com.formation.cdb.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.configuration2.Configuration;
@@ -12,10 +14,15 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.service.ComputerService;
 
-public class CompanyPage extends Page<Company> {
+public class CompanyPage {
+
+    int maxInPage = 0;
+    int indexMaPage = 0;
+    List<Company> list = new ArrayList<Company>();
     final Properties prop = new Properties();
     Parameters params = new Parameters();
     Configuration config;
+
     /**
      * Constrcteur.
      * @param index Page index.
@@ -33,6 +40,30 @@ public class CompanyPage extends Page<Company> {
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
         this.list = ComputerService.INSTANCE.findCompaniesInRange(index, maxInPage);
+    }
+
+    public int getMaxInPage() {
+        return maxInPage;
+    }
+
+    public void setMaxInPage(int maxInPage) {
+        this.maxInPage = maxInPage;
+    }
+
+    public int getIndexMaPage() {
+        return indexMaPage;
+    }
+
+    public void setIndexMaPage(int indexMaPage) {
+        this.indexMaPage = indexMaPage;
+    }
+
+    public List<Company> getList() {
+        return list;
+    }
+
+    public void setList(List<Company> list) {
+        this.list = list;
     }
 
     /**

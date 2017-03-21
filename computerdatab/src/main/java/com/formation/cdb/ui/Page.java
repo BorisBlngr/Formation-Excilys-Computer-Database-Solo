@@ -1,39 +1,80 @@
 package com.formation.cdb.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Page {
+    int index = 0;
+    String active = "";
 
-public abstract class Page<T> {
-    int maxInPage = 0;
-    int indexMaPage = 0;
-    List<T> list = new ArrayList<T>();
-
-    public int getMaxInPages() {
-        return maxInPage;
+    /**
+     * Constructor.
+     * @param index Index.
+     * @param active Active.
+     */
+    public Page(int index, boolean active) {
+        this.index = index;
+        if (active) {
+            this.active = "active";
+        }
     }
 
-    public void setMaxInPages(int maxPages) {
-        this.maxInPage = maxPages;
+    public int getIndex() {
+        return index;
     }
 
-    public int getIndexMaPage() {
-        return indexMaPage;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
-    public void setIndexMaPage(int indexMaPage) {
-        this.indexMaPage = indexMaPage;
+    public String getActive() {
+        return active;
     }
 
-    public List<T> getList() {
-        return list;
+    /**
+     * Active setter.
+     * @param active Active.
+     */
+    public void setActive(boolean active) {
+        if (active) {
+            this.active = "active";
+        }
     }
 
-    public void setList(List<T> list) {
-        this.list = list;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((active == null) ? 0 : active.hashCode());
+        result = prime * result + index;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Page other = (Page) obj;
+        if (active == null) {
+            if (other.active != null) {
+                return false;
+            }
+        } else if (!active.equals(other.active)) {
+            return false;
+        }
+        if (index != other.index) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Page [maxPages=" + maxInPage + ", indexMaPage=" + indexMaPage + ", list=" + list + "]";
+        return "Page [index=" + index + ", active=" + active + "]";
     }
+
 }

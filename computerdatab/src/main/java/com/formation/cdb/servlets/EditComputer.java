@@ -34,7 +34,7 @@ public class EditComputer extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.html");
+        RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");
         view.forward(request, response);
 
         // response.getWriter().append("Served at:
