@@ -73,20 +73,20 @@ public enum ComputerService {
 
     /**
      * Create a computer in base.
-     * @param computer Computer to create.
+     * @param computerDto ComputerDto to create.
      * @return idComputer
      */
-    public long createComputer(ComputerDto computer) {
-        return ComputerDao.INSTANCE.create(computer);
+    public long createComputer(ComputerDto computerDto) {
+        return ComputerDao.INSTANCE.create(computerDto);
     }
 
     /**
      * Update a computer in base.
-     * @param computer Computer to update.
+     * @param computerDto ComputerDto to update.
      * @return result
      */
-    public boolean updateComputer(ComputerDto computer) {
-        return ComputerDao.INSTANCE.update(computer);
+    public boolean updateComputer(ComputerDto computerDto) {
+        return ComputerDao.INSTANCE.update(computerDto);
     }
 
     /**
