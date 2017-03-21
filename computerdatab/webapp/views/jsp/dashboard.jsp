@@ -24,7 +24,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">121 Computers found</h1>
+			<h1 id="homeTitle">${nbComputer} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -90,25 +90,28 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<c:if test="${pageIndex != 1 }">
-					<li><a href="?page=${pageIndex -1}" aria-label="Previous">
+					<li><a href="?page=${pageIndex -1}&maxInPage=${maxInPage}" aria-label="Previous">
 							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				<c:forEach items="${pageList}" var="pageList">
 					<li class="${pageList.active}"><a
-						href="?page=${pageList.index}">${pageList.index}</a></li>
+						href="?page=${pageList.index}&maxInPage=${maxInPage}">${pageList.index}</a></li>
 				</c:forEach>
 				<c:if test="${pageIndex != maxPage }">
-					<li><a href="?page=${pageIndex +1}" aria-label="Next"> <span
+					<li><a href="?page=${pageIndex +1}&maxInPage=${maxInPage}" aria-label="Next"> <span
 							aria-hidden="true">&raquo;</span>
 					</a></li>
 				</c:if>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<button type="button" class="btn btn-default">10</button>
-				<button type="button" class="btn btn-default">50</button>
-				<button type="button" class="btn btn-default">100</button>
+				<a href="?page=${pageIndex}&maxInPage=10"
+					class="btn btn-default<c:if test="${maxInPage == 10}"> active</c:if>">10</a>
+				<a href="?page=${pageIndex}&maxInPage=50"
+					class="btn btn-default<c:if test="${maxInPage == 50}"> active</c:if>">50</a>
+				<a href="?page=${pageIndex}&maxInPage=100"
+					class="btn btn-default<c:if test="${maxInPage == 100}"> active</c:if>">100</a>
 			</div>
 		</div>
 	</footer>

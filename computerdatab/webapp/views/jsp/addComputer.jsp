@@ -26,26 +26,26 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<form action="addcomputer" method="POST">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name">
+									name="computerName" placeholder="Computer name">
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date">
+									name="introduced" placeholder="Introduced date">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
-									placeholder="Discontinued date">
+									name="discontinued" placeholder="Discontinued date">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId">
+									class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
 									<c:forEach items="${companyList}" var="companyList">
 										<option value="${companyList.id}">${companyList.name}</option>
@@ -55,8 +55,9 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							<input type="submit" formmethod="post" formaction="addcomputer"
+								value="Add" class="btn btn-primary"> or <a
+								href="dashboard" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
 				</div>

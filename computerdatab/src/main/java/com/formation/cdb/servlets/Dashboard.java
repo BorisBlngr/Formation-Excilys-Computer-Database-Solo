@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 import com.formation.cdb.ui.Page;
@@ -22,6 +24,7 @@ import com.formation.cdb.ui.Page;
 public class Dashboard extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
+    private int[] maxsInPage = {10, 50, 100};
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -48,13 +51,22 @@ public class Dashboard extends HttpServlet {
         if (pageIndex <= 0) {
             pageIndex = 1;
         }
-        int maxPage = ComputerService.INSTANCE.getNbComputers() / 10;
+
+        int maxInPage = 10;
+        if (request.getParameterMap().containsKey("maxInPage") && request.getParameter("maxInPage").matches(regex)) {
+            maxInPage = Integer.parseInt(request.getParameter("maxInPage"));
+            if (!ArrayUtils.contains(maxsInPage, maxInPage)) {
+                maxInPage = 10;
+            }
+        }
+        int nbComputer = ComputerService.INSTANCE.getNbComputers();
+        int maxPage = nbComputer / maxInPage;
         if (10 % ComputerService.INSTANCE.getNbComputers() != 0) {
             maxPage++;
         }
 
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, 10);
+        computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, maxInPage);
         List<Page> pageList = constructionPageChoices(pageIndex, maxPage);
 
         // System.out.println(pageIndex + " " + maxPage);
@@ -63,7 +75,9 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("computerDtoList", computerDtoList);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("maxPage", maxPage);
+        request.setAttribute("maxInPage", maxInPage);
         request.setAttribute("pageList", pageList);
+        request.setAttribute("nbComputer", nbComputer);
 
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/dashboard.jsp");
         view.forward(request, response);
@@ -128,8 +142,6 @@ public class Dashboard extends HttpServlet {
                 }
             }
         }
-
         return pageList;
     }
-
 }

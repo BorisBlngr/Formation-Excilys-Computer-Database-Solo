@@ -62,8 +62,16 @@ public class AddComputer extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
+        System.out.println("Post, I will do things soon ...");
+        String name = "";
+        System.out.println(request.getParameterMap().keySet());
+        if (request.getParameterMap().containsKey("computerName")) {
+            name = request.getParameter("computerName");
+            System.out.println(name);
+        }
+
+        RequestDispatcher view = request.getRequestDispatcher("/views/jsp/addComputer.jsp");
+        view.forward(request, response);
     }
 
 }
