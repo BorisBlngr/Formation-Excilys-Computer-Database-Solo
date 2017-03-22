@@ -1,0 +1,28 @@
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <shortname>link</shortname>
+    <uri>/WEB-INF/tld/link.tld</uri>
+    <info>link tag</info>
+
+    <tag>
+        <name>to</name>
+        <tagclass>com.formation.cdb.ui.tag.LinkTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <attribute>
+            <name>target</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>index</name>
+            <required>fasle</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxInPage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

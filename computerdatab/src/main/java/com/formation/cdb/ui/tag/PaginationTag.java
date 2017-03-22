@@ -24,9 +24,8 @@ public class PaginationTag extends TagSupport {
     public int doStartTag() throws JspException {
         try {
 
-            // pageContext.getOut().println("Hello World " + this.pageIndex + "
-            // - " + this.maxPage + " - " + this.maxInPage + " - " +
-            // this.pageList);
+            // System.out.println("<link:to target=\"dashboard\" index=\"" + 1 +
+            // "\" maxInPage=\"" + 2 + "\" />");
             if (pageIndex != 1) {
                 pageContext.getOut().println("<li><a href=\"?page=" + new Integer(pageIndex - 1) + "&maxInPage="
                         + maxInPage + "\"aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>");

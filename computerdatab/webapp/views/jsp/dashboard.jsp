@@ -2,6 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="pagination" uri="/WEB-INF/tld/pagination.tld"%>
+<%@ taglib prefix="link" uri="/WEB-INF/tld/link.tld"%>
 
 <!DOCTYPE html>
 <html>
