@@ -46,7 +46,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="?page=${pageIndex}&maxInPage=${maxInPage}" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 		<div class="container" style="margin-top: 10px;">
