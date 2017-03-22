@@ -58,7 +58,7 @@ public class ComputerDaoTest {
         ComputerDto computerDtoFound = ComputerDao.INSTANCE.find(1);
         // System.out.println(computerDtoFound);
         Assert.assertTrue(computerDtoFound.toString().equals(
-                "Computer [id=1, name=MacBook Pro 15.4 inch, introduced=null, company=Company [id=1, name=Apple Inc.], discontinued=null]"));
+                "ComputerDto [id=1, name=MacBook Pro 15.4 inch, introduced=null, discontinued=null, company=Company [id=1, name=Apple Inc.]]"));
     }
 
     /**

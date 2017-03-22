@@ -56,9 +56,9 @@ public class ComputerDtoTest {
      */
     @Test
     public void builderIsValid() {
-        System.out.println(computerDto);
+        // System.out.println(computerDto);
         assertTrue(computerDto.toString().equals(
-                "ComputerDto [id=36, name=toto, introduced=1990-10-10, company=Company [id=6, name=titi], discontinued=1999-10-10]"));
+                "ComputerDto [id=36, name=toto, introduced=1990-10-10, discontinued=1999-10-10, company=Company [id=6, name=titi]]"));
     }
 
 }

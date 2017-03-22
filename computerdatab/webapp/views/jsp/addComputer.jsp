@@ -37,12 +37,14 @@
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									name="introduced" placeholder="Introduced date">
+									name="introduced" placeholder="Introduced date"
+									onchange="introD();">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
-									name="discontinued" placeholder="Discontinued date">
+									name="discontinued" placeholder="Discontinued date"
+									onchange="dicD();">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
@@ -65,5 +67,7 @@
 			</div>
 		</div>
 	</section>
+	<script src="resources/js/jquery.min.js"></script>
+	<script type="text/javascript" src="resources/js/addEditValidate.js"></script>
 </body>
 </html>
