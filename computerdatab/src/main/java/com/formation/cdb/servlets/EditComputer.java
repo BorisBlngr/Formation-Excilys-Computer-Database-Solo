@@ -63,6 +63,7 @@ public class EditComputer extends HttpServlet {
         request.setAttribute("computerDto", computerDto);
         request.setAttribute("companyList", companyList);
 
+        //System.out.println(computerDto);
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");
         view.forward(request, response);
 
@@ -86,8 +87,9 @@ public class EditComputer extends HttpServlet {
         LocalDate introduced = null;
         LocalDate discontinued = null;
         long companyId = 0;
+        long computerId = 0;
 
-        // System.out.println(request.getParameterMap().keySet());
+        //System.out.println(request.getParameterMap().keySet());
 
         if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
             name = request.getParameter("computerName");
@@ -107,12 +109,17 @@ public class EditComputer extends HttpServlet {
             companyId = Long.parseLong(request.getParameter("companyId"));
             // System.out.println(companyId);
         }
-        ComputerDto computerDto = new ComputerDto.ComputerBuilder().name(name).introduced(introduced)
+        if (request.getParameterMap().containsKey("id")) {
+            computerId = Long.parseLong(request.getParameter("id"));
+            // System.out.println(companyId);
+        }
+        ComputerDto computerDto = new ComputerDto.ComputerBuilder().id(computerId).name(name).introduced(introduced)
                 .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
 
         // System.out.println(computerDto);
         // System.out.println(new ComputerDto());
         RequestDispatcher view;
+        System.out.println(computerDto);
         if (!computerDto.equals(new ComputerDto())) {
             ComputerService.INSTANCE.updateComputer(computerDto);
             view = request.getRequestDispatcher("/views/jsp/editComputerSuccess.html");

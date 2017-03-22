@@ -202,7 +202,7 @@ public class ComputerDto {
          * @return this
          */
         public ComputerBuilder discontinued(LocalDate discontinued) {
-            this.introduced = discontinued;
+            this.discontinued = discontinued;
             return this;
         }
 

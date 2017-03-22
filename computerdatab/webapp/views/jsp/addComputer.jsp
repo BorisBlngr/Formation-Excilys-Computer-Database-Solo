@@ -31,7 +31,8 @@
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									name="computerName" placeholder="Computer name">
+									name="computerName" placeholder="Computer name" minlength="2"
+									required>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
