@@ -185,7 +185,7 @@ public class Computer {
          * @return this
          */
         public ComputerUiBuilder discontinued(LocalDate discontinued) {
-            this.introduced = discontinued;
+            this.discontinued = discontinued;
             return this;
         }
 

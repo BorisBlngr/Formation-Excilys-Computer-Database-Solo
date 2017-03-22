@@ -23,7 +23,7 @@ import com.formation.cdb.service.ComputerService;
 @WebServlet("/addcomputer")
 public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * @see HttpServlet#HttpServlet()

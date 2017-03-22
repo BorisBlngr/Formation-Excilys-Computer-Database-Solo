@@ -1,0 +1,33 @@
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <shortname>pagination</shortname>
+    <uri>/WEB-INF/tld/pagination.tld</uri>
+    <info>pagination tag</info>
+
+    <tag>
+        <name>page</name>
+        <tagclass>com.formation.cdb.ui.tag.PaginationTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <attribute>
+            <name>pageIndex</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxPage</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxInPage</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>pageList</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

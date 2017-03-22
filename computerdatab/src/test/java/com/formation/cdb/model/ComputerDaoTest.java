@@ -39,7 +39,7 @@ public class ComputerDaoTest {
     public void executerAvantChaqueTest() {
         computer = new ComputerDto.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
                 .discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random")
-                .company(new Company.CompanyBuilder().id(2).build()).build();
+                .company(new Company.CompanyBuilder().name("Thinking Machines").id(2).build()).build();
     }
 
     /**
@@ -66,8 +66,9 @@ public class ComputerDaoTest {
      */
     @Test
     public void createValid() {
-        ComputerDto newComputer = new ComputerDto();
-        newComputer.setName("Test unitaire create name");
+        ComputerDto newComputer = new ComputerDto.ComputerBuilder().name("Test unitaire create name")
+                .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
+                .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
         newComputer.setId(ComputerDao.INSTANCE.create(newComputer));
         ComputerDto computerFound = ComputerDao.INSTANCE.find(newComputer.getId());
         Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
@@ -79,15 +80,16 @@ public class ComputerDaoTest {
      */
     @Test
     public void updateValid() {
-        ComputerDto newComputer = new ComputerDto();
-        newComputer.setName("Test unitaire create name");
+        ComputerDto newComputer = new ComputerDto.ComputerBuilder().name("Test unitaire create name")
+                .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
+                .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
         newComputer.setId(ComputerDao.INSTANCE.create(newComputer));
         newComputer.setName("Test unitaire create name2");
         ComputerDao.INSTANCE.update(newComputer);
         ComputerDto computerFound = ComputerDao.INSTANCE.find(newComputer.getId());
         // System.out.println(computerFound.toString());
         // System.out.println(newComputer.toString());
-        Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
+        Assert.assertTrue(computerFound.equals(newComputer));
         ComputerDao.INSTANCE.delete(newComputer);
     }
 
@@ -98,7 +100,9 @@ public class ComputerDaoTest {
     public void deleteValid() {
         ComputerDto nullComputer = new ComputerDto();
         ComputerDto computerFound = ComputerDao.INSTANCE.findByName("Test unitaire create name");
-        Assert.assertTrue(computerFound.toString().equals(nullComputer.toString()));
+        System.out.println(computerFound);
+        System.out.println(nullComputer);
+        Assert.assertTrue(computerFound.equals(nullComputer));
     }
 
 }

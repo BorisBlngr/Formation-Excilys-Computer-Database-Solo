@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="pagination" uri="/WEB-INF/tld/pagination.tld"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +26,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${nbComputer} Computers found</h1>
+			<h1 id="homeTitle">${nbComputer}&nbsp;Computers&nbsp;found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -75,7 +77,8 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computerDtoList.id}"></td>
-							<td><a href="editcomputer" onclick=""><c:out value="${computerDtoList.name}"/></a></td>
+							<td><a href="editcomputer?id=${computerDtoList.id}"
+								onclick=""><c:out value="${computerDtoList.name}" /></a></td>
 							<td>${computerDtoList.introduced}</td>
 							<td>${computerDtoList.discontinued}</td>
 							<td>${computerDtoList.company.name}</td>
@@ -89,20 +92,8 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<c:if test="${pageIndex != 1 }">
-					<li><a href="?page=${pageIndex -1}&maxInPage=${maxInPage}" aria-label="Previous">
-							<span aria-hidden="true">&laquo;</span>
-					</a></li>
-				</c:if>
-				<c:forEach items="${pageList}" var="pageList">
-					<li class="${pageList.active}"><a
-						href="?page=${pageList.index}&maxInPage=${maxInPage}">${pageList.index}</a></li>
-				</c:forEach>
-				<c:if test="${pageIndex != maxPage }">
-					<li><a href="?page=${pageIndex +1}&maxInPage=${maxInPage}" aria-label="Next"> <span
-							aria-hidden="true">&raquo;</span>
-					</a></li>
-				</c:if>
+				<pagination:page pageIndex="${pageIndex}" maxPage="${maxPage}"
+					maxInPage="${maxInPage}" pageList="${pageList}" />
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
