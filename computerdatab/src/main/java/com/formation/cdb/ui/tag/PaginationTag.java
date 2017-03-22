@@ -27,8 +27,10 @@ public class PaginationTag extends TagSupport {
             // System.out.println("<link:to target=\"dashboard\" index=\"" + 1 +
             // "\" maxInPage=\"" + 2 + "\" />");
             if (pageIndex != 1) {
-                pageContext.getOut().println("<li><a href=\"?page=" + new Integer(pageIndex - 1) + "&maxInPage="
+                pageContext.getOut().println("<li><a href=\"?page=" + 1 + "&maxInPage="
                         + maxInPage + "\"aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>");
+                pageContext.getOut().println("<li><a href=\"?page=" + new Integer(pageIndex - 1) + "&maxInPage="
+                        + maxInPage + "\"aria-label=\"Previous\"> <span aria-hidden=\"true\">&lt;</span></a></li>");
             }
 
             for (Page page : pageList) {
@@ -38,6 +40,8 @@ public class PaginationTag extends TagSupport {
 
             if (pageIndex != maxPage) {
                 pageContext.getOut().println("<li><a href=\"?page=" + new Integer(pageIndex + 1) + "&maxInPage="
+                        + maxInPage + "\"aria-label=\"Next\"> <span aria-hidden=\"true\">&gt;</span></a></li>");
+                pageContext.getOut().println("<li><a href=\"?page=" + maxPage + "&maxInPage="
                         + maxInPage + "\"aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>");
             }
 
