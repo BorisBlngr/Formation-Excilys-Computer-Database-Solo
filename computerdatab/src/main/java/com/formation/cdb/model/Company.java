@@ -41,8 +41,8 @@ public class Company {
     }
 
     public static class CompanyBuilder {
-        String name;
-        long id;
+        private String name;
+        private long id;
 
         /**
          * Constructeur.

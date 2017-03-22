@@ -37,7 +37,7 @@ public class ComputerDaoTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computer = new ComputerDto.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
+        computer = new ComputerDto.ComputerDtoBuilder().introduced(LocalDate.of(1980, 10, 10))
                 .discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random")
                 .company(new Company.CompanyBuilder().name("Thinking Machines").id(2).build()).build();
     }
@@ -66,7 +66,7 @@ public class ComputerDaoTest {
      */
     @Test
     public void createValid() {
-        ComputerDto newComputer = new ComputerDto.ComputerBuilder().name("Test unitaire create name")
+        ComputerDto newComputer = new ComputerDto.ComputerDtoBuilder().name("Test unitaire create name")
                 .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
                 .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
         newComputer.setId(ComputerDao.INSTANCE.create(newComputer));
@@ -80,7 +80,7 @@ public class ComputerDaoTest {
      */
     @Test
     public void updateValid() {
-        ComputerDto newComputer = new ComputerDto.ComputerBuilder().name("Test unitaire create name")
+        ComputerDto newComputer = new ComputerDto.ComputerDtoBuilder().name("Test unitaire create name")
                 .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
                 .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
         newComputer.setId(ComputerDao.INSTANCE.create(newComputer));

@@ -10,9 +10,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ComputerTest {
+import com.formation.cdb.model.dto.ComputerDto;
 
-    Computer computer = null;
+public class ComputerDtoTest {
+
+    ComputerDto computerDto = null;
 
     /**
      * Execute before Class.
@@ -36,7 +38,7 @@ public class ComputerTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computer = new Computer.ComputerBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
+        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
                 .discontinued(LocalDate.of(1999, 10, 10))
                 .company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
     }
@@ -46,7 +48,7 @@ public class ComputerTest {
      */
     @After
     public void executerApresChaqueTest() {
-        computer = null;
+        computerDto = null;
     }
 
     /**
@@ -54,9 +56,9 @@ public class ComputerTest {
      */
     @Test
     public void builderIsValid() {
-        // System.out.println(computer);
-        assertTrue(computer.toString().equals(
-                "Computer [id=36, name=toto, introduced=1990-10-10, discontinued=1999-10-10, company=Company [id=6, name=titi]]"));
+        System.out.println(computerDto);
+        assertTrue(computerDto.toString().equals(
+                "ComputerDto [id=36, name=toto, introduced=1990-10-10, company=Company [id=6, name=titi], discontinued=1999-10-10]"));
     }
 
 }

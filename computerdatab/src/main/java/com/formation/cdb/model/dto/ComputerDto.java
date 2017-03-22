@@ -79,7 +79,7 @@ public class ComputerDto {
 
     @Override
     public String toString() {
-        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", company=" + company
+        return "ComputerDto [id=" + id + ", name=" + name + ", introduced=" + introduced + ", company=" + company
                 + ", discontinued=" + discontinued + "]";
     }
 
@@ -145,7 +145,7 @@ public class ComputerDto {
      * Computer builder.
      * @param builder Builder.
      */
-    public ComputerDto(ComputerBuilder builder) {
+    public ComputerDto(ComputerDtoBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.introduced = builder.introduced;
@@ -153,7 +153,7 @@ public class ComputerDto {
         this.company = builder.company;
     }
 
-    public static class ComputerBuilder {
+    public static class ComputerDtoBuilder {
         String name;
         long id;
         LocalDate introduced = null;
@@ -163,7 +163,7 @@ public class ComputerDto {
         /**
          * Constructeur builder.
          */
-        public ComputerBuilder() {
+        public ComputerDtoBuilder() {
         }
 
         /**
@@ -171,7 +171,7 @@ public class ComputerDto {
          * @param id Id.
          * @return this
          */
-        public ComputerBuilder id(long id) {
+        public ComputerDtoBuilder id(long id) {
             this.id = id;
             return this;
         }
@@ -181,7 +181,7 @@ public class ComputerDto {
          * @param name Name.
          * @return this
          */
-        public ComputerBuilder name(String name) {
+        public ComputerDtoBuilder name(String name) {
             this.name = name;
             return this;
         }
@@ -191,7 +191,7 @@ public class ComputerDto {
          * @param introduced Introduced date.
          * @return this
          */
-        public ComputerBuilder introduced(LocalDate introduced) {
+        public ComputerDtoBuilder introduced(LocalDate introduced) {
             this.introduced = introduced;
             return this;
         }
@@ -201,7 +201,7 @@ public class ComputerDto {
          * @param discontinued Discontinued date.
          * @return this
          */
-        public ComputerBuilder discontinued(LocalDate discontinued) {
+        public ComputerDtoBuilder discontinued(LocalDate discontinued) {
             this.discontinued = discontinued;
             return this;
         }
@@ -211,7 +211,7 @@ public class ComputerDto {
          * @param company Company.
          * @return this
          */
-        public ComputerBuilder company(Company company) {
+        public ComputerDtoBuilder company(Company company) {
             this.company = company;
             return this;
         }
@@ -232,7 +232,7 @@ public class ComputerDto {
      */
     public static void main(String[] args) {
 
-        ComputerDto computerDto = new ComputerDto.ComputerBuilder().company(CompanyDao.INSTANCE.find(2))
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().company(CompanyDao.INSTANCE.find(2))
                 .name("Orditropbien").introduced(LocalDate.of(1980, 10, 10)).discontinued(LocalDate.of(1990, 10, 10))
                 .build();
         System.out.println(computerDto.toString());

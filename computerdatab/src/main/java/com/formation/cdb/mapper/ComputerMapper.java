@@ -15,7 +15,7 @@ public enum ComputerMapper {
      * @return computerDto
      */
     public ComputerDto map(Computer computer) {
-        ComputerDto computerDto = new ComputerDto.ComputerBuilder().id(computer.getId()).name(computer.getName())
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computer.getId()).name(computer.getName())
                 .company(computer.getCompany()).discontinued(computer.getDiscontinued())
                 .introduced(computer.getIntroduced()).build();
         return computerDto;
@@ -27,7 +27,7 @@ public enum ComputerMapper {
      * @return Computer
      */
     public Computer map(ComputerDto computerDto) {
-        Computer computer = new Computer.ComputerUiBuilder().id(computerDto.getId()).name(computerDto.getName())
+        Computer computer = new Computer.ComputerBuilder().id(computerDto.getId()).name(computerDto.getName())
                 .company(computerDto.getCompany()).introduced(computerDto.getIntroduced())
                 .discontinued(computerDto.getDiscontinued()).build();
         return computer;

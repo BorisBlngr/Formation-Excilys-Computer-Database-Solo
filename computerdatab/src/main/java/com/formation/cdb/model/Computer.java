@@ -122,7 +122,7 @@ public class Computer {
      * Constrcteur Builder.
      * @param builder Builder.
      */
-    public Computer(ComputerUiBuilder builder) {
+    public Computer(ComputerBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.introduced = builder.introduced;
@@ -132,21 +132,21 @@ public class Computer {
 
     @Override
     public String toString() {
-        return "ComputerUi [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
+        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
                 + discontinued + ", company=" + company + "]";
     }
 
-    public static class ComputerUiBuilder {
-        String name;
-        long id;
-        LocalDate introduced = null;
-        LocalDate discontinued = null;
-        Company company = new Company();
+    public static class ComputerBuilder {
+        private String name;
+        private long id;
+        private LocalDate introduced = null;
+        private LocalDate discontinued = null;
+        private Company company = new Company();
 
         /**
          * Constrcteur.
          */
-        public ComputerUiBuilder() {
+        public ComputerBuilder() {
         }
 
         /**
@@ -154,7 +154,7 @@ public class Computer {
          * @param id Id.
          * @return this
          */
-        public ComputerUiBuilder id(long id) {
+        public ComputerBuilder id(long id) {
             this.id = id;
             return this;
         }
@@ -164,7 +164,7 @@ public class Computer {
          * @param name Name.
          * @return this
          */
-        public ComputerUiBuilder name(String name) {
+        public ComputerBuilder name(String name) {
             this.name = name;
             return this;
         }
@@ -174,7 +174,7 @@ public class Computer {
          * @param introduced Introduced.
          * @return this
          */
-        public ComputerUiBuilder introduced(LocalDate introduced) {
+        public ComputerBuilder introduced(LocalDate introduced) {
             this.introduced = introduced;
             return this;
         }
@@ -184,7 +184,7 @@ public class Computer {
          * @param discontinued Discontinued.
          * @return this
          */
-        public ComputerUiBuilder discontinued(LocalDate discontinued) {
+        public ComputerBuilder discontinued(LocalDate discontinued) {
             this.discontinued = discontinued;
             return this;
         }
@@ -194,7 +194,7 @@ public class Computer {
          * @param company Company.
          * @return this
          */
-        public ComputerUiBuilder company(Company company) {
+        public ComputerBuilder company(Company company) {
             this.company = company;
             return this;
         }

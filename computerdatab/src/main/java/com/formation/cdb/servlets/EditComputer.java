@@ -113,7 +113,7 @@ public class EditComputer extends HttpServlet {
             computerId = Long.parseLong(request.getParameter("id"));
             // System.out.println(companyId);
         }
-        ComputerDto computerDto = new ComputerDto.ComputerBuilder().id(computerId).name(name).introduced(introduced)
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computerId).name(name).introduced(introduced)
                 .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
 
         // System.out.println(computerDto);
