@@ -393,6 +393,20 @@ public enum ComputerDao implements Dao<ComputerDto> {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
+        if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
+            logger.error("A computer has no name !");
+            return 0;
+        }
+
+        if (!cmpt.getDiscontinued().equals(null) && cmpt.getIntroduced().equals(null)) {
+            logger.error("Discontinued Date but no Introduced Date!");
+            return 0;
+        }
+        if (!cmpt.getDiscontinued().equals(null) && cmpt.getDiscontinued().isBefore(cmpt.getIntroduced())) {
+            logger.error("Discontinued Date before Introduced Date!");
+            return 0;
+        }
+
         try {
             conn = PersistenceManager.INSTANCE.connectToDb();
             preparedStatement = conn
@@ -433,7 +447,9 @@ public enum ComputerDao implements Dao<ComputerDto> {
                 e.printStackTrace();
             }
         }
-        return findIdByName(cmpt.getName());
+        return
+
+        findIdByName(cmpt.getName());
     }
 
     /**
@@ -522,6 +538,21 @@ public enum ComputerDao implements Dao<ComputerDto> {
     public boolean update(ComputerDto cmpt) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+
+        if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
+            logger.error("A computer has no name !");
+            return false;
+        }
+
+        if (!cmpt.getDiscontinued().equals(null) && cmpt.getIntroduced().equals(null)) {
+            logger.error("Discontinued Date but no Introduced Date!");
+            return false;
+        }
+        if (!cmpt.getDiscontinued().equals(null) && cmpt.getDiscontinued().isBefore(cmpt.getIntroduced())) {
+            logger.error("Discontinued Date before Introduced Date!");
+            return false;
+        }
+
         try {
             conn = PersistenceManager.INSTANCE.connectToDb();
             preparedStatement = conn.prepareStatement(

@@ -66,13 +66,15 @@ public class ComputerDaoTest {
      */
     @Test
     public void createValid() {
-        ComputerDto newComputer = new ComputerDto.ComputerDtoBuilder().name("Test unitaire create name")
+        ComputerDto newComputerDto = new ComputerDto.ComputerDtoBuilder().name("Test unitaire create name")
                 .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
                 .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
-        newComputer.setId(ComputerDao.INSTANCE.create(newComputer));
-        ComputerDto computerFound = ComputerDao.INSTANCE.find(newComputer.getId());
-        Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
-        ComputerDao.INSTANCE.delete(newComputer);
+        newComputerDto.setId(ComputerDao.INSTANCE.create(newComputerDto));
+        ComputerDto computerDtoFound = ComputerDao.INSTANCE.find(newComputerDto.getId());
+        System.out.println(newComputerDto);
+        System.out.println(computerDtoFound);
+        Assert.assertTrue(computerDtoFound.toString().equals(newComputerDto.toString()));
+        ComputerDao.INSTANCE.delete(newComputerDto);
     }
 
     /**
