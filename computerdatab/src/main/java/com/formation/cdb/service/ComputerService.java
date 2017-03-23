@@ -3,11 +3,13 @@ package com.formation.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.formation.cdb.mapper.CompanyMapper;
 import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dao.ComputerDao;
+import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
 
 public enum ComputerService {
@@ -22,7 +24,7 @@ public enum ComputerService {
     /**
      * Find Computer.
      * @param id Computer id.
-     * @return computer
+     * @return computerDto
      */
     public ComputerDto findComputerDto(long id) {
         return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.find(id));
@@ -32,7 +34,7 @@ public enum ComputerService {
      * Find a list of computer with index et maxInPage.
      * @param index Index.
      * @param maxInPage Number max in the list.
-     * @return computerList
+     * @return computerDtoList
      */
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
@@ -45,7 +47,7 @@ public enum ComputerService {
     /**
      * Find All Computer.
      * @param id Computer id.
-     * @return computer
+     * @return computerDto
      */
     @Deprecated
     public ComputerDto findComputer(long id) {
@@ -54,7 +56,7 @@ public enum ComputerService {
 
     /**
      * Find all Computers.
-     * @return computerList
+     * @return computerDtoList
      */
     @Deprecated
     public List<ComputerDto> findAllComputer() {
@@ -69,19 +71,27 @@ public enum ComputerService {
      * Find a list of company with index et maxInPage.
      * @param index Index.
      * @param maxInPage Number max in the list.
-     * @return companyList
+     * @return companyDtoList
      */
-    public List<Company> findCompaniesInRange(int index, int maxInPage) {
-        return CompanyDao.INSTANCE.findInRange(index, maxInPage);
+    public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
+        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        for (Company company : CompanyDao.INSTANCE.findInRange(index, maxInPage)) {
+            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
+        }
+        return companyDtoList;
     }
 
     /**
      * Find all companies.
-     * @return companyList
+     * @return companyDtoList
      */
     @Deprecated
-    public List<Company> findAllCompany() {
-        return CompanyDao.INSTANCE.findAll();
+    public List<CompanyDto> findAllCompany() {
+        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        for (Company company : CompanyDao.INSTANCE.findAll()) {
+            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
+        }
+        return companyDtoList;
     }
 
     /**

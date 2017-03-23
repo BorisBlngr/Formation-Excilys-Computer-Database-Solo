@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.formation.cdb.model.Company;
+import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 
@@ -57,11 +58,11 @@ public class EditComputer extends HttpServlet {
             computerDto = ComputerService.INSTANCE.findComputerDto(id);
         }
 
-        List<Company> companyList = new ArrayList<Company>();
-        companyList = ComputerService.INSTANCE.findAllCompany();
+        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        companyDtoList = ComputerService.INSTANCE.findAllCompany();
 
         request.setAttribute("computerDto", computerDto);
-        request.setAttribute("companyList", companyList);
+        request.setAttribute("companyDtoList", companyDtoList);
 
         //System.out.println(computerDto);
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");

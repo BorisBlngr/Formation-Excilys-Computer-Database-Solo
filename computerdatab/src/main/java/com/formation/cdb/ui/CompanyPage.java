@@ -11,14 +11,14 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
-import com.formation.cdb.model.Company;
+import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.service.ComputerService;
 
 public class CompanyPage {
 
     int maxInPage = 0;
     int indexMaPage = 0;
-    List<Company> list = new ArrayList<Company>();
+    List<CompanyDto> list = new ArrayList<CompanyDto>();
     final Properties prop = new Properties();
     Parameters params = new Parameters();
     Configuration config;
@@ -58,11 +58,11 @@ public class CompanyPage {
         this.indexMaPage = indexMaPage;
     }
 
-    public List<Company> getList() {
+    public List<CompanyDto> getList() {
         return list;
     }
 
-    public void setList(List<Company> list) {
+    public void setList(List<CompanyDto> list) {
         this.list = list;
     }
 

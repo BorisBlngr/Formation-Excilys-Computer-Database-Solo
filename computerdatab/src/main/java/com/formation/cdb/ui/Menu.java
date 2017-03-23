@@ -14,7 +14,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.model.Company;
+import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 
@@ -22,7 +22,7 @@ public class Menu {
     final Logger logger = LoggerFactory.getLogger(Menu.class);
     Parameters params = new Parameters();
     Configuration config;
-    private List<Company> companyList = new ArrayList<Company>();
+    private List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
     private List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
     ComputerDto computerDtoFound = new ComputerDto();
     Scanner input;
@@ -140,16 +140,16 @@ public class Menu {
             logger.info("Case List All Computers");
             computerDtoList.clear();
             computerDtoList = ComputerService.INSTANCE.findAllComputer();
-            for (ComputerDto computer : computerDtoList) {
-                System.out.println(" id : [" + computer.getId() + "]\t| name : " + computer.getName());
+            for (ComputerDto computerDto : computerDtoList) {
+                System.out.println(" id : [" + computerDto.getId() + "]\t| name : " + computerDto.getName());
             }
             break;
         case 2:
             logger.info("Case List All Companies");
-            companyList.clear();
-            companyList = ComputerService.INSTANCE.findAllCompany();
-            for (Company company : companyList) {
-                System.out.println(" id : [" + company.getId() + "]\t| name : " + company.getName());
+            companyDtoList.clear();
+            companyDtoList = ComputerService.INSTANCE.findAllCompany();
+            for (CompanyDto companyDto : companyDtoList) {
+                System.out.println(" id : [" + companyDto.getId() + "]\t| name : " + companyDto.getName());
             }
             break;
         case 3:

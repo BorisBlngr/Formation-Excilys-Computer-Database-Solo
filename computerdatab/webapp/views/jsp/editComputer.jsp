@@ -55,9 +55,9 @@
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
 									<option value="0">--</option>
-									<c:forEach items="${companyList}" var="companyList">
-										<option value="${companyList.id}"
-											<c:if test="${companyList.id == computerDto.company.id}">selected="selected"</c:if>>${companyList.name}</option>
+									<c:forEach items="${companyDtoList}" var="companyDtoList">
+										<option value="${companyDtoList.id}"
+											<c:if test="${companyDtoList.id == computerDto.company.id}">selected="selected"</c:if>>${companyDtoList.name}</option>
 									</c:forEach>
 								</select>
 							</div>
