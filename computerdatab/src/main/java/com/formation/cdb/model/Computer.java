@@ -216,7 +216,7 @@ public class Computer {
 
         ComputerDto computerDto = ComputerDao.INSTANCE.find(2);
         System.out.println(computerDto);
-        Computer computer = ComputerMapper.INSTANCE.map(computerDto);
+        Computer computer = ComputerMapper.INSTANCE.toEntity(computerDto);
         System.out.println(computer);
 
     }
