@@ -32,11 +32,9 @@ public enum CompanyDao implements Dao<Company> {
      */
     @Override
     public long create(Company company) {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("INSERT INTO company(name) VALUES (?)");
+        String sql = "INSERT INTO company(name) VALUES (?)";
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, company.getName());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -44,18 +42,6 @@ public enum CompanyDao implements Dao<Company> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return findIdByName(company.getName());
     }
@@ -68,11 +54,10 @@ public enum CompanyDao implements Dao<Company> {
     @Override
     public boolean delete(Company company) {
         boolean result = false;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("DELETE FROM company WHERE id = ?");
+        String sql = "DELETE FROM company WHERE id = ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setLong(1, company.getId());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -81,18 +66,6 @@ public enum CompanyDao implements Dao<Company> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return result;
     }
@@ -104,11 +77,10 @@ public enum CompanyDao implements Dao<Company> {
      */
     @Override
     public boolean update(Company company) {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("UPDATE company SET name = ? WHERE id = ? ");
+        String sql = "UPDATE company SET name = ? WHERE id = ? ";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, company.getName());
             preparedStatement.setLong(2, company.getId());
             logger.debug("Send : {}", preparedStatement.toString());
@@ -117,18 +89,6 @@ public enum CompanyDao implements Dao<Company> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return false;
     }
@@ -141,36 +101,18 @@ public enum CompanyDao implements Dao<Company> {
     @Override
     public Company find(long id) {
         Company company = new Company();
-        Connection conn = PersistenceManager.INSTANCE.connectToDb();
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT * FROM company WHERE id = " + id;
-            stmt = conn.createStatement();
+        String sql = "SELECT * FROM company WHERE id = " + id;
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", stmt.toString());
-            rs = stmt.executeQuery(sql);
-            // Extract data from result set
-            if (rs.first()) {
-                company.setId(id);
-                company.setName(rs.getString("name"));
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                if (rs.first()) {
+                    company.setId(id);
+                    company.setName(rs.getString("name"));
+                }
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return company;
     }
@@ -182,38 +124,22 @@ public enum CompanyDao implements Dao<Company> {
      */
     public List<Company> findAll() {
         List<Company> companyList = new ArrayList<Company>();
-        Connection conn = PersistenceManager.INSTANCE.connectToDb();
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            String sql = "SELECT * FROM company";
-            stmt = conn.createStatement();
-            logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
-            Company company;
-            while (rs.next()) {
-                company = new Company();
-                company.setId(rs.getInt("id"));
-                company.setName(rs.getString("name"));
-                companyList.add(company);
-            }
+        String sql = "SELECT * FROM company";
 
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
+            logger.debug("Send : {}", sql);
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                Company company;
+                while (rs.next()) {
+                    company = new Company();
+                    company.setId(rs.getInt("id"));
+                    company.setName(rs.getString("name"));
+                    companyList.add(company);
+                }
+
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return companyList;
     }
@@ -231,42 +157,26 @@ public enum CompanyDao implements Dao<Company> {
         if (indexPage < 1) {
             return companyList;
         }
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("SELECT * FROM company LIMIT ? OFFSET ?");
+        String sql = "SELECT * FROM company LIMIT ? OFFSET ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setInt(1, maxInPage);
             preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            Company company;
-            while (rs.next()) {
-                company = new Company();
-                company.setId(rs.getInt("id"));
-                company.setName(rs.getString("name"));
-                companyList.add(company);
-
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                Company company;
+                while (rs.next()) {
+                    company = new Company();
+                    company.setId(rs.getInt("id"));
+                    company.setName(rs.getString("name"));
+                    companyList.add(company);
+                }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return companyList;
     }
@@ -278,37 +188,22 @@ public enum CompanyDao implements Dao<Company> {
      */
     public Company findByName(String name) {
         Company company = new Company();
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
+        String sql = "SELECT * FROM company WHERE name = ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            if (rs.first()) {
-                company.setId(rs.getInt("id"));
-                company.setName(rs.getString("name"));
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                if (rs.first()) {
+                    company.setId(rs.getInt("id"));
+                    company.setName(rs.getString("name"));
+                }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return company;
     }
@@ -321,36 +216,20 @@ public enum CompanyDao implements Dao<Company> {
      */
     public long findIdByName(String name) {
         Long id = (long) 0;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("SELECT * FROM company WHERE name = ?");
+        String sql = "SELECT * FROM company WHERE name = ?";
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            if (rs.first()) {
-                id = rs.getLong("id");
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                if (rs.first()) {
+                    id = rs.getLong("id");
+                }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return id;
     }
@@ -360,39 +239,21 @@ public enum CompanyDao implements Dao<Company> {
      * @return count
      */
     public int getRow() {
-        Connection conn = PersistenceManager.INSTANCE.connectToDb();
-        Statement stmt = null;
-        ResultSet rs = null;
         int count = 0;
+        String sql = "SELECT COUNT(*) FROM company";
 
-        try {
-            String sql = "SELECT COUNT(*) FROM company";
-            stmt = conn.createStatement();
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
-
-            if (rs.first()) {
-                count = rs.getInt("COUNT(*)");
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                if (rs.first()) {
+                    count = rs.getInt("COUNT(*)");
+                }
             }
         } catch (
 
         SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return count;
     }
