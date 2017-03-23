@@ -101,7 +101,7 @@ public enum CompanyDao implements Dao<Company> {
     @Override
     public Company find(long id) {
         Company company = new Company();
-        String sql = "SELECT * FROM company WHERE id = " + id;
+        String sql = "SELECT id,name FROM company WHERE id = " + id;
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", stmt.toString());
@@ -124,7 +124,7 @@ public enum CompanyDao implements Dao<Company> {
      */
     public List<Company> findAll() {
         List<Company> companyList = new ArrayList<Company>();
-        String sql = "SELECT * FROM company";
+        String sql = "SELECT id,name FROM company";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", sql);
@@ -157,7 +157,7 @@ public enum CompanyDao implements Dao<Company> {
         if (indexPage < 1) {
             return companyList;
         }
-        String sql = "SELECT * FROM company LIMIT ? OFFSET ?";
+        String sql = "SELECT id,name FROM company LIMIT ? OFFSET ?";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
@@ -188,7 +188,7 @@ public enum CompanyDao implements Dao<Company> {
      */
     public Company findByName(String name) {
         Company company = new Company();
-        String sql = "SELECT * FROM company WHERE name = ?";
+        String sql = "SELECT id,name FROM company WHERE name = ?";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
@@ -216,7 +216,7 @@ public enum CompanyDao implements Dao<Company> {
      */
     public long findIdByName(String name) {
         Long id = (long) 0;
-        String sql = "SELECT * FROM company WHERE name = ?";
+        String sql = "SELECT id FROM company WHERE name = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, name);
