@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
@@ -23,6 +26,7 @@ import com.formation.cdb.service.ComputerService;
  */
 @WebServlet("/editcomputer")
 public class EditComputer extends HttpServlet {
+    final Logger logger = LoggerFactory.getLogger(EditComputer.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -45,8 +49,9 @@ public class EditComputer extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("Get");
-        System.out.println(request.getParameterMap().keySet());
+        logger.debug("Get");
+        // System.out.println("Get");
+        // System.out.println(request.getParameterMap().keySet());
 
         long id = 0;
         if (request.getParameterMap().containsKey("id") && request.getParameter("id").matches(regex)) {
@@ -64,7 +69,7 @@ public class EditComputer extends HttpServlet {
         request.setAttribute("computerDto", computerDto);
         request.setAttribute("companyDtoList", companyDtoList);
 
-        //System.out.println(computerDto);
+        // System.out.println(computerDto);
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");
         view.forward(request, response);
 
@@ -83,14 +88,15 @@ public class EditComputer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-        System.out.println("Post");
+        logger.debug("Post");
+        logger.debug(request.getParameterMap().keySet().toString());
         String name = null;
         LocalDate introduced = null;
         LocalDate discontinued = null;
         long companyId = 0;
         long computerId = 0;
 
-        //System.out.println(request.getParameterMap().keySet());
+        // System.out.println(request.getParameterMap().keySet());
 
         if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
             name = request.getParameter("computerName");
