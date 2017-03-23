@@ -65,6 +65,10 @@ public class Dashboard extends HttpServlet {
         if (10 % ComputerService.INSTANCE.getNbComputers() != 0) {
             maxPage++;
         }
+        String search = "";
+        if (request.getParameterMap().containsKey("search")) {
+            search = request.getParameter("search");
+        }
 
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, maxInPage);
@@ -79,6 +83,7 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("maxInPage", maxInPage);
         request.setAttribute("pageList", pageList);
         request.setAttribute("nbComputer", nbComputer);
+        request.setAttribute("search", search);
 
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/dashboard.jsp");
         view.forward(request, response);

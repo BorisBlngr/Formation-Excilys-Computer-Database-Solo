@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.util.Order;
 
 public enum ComputerDao implements Dao<Computer> {
     INSTANCE;
@@ -47,6 +48,26 @@ public enum ComputerDao implements Dao<Computer> {
     }
 
     /**
+     * Construct a computer based on the result set.
+     * @param rs Resultset.
+     * @return computer
+     * @throws SQLException Sql exception.
+     */
+    private Computer constructComputerWithResultSet(ResultSet rs) throws SQLException {
+        Computer computer = new Computer();
+        computer.setId(rs.getInt("id"));
+        computer.setName(rs.getString("name"));
+        computer.setCompany(new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+        if (rs.getDate("introduced") != null) {
+            computer.setIntroduced(rs.getDate("introduced").toLocalDate());
+        }
+        if (rs.getDate("discontinued") != null) {
+            computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+        }
+        return computer;
+    }
+
+    /**
      * Methode pour trouver un computer en base en fonction de son id, renvoit
      * le premier resultat.
      * @param id L'id du computer à trouver.
@@ -63,17 +84,7 @@ public enum ComputerDao implements Dao<Computer> {
             try (ResultSet rs = stmt.executeQuery(sql);) {
                 // Extract data from result set
                 if (rs.first()) {
-                    computer.setId(id);
-                    computer.setName(rs.getString("c.name"));
-                    computer.setCompany(
-                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-
-                    if (rs.getDate("c.introduced") != null) {
-                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
-                    }
-                    if (rs.getDate("c.discontinued") != null) {
-                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
-                    }
+                    computer = constructComputerWithResultSet(rs);
                 }
             }
         } catch (SQLException e) {
@@ -100,17 +111,7 @@ public enum ComputerDao implements Dao<Computer> {
             try (ResultSet rs = stmt.executeQuery(sql);) {
                 // Extract data from result set
                 if (rs.first()) {
-                    computer.setId(id);
-                    computer.setName(rs.getString("c.name"));
-                    computer.setCompany(
-                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-
-                    if (rs.getDate("c.introduced") != null) {
-                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
-                    }
-                    if (rs.getDate("c.discontinued") != null) {
-                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
-                    }
+                    computer = constructComputerWithResultSet(rs);
                 }
             }
         } catch (SQLException e) {
@@ -137,16 +138,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.execute();
             try (ResultSet rs = preparedStatement.getResultSet();) {
                 if (rs.first()) {
-                    computer.setId(rs.getInt("id"));
-                    computer.setName(rs.getString("name"));
-                    computer.setCompany(
-                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                    if (rs.getDate("introduced") != null) {
-                        computer.setIntroduced(rs.getDate("introduced").toLocalDate());
-                    }
-                    if (rs.getDate("discontinued") != null) {
-                        computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
-                    }
+                    computer = constructComputerWithResultSet(rs);
                 }
             }
         } catch (SQLException e) {
@@ -162,7 +154,6 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public List<Computer> findAll() {
         List<Computer> computerList = new ArrayList<Computer>();
-        Computer computer;
 
         String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
 
@@ -172,18 +163,7 @@ public enum ComputerDao implements Dao<Computer> {
             try (ResultSet rs = stmt.executeQuery(sql);) {
                 // Extract data from result set
                 while (rs.next()) {
-                    computer = new Computer();
-                    computer.setId(rs.getLong("c.id"));
-                    computer.setName(rs.getString("c.name"));
-                    computer.setCompany(
-                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                    if (rs.getDate("c.introduced") != null) {
-                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
-                    }
-                    if (rs.getDate("c.discontinued") != null) {
-                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
-                    }
-                    computerList.add(computer);
+                    computerList.add(constructComputerWithResultSet(rs));
                 }
             }
         } catch (SQLException e) {
@@ -215,20 +195,49 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.execute();
 
             try (ResultSet rs = preparedStatement.getResultSet();) {
-                Computer computer;
                 while (rs.next()) {
-                    computer = new Computer();
-                    computer.setId(rs.getInt("id"));
-                    computer.setName(rs.getString("name"));
-                    computer.setCompany(
-                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                    if (rs.getDate("introduced") != null) {
-                        computer.setIntroduced(rs.getDate("introduced").toLocalDate());
-                    }
-                    if (rs.getDate("discontinued") != null) {
-                        computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
-                    }
-                    computerList.add(computer);
+                    computerList.add(constructComputerWithResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return computerList;
+    }
+
+    /**
+     * Methode pour avoir une liste de computer qui ont le mot clé search de
+     * taille maximale maxInPage. Selectionne les computer en fonction de
+     * l'indexPage (page 1 à x) et ordonné suivant l'enum.
+     * @param indexPage Index de la page.
+     * @param maxInPage Nombre d'item max dans la list.
+     * @param search String to search.
+     * @param order Order.
+     * @return companyList
+     */
+    public List<Computer> findInRangeSearch(int indexPage, int maxInPage, String search, Order order) {
+        List<Computer> computerList = new ArrayList<Computer>();
+        if (indexPage < 1) {
+            return computerList;
+        }
+        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
+        if (order.equals(Order.DESC)) {
+            sql = String.format(sql, "DESC");
+        } else {
+            sql = String.format(sql, "ASC");
+        }
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setInt(2, maxInPage);
+            preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
+            logger.debug("Send : {}", preparedStatement.toString());
+            preparedStatement.execute();
+
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                while (rs.next()) {
+                    computerList.add(constructComputerWithResultSet(rs));
                 }
             }
         } catch (SQLException e) {
@@ -248,7 +257,8 @@ public enum ComputerDao implements Dao<Computer> {
         long id = (long) 0;
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");) {
+                PreparedStatement preparedStatement = conn
+                        .prepareStatement("SELECT id FROM computer WHERE name = ?");) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
