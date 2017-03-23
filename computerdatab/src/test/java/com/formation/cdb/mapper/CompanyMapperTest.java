@@ -1,7 +1,5 @@
 package com.formation.cdb.mapper;
 
-import java.time.LocalDate;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -10,12 +8,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.model.dto.CompanyDto;
 
-public class ComputerMapperTest {
-    Computer computer = null;
-    ComputerDto computerDto = null;
+public class CompanyMapperTest {
+    Company company = null;
+    CompanyDto companyDto = null;
 
     /**
      * Execute before Class.
@@ -39,12 +36,8 @@ public class ComputerMapperTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
-                .discontinued(LocalDate.of(1999, 10, 10))
-                .company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
-        computer = new Computer.ComputerBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
-                .discontinued(LocalDate.of(1999, 10, 10))
-                .company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
+        companyDto = new CompanyDto.CompanyDtoBuilder().name("toto").id(36).build();
+        company = new Company.CompanyBuilder().name("toto").id(36).build();
     }
 
     /**
@@ -53,8 +46,8 @@ public class ComputerMapperTest {
      */
     @After
     public void executerApresChaqueTest() {
-        computer = null;
-        computerDto = null;
+        company = null;
+        companyDto = null;
     }
 
     /**
@@ -62,7 +55,7 @@ public class ComputerMapperTest {
      */
     @Test
     public void entityToDtoValid() {
-        Assert.assertTrue(ComputerMapper.INSTANCE.toDto(computer).equals(computerDto));
+        Assert.assertTrue(CompanyMapper.INSTANCE.toDto(company).equals(companyDto));
     }
 
     /**
@@ -70,6 +63,6 @@ public class ComputerMapperTest {
      */
     @Test
     public void dtoToEntityValid() {
-        Assert.assertTrue(ComputerMapper.INSTANCE.toEntity(computerDto).equals(computer));
+        Assert.assertTrue(CompanyMapper.INSTANCE.toEntity(companyDto).equals(company));
     }
 }

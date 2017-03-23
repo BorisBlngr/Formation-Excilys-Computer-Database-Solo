@@ -1,11 +1,8 @@
 package com.formation.cdb.model.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.model.dao.CompanyDao;
-import com.formation.cdb.model.dao.ComputerDao;
 
 public class ComputerDto {
     private long id = 0;
@@ -231,36 +228,6 @@ public class ComputerDto {
      * @param args Args.
      */
     public static void main(String[] args) {
-
-        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().company(CompanyDao.INSTANCE.find(2))
-                .name("Orditropbien").introduced(LocalDate.of(1980, 10, 10)).discontinued(LocalDate.of(1990, 10, 10))
-                .build();
-        System.out.println(computerDto.toString());
-        System.out.println(java.sql.Date.valueOf(computerDto.getIntroduced()));
-        ComputerDto computerDto2 = ComputerDao.INSTANCE.find(600);
-        System.out.println(computerDto2.toString());
-
-        // test create
-        computerDto.setId(ComputerDao.INSTANCE.create(computerDto));
-        computerDto2 = ComputerDao.INSTANCE.findByName(computerDto.getName());
-        System.out.println("Try to create : " + computerDto.toString());
-        System.out.println("Try to find " + computerDto.getName() + " : " + computerDto2);
-
-        // try to update
-        computerDto.setCompany(CompanyDao.INSTANCE.find(8));
-        ComputerDao.INSTANCE.update(computerDto);
-        System.out.println("Try to update : \n" + computerDto2 + "\n to \n" + computerDto);
-        System.out.println("Find : " + ComputerDao.INSTANCE.findByName(computerDto.getName()));
-
-        // try to delete
-
-        ComputerDao.INSTANCE.delete(computerDto);
-        System.out.println(
-                "Try to delete " + computerDto + " : " + ComputerDao.INSTANCE.findByName(computerDto.getName()));
-
-        // try find all
-        List<ComputerDto> computerDtoList = ComputerDao.INSTANCE.findAll();
-        System.out.println(computerDtoList.size());
 
     }
 }

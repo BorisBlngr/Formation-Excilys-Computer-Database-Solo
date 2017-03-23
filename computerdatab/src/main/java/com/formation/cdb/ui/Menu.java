@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 
@@ -156,8 +155,8 @@ public class Menu {
         case 3:
             logger.info("Case Show computer details");
             System.out.println("id : ");
-            Computer computerFound = ComputerService.INSTANCE.findComputer(selectLong());
-            System.out.println(computerFound);
+            ComputerDto computerDtoFound = ComputerService.INSTANCE.findComputer(selectLong());
+            System.out.println(computerDtoFound);
 
             break;
         case 4:

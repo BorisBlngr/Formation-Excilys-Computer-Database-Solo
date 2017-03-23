@@ -4,7 +4,7 @@ import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dto.ComputerDto;
 
 /**
- * Computer => ComputerUi ComputerUi => Computer.
+ * ComputerDto => Computer Computer => ComputerDto.
  */
 public enum ComputerMapper {
     INSTANCE;
@@ -32,5 +32,4 @@ public enum ComputerMapper {
                 .discontinued(computerDto.getDiscontinued()).build();
         return computer;
     }
-
 }

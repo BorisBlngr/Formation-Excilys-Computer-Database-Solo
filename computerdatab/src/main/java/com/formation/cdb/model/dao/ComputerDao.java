@@ -14,10 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.persistence.PersistenceManager;
 
-public enum ComputerDao implements Dao<ComputerDto> {
+public enum ComputerDao implements Dao<Computer> {
     INSTANCE;
     final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
 
@@ -28,14 +27,34 @@ public enum ComputerDao implements Dao<ComputerDto> {
     }
 
     /**
+     * Check if the Computer have a name. Check the dates.
+     * @param computer Computer.
+     * @return result
+     */
+    private boolean computerIsValid(Computer computer) {
+        if (computer.getName().equals(null) || computer.getName().trim().isEmpty()) {
+            logger.error("A computer has no name !");
+            return false;
+        } else if (!computer.getDiscontinued().equals(null) && computer.getIntroduced().equals(null)) {
+            logger.error("Discontinued Date but no Introduced Date!");
+            return false;
+        } else if (!computer.getDiscontinued().equals(null)
+                && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
+            logger.error("Discontinued Date before Introduced Date!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Methode pour trouver un computer en base en fonction de son id, renvoit
      * le premier resultat.
      * @param id L'id du computer à trouver.
      * @return computer
      */
     @Override
-    public ComputerDto find(long id) {
-        ComputerDto computerDto = new ComputerDto();
+    public Computer find(long id) {
+        Computer computer = new Computer();
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
@@ -44,16 +63,16 @@ public enum ComputerDao implements Dao<ComputerDto> {
             try (ResultSet rs = stmt.executeQuery(sql);) {
                 // Extract data from result set
                 if (rs.first()) {
-                    computerDto.setId(id);
-                    computerDto.setName(rs.getString("c.name"));
-                    computerDto.setCompany(
+                    computer.setId(id);
+                    computer.setName(rs.getString("c.name"));
+                    computer.setCompany(
                             new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
 
                     if (rs.getDate("c.introduced") != null) {
-                        computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
                     }
                     if (rs.getDate("c.discontinued") != null) {
-                        computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
                     }
                 }
             }
@@ -61,7 +80,7 @@ public enum ComputerDao implements Dao<ComputerDto> {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return computerDto;
+        return computer;
     }
 
     /**
@@ -73,47 +92,30 @@ public enum ComputerDao implements Dao<ComputerDto> {
     @Deprecated
     public Computer findComputer(long id) {
         Computer computer = new Computer();
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
-                    + id;
-            stmt = conn.createStatement();
-            logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
-            // Extract data from result set
-            if (rs.first()) {
-                computer.setId(id);
-                computer.setName(rs.getString("c.name"));
-                computer.setCompany(
-                        new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
+                + id;
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
 
-                if (rs.getDate("c.introduced") != null) {
-                    computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
-                }
-                if (rs.getDate("c.discontinued") != null) {
-                    computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+            logger.debug("Send : {}", sql);
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                // Extract data from result set
+                if (rs.first()) {
+                    computer.setId(id);
+                    computer.setName(rs.getString("c.name"));
+                    computer.setCompany(
+                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+
+                    if (rs.getDate("c.introduced") != null) {
+                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+                    }
+                    if (rs.getDate("c.discontinued") != null) {
+                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                    }
                 }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return computer;
     }
@@ -123,9 +125,9 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * @param name Le nom du computer à trouver.
      * @return computer
      */
-    public ComputerDto findByName(String name) {
+    public Computer findByName(String name) {
 
-        ComputerDto computerDto = new ComputerDto();
+        Computer computer = new Computer();
         String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
@@ -135,22 +137,22 @@ public enum ComputerDao implements Dao<ComputerDto> {
             preparedStatement.execute();
             try (ResultSet rs = preparedStatement.getResultSet();) {
                 if (rs.first()) {
-                    computerDto.setId(rs.getInt("id"));
-                    computerDto.setName(rs.getString("name"));
-                    computerDto.setCompany(
+                    computer.setId(rs.getInt("id"));
+                    computer.setName(rs.getString("name"));
+                    computer.setCompany(
                             new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
                     if (rs.getDate("introduced") != null) {
-                        computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
+                        computer.setIntroduced(rs.getDate("introduced").toLocalDate());
                     }
                     if (rs.getDate("discontinued") != null) {
-                        computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+                        computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
                     }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return computerDto;
+        return computer;
     }
 
     /**
@@ -158,9 +160,9 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * pour les grosses bdd.
      * @return computerList
      */
-    public List<ComputerDto> findAll() {
-        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        ComputerDto computerDto;
+    public List<Computer> findAll() {
+        List<Computer> computerList = new ArrayList<Computer>();
+        Computer computer;
 
         String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
 
@@ -170,25 +172,25 @@ public enum ComputerDao implements Dao<ComputerDto> {
             try (ResultSet rs = stmt.executeQuery(sql);) {
                 // Extract data from result set
                 while (rs.next()) {
-                    computerDto = new ComputerDto();
-                    computerDto.setId(rs.getLong("c.id"));
-                    computerDto.setName(rs.getString("c.name"));
-                    computerDto.setCompany(
+                    computer = new Computer();
+                    computer.setId(rs.getLong("c.id"));
+                    computer.setName(rs.getString("c.name"));
+                    computer.setCompany(
                             new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
                     if (rs.getDate("c.introduced") != null) {
-                        computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+                        computer.setIntroduced(rs.getDate("c.introduced").toLocalDate());
                     }
                     if (rs.getDate("c.discontinued") != null) {
-                        computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                        computer.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
                     }
-                    computerDtoList.add(computerDto);
+                    computerList.add(computer);
                 }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return computerDtoList;
+        return computerList;
     }
 
     /**
@@ -198,10 +200,10 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * @param maxInPage Nombre d'item max dans la list.
      * @return companyList
      */
-    public List<ComputerDto> findInRange(int indexPage, int maxInPage) {
-        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+    public List<Computer> findInRange(int indexPage, int maxInPage) {
+        List<Computer> computerList = new ArrayList<Computer>();
         if (indexPage < 1) {
-            return computerDtoList;
+            return computerList;
         }
         String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?";
 
@@ -213,27 +215,27 @@ public enum ComputerDao implements Dao<ComputerDto> {
             preparedStatement.execute();
 
             try (ResultSet rs = preparedStatement.getResultSet();) {
-                ComputerDto computerDto;
+                Computer computer;
                 while (rs.next()) {
-                    computerDto = new ComputerDto();
-                    computerDto.setId(rs.getInt("id"));
-                    computerDto.setName(rs.getString("name"));
-                    computerDto.setCompany(
+                    computer = new Computer();
+                    computer.setId(rs.getInt("id"));
+                    computer.setName(rs.getString("name"));
+                    computer.setCompany(
                             new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
                     if (rs.getDate("introduced") != null) {
-                        computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
+                        computer.setIntroduced(rs.getDate("introduced").toLocalDate());
                     }
                     if (rs.getDate("discontinued") != null) {
-                        computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+                        computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
                     }
-                    computerDtoList.add(computerDto);
+                    computerList.add(computer);
                 }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return computerDtoList;
+        return computerList;
     }
 
     /**
@@ -294,21 +296,12 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * @return id
      */
     @Override
-    public long create(ComputerDto cmpt) {
+    public long create(Computer cmpt) {
 
-        if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
-            logger.error("A computer has no name !");
+        if (!computerIsValid(cmpt)) {
             return 0;
         }
 
-        if (!cmpt.getDiscontinued().equals(null) && cmpt.getIntroduced().equals(null)) {
-            logger.error("Discontinued Date but no Introduced Date!");
-            return 0;
-        }
-        if (!cmpt.getDiscontinued().equals(null) && cmpt.getDiscontinued().isBefore(cmpt.getIntroduced())) {
-            logger.error("Discontinued Date before Introduced Date!");
-            return 0;
-        }
         String sql = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
@@ -349,7 +342,7 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * @return result
      */
     @Override
-    public boolean delete(ComputerDto computer) {
+    public boolean delete(Computer computer) {
         boolean result = false;
         String sql = "DELETE FROM computer WHERE id = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
@@ -397,21 +390,12 @@ public enum ComputerDao implements Dao<ComputerDto> {
      */
     // Careful with the computer's id
     @Override
-    public boolean update(ComputerDto cmpt) {
+    public boolean update(Computer cmpt) {
 
-        if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
-            logger.error("A computer has no name !");
+        if (!computerIsValid(cmpt)) {
             return false;
         }
 
-        if (!cmpt.getDiscontinued().equals(null) && cmpt.getIntroduced().equals(null)) {
-            logger.error("Discontinued Date but no Introduced Date!");
-            return false;
-        }
-        if (!cmpt.getDiscontinued().equals(null) && cmpt.getDiscontinued().isBefore(cmpt.getIntroduced())) {
-            logger.error("Discontinued Date before Introduced Date!");
-            return false;
-        }
         String sql = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();

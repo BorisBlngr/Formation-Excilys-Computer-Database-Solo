@@ -122,6 +122,7 @@ public enum CompanyDao implements Dao<Company> {
      * sous forme d'arraylist.
      * @return companyList
      */
+    @Deprecated
     public List<Company> findAll() {
         List<Company> companyList = new ArrayList<Company>();
         String sql = "SELECT id,name FROM company";

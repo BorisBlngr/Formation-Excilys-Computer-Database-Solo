@@ -2,10 +2,6 @@ package com.formation.cdb.model;
 
 import java.time.LocalDate;
 
-import com.formation.cdb.mapper.ComputerMapper;
-import com.formation.cdb.model.dao.ComputerDao;
-import com.formation.cdb.model.dto.ComputerDto;
-
 public class Computer {
 
     private long id = 0;
@@ -132,8 +128,8 @@ public class Computer {
 
     @Override
     public String toString() {
-        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
-                + discontinued + ", company=" + company + "]";
+        return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
+                + ", company=" + company + "]";
     }
 
     public static class ComputerBuilder {
@@ -213,11 +209,5 @@ public class Computer {
      * @param args Args.
      */
     public static void main(String[] args) {
-
-        ComputerDto computerDto = ComputerDao.INSTANCE.find(2);
-        System.out.println(computerDto);
-        Computer computer = ComputerMapper.INSTANCE.toEntity(computerDto);
-        System.out.println(computer);
-
     }
 }

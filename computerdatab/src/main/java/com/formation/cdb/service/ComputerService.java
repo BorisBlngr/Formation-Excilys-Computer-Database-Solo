@@ -1,7 +1,9 @@
 package com.formation.cdb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dao.CompanyDao;
@@ -23,7 +25,7 @@ public enum ComputerService {
      * @return computer
      */
     public ComputerDto findComputerDto(long id) {
-        return ComputerDao.INSTANCE.find(id);
+        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.find(id));
     }
 
     /**
@@ -33,24 +35,34 @@ public enum ComputerService {
      * @return computerList
      */
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
-        return ComputerDao.INSTANCE.findInRange(index, maxInPage);
+        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+        for (Computer computer : ComputerDao.INSTANCE.findInRange(index, maxInPage)) {
+            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+        }
+        return computerDtoList;
     }
 
     /**
-     * Find ComputerUi.
+     * Find All Computer.
      * @param id Computer id.
-     * @return computerUi
+     * @return computer
      */
-    public Computer findComputer(long id) {
-        return ComputerDao.INSTANCE.findComputer(id);
+    @Deprecated
+    public ComputerDto findComputer(long id) {
+        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.findComputer(id));
     }
 
     /**
      * Find all Computers.
      * @return computerList
      */
+    @Deprecated
     public List<ComputerDto> findAllComputer() {
-        return ComputerDao.INSTANCE.findAll();
+        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+        for (Computer computer : ComputerDao.INSTANCE.findAll()) {
+            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+        }
+        return computerDtoList;
     }
 
     /**
@@ -67,6 +79,7 @@ public enum ComputerService {
      * Find all companies.
      * @return companyList
      */
+    @Deprecated
     public List<Company> findAllCompany() {
         return CompanyDao.INSTANCE.findAll();
     }
@@ -77,7 +90,7 @@ public enum ComputerService {
      * @return idComputer
      */
     public long createComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.create(computerDto);
+        return ComputerDao.INSTANCE.create(ComputerMapper.INSTANCE.toEntity(computerDto));
     }
 
     /**
@@ -86,7 +99,7 @@ public enum ComputerService {
      * @return result
      */
     public boolean updateComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.update(computerDto);
+        return ComputerDao.INSTANCE.update(ComputerMapper.INSTANCE.toEntity(computerDto));
     }
 
     /**
