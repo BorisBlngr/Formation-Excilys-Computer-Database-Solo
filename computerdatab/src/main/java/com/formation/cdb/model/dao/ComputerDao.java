@@ -36,47 +36,30 @@ public enum ComputerDao implements Dao<ComputerDto> {
     @Override
     public ComputerDto find(long id) {
         ComputerDto computerDto = new ComputerDto();
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
                     + id;
-            stmt = conn.createStatement();
             logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
-            // Extract data from result set
-            if (rs.first()) {
-                computerDto.setId(id);
-                computerDto.setName(rs.getString("c.name"));
-                computerDto.setCompany(
-                        new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                // Extract data from result set
+                if (rs.first()) {
+                    computerDto.setId(id);
+                    computerDto.setName(rs.getString("c.name"));
+                    computerDto.setCompany(
+                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
 
-                if (rs.getDate("c.introduced") != null) {
-                    computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
-                }
-                if (rs.getDate("c.discontinued") != null) {
-                    computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                    if (rs.getDate("c.introduced") != null) {
+                        computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+                    }
+                    if (rs.getDate("c.discontinued") != null) {
+                        computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                    }
                 }
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return computerDto;
     }
@@ -143,45 +126,29 @@ public enum ComputerDao implements Dao<ComputerDto> {
     public ComputerDto findByName(String name) {
 
         ComputerDto computerDto = new ComputerDto();
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement(
-                    "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?");
+        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            if (rs.first()) {
-                computerDto.setId(rs.getInt("id"));
-                computerDto.setName(rs.getString("name"));
-                computerDto.setCompany(
-                        new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                if (rs.getDate("introduced") != null) {
-                    computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
-                }
-                if (rs.getDate("discontinued") != null) {
-                    computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                if (rs.first()) {
+                    computerDto.setId(rs.getInt("id"));
+                    computerDto.setName(rs.getString("name"));
+                    computerDto.setCompany(
+                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+                    if (rs.getDate("introduced") != null) {
+                        computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
+                    }
+                    if (rs.getDate("discontinued") != null) {
+                        computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return computerDto;
     }
@@ -194,47 +161,32 @@ public enum ComputerDao implements Dao<ComputerDto> {
     public List<ComputerDto> findAll() {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         ComputerDto computerDto;
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
-            stmt = conn.createStatement();
+
+        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
-            // Extract data from result set
-            while (rs.next()) {
-                computerDto = new ComputerDto();
-                computerDto.setId(rs.getLong("c.id"));
-                computerDto.setName(rs.getString("c.name"));
-                computerDto.setCompany(
-                        new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                if (rs.getDate("c.introduced") != null) {
-                    computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+
+            try (ResultSet rs = stmt.executeQuery(sql);) {
+                // Extract data from result set
+                while (rs.next()) {
+                    computerDto = new ComputerDto();
+                    computerDto.setId(rs.getLong("c.id"));
+                    computerDto.setName(rs.getString("c.name"));
+                    computerDto.setCompany(
+                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+                    if (rs.getDate("c.introduced") != null) {
+                        computerDto.setIntroduced(rs.getDate("c.introduced").toLocalDate());
+                    }
+                    if (rs.getDate("c.discontinued") != null) {
+                        computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
+                    }
+                    computerDtoList.add(computerDto);
                 }
-                if (rs.getDate("c.discontinued") != null) {
-                    computerDto.setDiscontinued(rs.getDate("c.discontinued").toLocalDate());
-                }
-                computerDtoList.add(computerDto);
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return computerDtoList;
     }
@@ -251,50 +203,35 @@ public enum ComputerDao implements Dao<ComputerDto> {
         if (indexPage < 1) {
             return computerDtoList;
         }
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement(
-                    "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?");
+        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setInt(1, maxInPage);
             preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            ComputerDto computerDto;
-            while (rs.next()) {
-                computerDto = new ComputerDto();
-                computerDto.setId(rs.getInt("id"));
-                computerDto.setName(rs.getString("name"));
-                computerDto.setCompany(
-                        new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-                if (rs.getDate("introduced") != null) {
-                    computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
+
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                ComputerDto computerDto;
+                while (rs.next()) {
+                    computerDto = new ComputerDto();
+                    computerDto.setId(rs.getInt("id"));
+                    computerDto.setName(rs.getString("name"));
+                    computerDto.setCompany(
+                            new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
+                    if (rs.getDate("introduced") != null) {
+                        computerDto.setIntroduced(rs.getDate("introduced").toLocalDate());
+                    }
+                    if (rs.getDate("discontinued") != null) {
+                        computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+                    }
+                    computerDtoList.add(computerDto);
                 }
-                if (rs.getDate("discontinued") != null) {
-                    computerDto.setDiscontinued(rs.getDate("discontinued").toLocalDate());
-                }
-                computerDtoList.add(computerDto);
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return computerDtoList;
     }
@@ -307,35 +244,20 @@ public enum ComputerDao implements Dao<ComputerDto> {
      */
     public long findIdByName(String name) {
         long id = (long) 0;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet rs = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE name = ?");) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
-            rs = preparedStatement.getResultSet();
-            if (rs.first()) {
-                id = rs.getLong("id");
+
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                if (rs.first()) {
+                    id = rs.getLong("id");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return id;
     }
@@ -345,39 +267,22 @@ public enum ComputerDao implements Dao<ComputerDto> {
      * @return count
      */
     public int getRow() {
-        Connection conn = PersistenceManager.INSTANCE.connectToDb();
-        Statement stmt = null;
-        ResultSet rs = null;
         int count = 0;
+        String sql = "SELECT COUNT(*) FROM computer";
 
-        try {
-            String sql = "SELECT COUNT(*) FROM computer";
-            stmt = conn.createStatement();
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", sql);
-            rs = stmt.executeQuery(sql);
+            try (ResultSet rs = stmt.executeQuery(sql);) {
 
-            if (rs.first()) {
-                count = rs.getInt("COUNT(*)");
+                if (rs.first()) {
+                    count = rs.getInt("COUNT(*)");
+                }
             }
         } catch (
 
         SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return count;
     }
@@ -390,8 +295,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
      */
     @Override
     public long create(ComputerDto cmpt) {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
 
         if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
             logger.error("A computer has no name !");
@@ -406,11 +309,10 @@ public enum ComputerDao implements Dao<ComputerDto> {
             logger.error("Discontinued Date before Introduced Date!");
             return 0;
         }
+        String sql = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
 
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn
-                    .prepareStatement("INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)");
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
 
             preparedStatement.setString(1, cmpt.getName());
             if (cmpt.getIntroduced() == null) {
@@ -434,18 +336,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return
 
@@ -461,11 +351,9 @@ public enum ComputerDao implements Dao<ComputerDto> {
     @Override
     public boolean delete(ComputerDto computer) {
         boolean result = false;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+        String sql = "DELETE FROM computer WHERE id = ?";
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setLong(1, computer.getId());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -474,18 +362,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return result;
     }
@@ -498,11 +374,9 @@ public enum ComputerDao implements Dao<ComputerDto> {
      */
     public boolean delete(long id) {
         boolean result = false;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+        String sql = "DELETE FROM computer WHERE id = ?";
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -511,18 +385,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return result;
     }
@@ -536,8 +398,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
     // Careful with the computer's id
     @Override
     public boolean update(ComputerDto cmpt) {
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
 
         if (cmpt.getName().equals(null) || cmpt.getName().trim().isEmpty()) {
             logger.error("A computer has no name !");
@@ -552,11 +412,10 @@ public enum ComputerDao implements Dao<ComputerDto> {
             logger.error("Discontinued Date before Introduced Date!");
             return false;
         }
+        String sql = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 
-        try {
-            conn = PersistenceManager.INSTANCE.connectToDb();
-            preparedStatement = conn.prepareStatement(
-                    "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
 
             preparedStatement.setString(1, cmpt.getName());
             if (cmpt.getIntroduced() == null) {
@@ -581,18 +440,6 @@ public enum ComputerDao implements Dao<ComputerDto> {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (conn != null) {
-                    PersistenceManager.INSTANCE.close(conn);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
         return false;
     }
