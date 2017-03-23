@@ -44,7 +44,7 @@
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
 									name="discontinued" placeholder="Discontinued date"
-									onchange="dicD();">
+									onchange="discD();">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select

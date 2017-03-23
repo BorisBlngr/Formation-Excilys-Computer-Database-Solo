@@ -24,7 +24,8 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">id: ${computerDto.id}</div>
+					<div class="label label-default pull-right">id:
+						${computerDto.id}</div>
 					<h1>Edit Computer</h1>
 
 					<form action="editcomputer" method="POST">
@@ -41,13 +42,14 @@
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
 									name="introduced" placeholder="Introduced date"
-									value="${computerDto.introduced}" onchange="introD();">
+									value="${computerDto.introduced}" onchange="introD();" max="">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
 									name="discontinued" placeholder="Discontinued date"
-									value="${computerDto.discontinued}" onchange="discD();" min="${computerDto.introduced}">
+									value="${computerDto.discontinued}" onchange="discD();"
+									min="${computerDto.introduced}">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select

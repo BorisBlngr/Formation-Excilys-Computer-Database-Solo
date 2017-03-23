@@ -8,4 +8,10 @@ function introD(e) {
 
 function discD(e) {
 	$('#introduced').attr("max", $('#discontinued').val())
+	
+	if ($('#discontinued').val() != "") {
+		$('#introduced').attr("required", "")
+	} else {
+		$('#introduced').prop("required", "")
+	}
 }
