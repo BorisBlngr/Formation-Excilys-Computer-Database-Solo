@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 import com.formation.cdb.ui.Page;
+import com.formation.cdb.util.Order;
 
 /**
  * Servlet implementation class Dashboard.
@@ -60,18 +61,33 @@ public class Dashboard extends HttpServlet {
                 maxInPage = 10;
             }
         }
-        int nbComputer = ComputerService.INSTANCE.getNbComputers();
-        int maxPage = nbComputer / maxInPage;
-        if (10 % ComputerService.INSTANCE.getNbComputers() != 0) {
-            maxPage++;
-        }
         String search = "";
         if (request.getParameterMap().containsKey("search")) {
             search = request.getParameter("search");
         }
 
+        int nbComputer = 0;
+        if (search.isEmpty()) {
+            nbComputer = ComputerService.INSTANCE.getNbComputers();
+        } else {
+            nbComputer = ComputerService.INSTANCE.getNbComputersSearchName(search);
+        }
+
+        int maxPage = nbComputer / maxInPage;
+        if (nbComputer != 0 && 10 % nbComputer != 0) {
+            maxPage++;
+        }
+
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, maxInPage);
+        if (search.isEmpty()) {
+            computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, maxInPage);
+
+        } else {
+            computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
+                    Order.ASC);
+
+        }
+
         List<Page> pageList = constructionPageChoices(pageIndex, maxPage);
 
         // System.out.println(pageIndex + " " + maxPage);

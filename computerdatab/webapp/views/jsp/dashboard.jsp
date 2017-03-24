@@ -96,15 +96,15 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<pagination:page pageIndex="${pageIndex}" maxPage="${maxPage}"
-					maxInPage="${maxInPage}" pageList="${pageList}" />
+					maxInPage="${maxInPage}" pageList="${pageList}" search="${search}" />
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="?page=${pageIndex}&maxInPage=10"
+				<a href="?page=${pageIndex}&maxInPage=10&search=${search}"
 					class="btn btn-default<c:if test="${maxInPage == 10}"> active</c:if>">10</a>
-				<a href="?page=${pageIndex}&maxInPage=50"
+				<a href="?page=${pageIndex}&maxInPage=50&search=${search}"
 					class="btn btn-default<c:if test="${maxInPage == 50}"> active</c:if>">50</a>
-				<a href="?page=${pageIndex}&maxInPage=100"
+				<a href="?page=${pageIndex}&maxInPage=100&search=${search}"
 					class="btn btn-default<c:if test="${maxInPage == 100}"> active</c:if>">100</a>
 			</div>
 		</div>

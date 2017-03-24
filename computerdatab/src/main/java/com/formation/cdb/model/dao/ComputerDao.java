@@ -216,7 +216,7 @@ public enum ComputerDao implements Dao<Computer> {
      * @param order Order.
      * @return companyList
      */
-    public List<Computer> findInRangeSearch(int indexPage, int maxInPage, String search, Order order) {
+    public List<Computer> findInRangeSearchName(int indexPage, int maxInPage, String search, Order order) {
         List<Computer> computerList = new ArrayList<Computer>();
         if (indexPage < 1) {
             return computerList;
@@ -280,20 +280,45 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public int getRow() {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM computer";
+        String sql = "SELECT COUNT(id) FROM computer";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
             logger.debug("Send : {}", sql);
             try (ResultSet rs = stmt.executeQuery(sql);) {
 
                 if (rs.first()) {
-                    count = rs.getInt("COUNT(*)");
+                    count = rs.getInt("COUNT(id)");
                 }
             }
         } catch (
 
         SQLException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    /**
+     * Renvoit le nombre de row dans Computer.
+     * @param search String to search.
+     * @return count
+     */
+    public int getRowSearchName(String search) {
+        int count = 0;
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn
+                        .prepareStatement("SELECT COUNT(id) FROM computer WHERE name LIKE ?");) {
+            preparedStatement.setString(1, "%" + search + "%");
+            logger.debug("Send : {}", preparedStatement.toString());
+            preparedStatement.execute();
+
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                if (rs.first()) {
+                    count = rs.getInt("COUNT(id)");
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return count;

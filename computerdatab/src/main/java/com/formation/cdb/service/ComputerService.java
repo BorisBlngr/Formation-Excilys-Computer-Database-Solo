@@ -11,7 +11,12 @@ import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.util.Order;
 
+/**
+ * @author excilys
+ *
+ */
 public enum ComputerService {
     INSTANCE;
 
@@ -39,6 +44,23 @@ public enum ComputerService {
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         for (Computer computer : ComputerDao.INSTANCE.findInRange(index, maxInPage)) {
+            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+        }
+        return computerDtoList;
+    }
+
+    /**
+     * Find a list of computers, or page, with a specific string in their names
+     * and with the order Order.DESC or Order.ASC.
+     * @param index Index of the page.
+     * @param maxInPage Max element in the list.
+     * @param search String to search.
+     * @param order ASC or DESC for the List.
+     * @return computerDtoList
+     */
+    public List<ComputerDto> findComputersInRangeSearchName(int index, int maxInPage, String search, Order order) {
+        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, order)) {
             computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
         }
         return computerDtoList;
@@ -123,6 +145,15 @@ public enum ComputerService {
 
     public int getNbComputers() {
         return ComputerDao.INSTANCE.getRow();
+    }
+
+    /**
+     * Get the number of element with a name like search.
+     * @param search String to search.
+     * @return count
+     */
+    public int getNbComputersSearchName(String search) {
+        return ComputerDao.INSTANCE.getRowSearchName(search);
     }
 
     public int getNbCompanies() {
