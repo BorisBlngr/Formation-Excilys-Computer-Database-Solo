@@ -42,9 +42,6 @@ public class SearchPagination {
         } catch (ConfigurationException cex) {
             // loading of the configuration file failed
         }
-        logger.info(config.getString("gecko.driver"));
-        // System.setProperty("webdriver.gecko.driver",
-        // config.getString("gecko.driver"));
         System.setProperty("webdriver.chrome.driver", config.getString("chromedriver"));
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080/";
