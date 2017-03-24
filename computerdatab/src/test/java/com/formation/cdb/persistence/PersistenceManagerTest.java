@@ -1,7 +1,11 @@
 package com.formation.cdb.persistence;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,6 +47,14 @@ public class PersistenceManagerTest {
      */
     @Test
     public void isAdmissible() {
+        String t = "";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();) {
+            t = "test";
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(t.equals("test"));
     }
 
 }

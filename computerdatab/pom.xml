@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.formation.cdb</groupId>
     <artifactId>computerdatab</artifactId>
-    <version>1.0-RELEASE</version>
+    <version>1.1-SNAPSHOT</version>
     <name>training</name>
     <packaging>war</packaging>
 
@@ -22,6 +22,8 @@
         <javax.servelt.api.version>3.1.0</javax.servelt.api.version>
         <javax.jstl.version>1.2</javax.jstl.version>
         <javax.jsp.version>2.0</javax.jsp.version>
+        <HikariCP.version>2.4.5</HikariCP.version>
+        <HikariCP.artifact.version>2.4.9</HikariCP.artifact.version>
     </properties>
 
     <dependencies>
@@ -111,7 +113,18 @@
             <version>${javax.jsp.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${HikariCP.version}</version>
+        </dependency>
+        <!-- Java 7 and Java 8 maven artifact -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP-java7</artifactId>
+            <version>${HikariCP.artifact.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

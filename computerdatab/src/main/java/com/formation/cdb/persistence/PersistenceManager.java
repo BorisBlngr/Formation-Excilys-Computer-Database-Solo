@@ -1,7 +1,6 @@
 package com.formation.cdb.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,6 +15,9 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 public enum PersistenceManager {
 
     INSTANCE;
@@ -23,52 +25,61 @@ public enum PersistenceManager {
     Parameters params = new Parameters();
     Configuration config;
     final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
-
-    // Connection conn = null;
-    // Statement stmt = null;
-    // ResultSet rs = null;
+    HikariDataSource ds;
 
     /**
      * Constructeur récupérant les propriétés du conf.
      */
     PersistenceManager() {
         FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
-                PropertiesConfiguration.class).configure(params.properties().setFileName("conf.properties"));
+                PropertiesConfiguration.class).configure(params.properties().setFileName("db.properties"));
         try {
             config = builder.getConfiguration();
 
         } catch (ConfigurationException cex) {
             // loading of the configuration file failed
         }
+        logger.info(builder.getFileHandler().getURL().getFile());
+        try {
+            Class.forName(config.getString("dataSource.driverClass"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        HikariConfig cfg = new HikariConfig();
+        cfg.setJdbcUrl(config.getString("jdbcUrl"));
+        cfg.setUsername(config.getString("dataSource.user"));
+        cfg.setPassword(config.getString("dataSource.password"));
+        // cfg.setDataSourceClassName(config.getString("dataSource.driverClass"));
+        cfg.addDataSourceProperty(config.getString("dataSource.cachePrepStmts"), "true");
+        cfg.addDataSourceProperty(config.getString("dataSource.prepStmtCacheSize"), "250");
+        cfg.addDataSourceProperty(config.getString("dataSource.prepStmtCacheSqlLimit"), "2048");
+        // Prevent failed to initialize pool
+        cfg.setConnectionTestQuery("show tables");
+        logger.info(cfg.toString());
+        ds = new HikariDataSource(cfg);
+
     }
 
     /**
-     * Methode se connecter à DB_URL et renvoi la Connection.
+     * Methode se connecter à jdbcUrl et renvoi la Connection.
      * @return conn
      */
     public Connection connectToDb() {
         Connection conn = null;
-        // Register JDBC driver
         try {
-            Class.forName(config.getString("jdbc.driver"));
-            // Open a connection
+
             logger.debug("Connecting to db .... ");
-            conn = DriverManager.getConnection(config.getString("DB_URL"), config.getString("USER"),
-                    config.getString("PASS"));
+            conn = ds.getConnection();
             logger.debug("Connection opened");
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return conn;
     }
 
     /**
-     * Methode qui close la connection. Permet d'afficher l'info en
-     * logger.debug.
+     * Methode qui close la connection. Permet d'afficher l'info en logger.debug
+     * Inutile mais indispensable...
      * @param conn Connection à close.
      * @throws SQLException Renvoit une SQLException.
      */
