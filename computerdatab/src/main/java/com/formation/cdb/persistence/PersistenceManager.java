@@ -39,7 +39,7 @@ public enum PersistenceManager {
         } catch (ConfigurationException cex) {
             // loading of the configuration file failed
         }
-        logger.info(builder.getFileHandler().getURL().getFile());
+
         try {
             Class.forName(config.getString("dataSource.driverClass"));
         } catch (ClassNotFoundException e) {
@@ -57,7 +57,6 @@ public enum PersistenceManager {
         cfg.setConnectionTestQuery("show tables");
         logger.info(cfg.toString());
         ds = new HikariDataSource(cfg);
-
     }
 
     /**

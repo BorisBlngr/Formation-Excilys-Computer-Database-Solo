@@ -35,8 +35,8 @@
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" value="${search}" />
 						<input type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" /> <input type="hidden" name="maxInPage"
-							value="${maxInPage}">
+							class="btn btn-primary" /> <input type="hidden" id="maxInPage" name="maxInPage"
+							value="${maxInPage}" />
 					</form>
 				</div>
 				<div class="pull-right">
@@ -46,6 +46,8 @@
 				</div>
 			</div>
 		</div>
+		<input type="hidden" name="pageIndex" id="pageIndex"
+			value="${pageIndex}" />
 
 		<form id="deleteForm"
 			action="?page=${pageIndex}&maxInPage=${maxInPage}" method="POST">

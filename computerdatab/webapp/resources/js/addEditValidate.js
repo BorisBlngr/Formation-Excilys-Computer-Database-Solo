@@ -1,5 +1,5 @@
 $(function() {
-	console.log("Welcome to the jungle !");
+	console.log("Welcome to the jungle ! Just for Chrome");
 });
 
 function introD(e) {

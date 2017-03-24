@@ -24,6 +24,7 @@
         <javax.jsp.version>2.0</javax.jsp.version>
         <HikariCP.version>2.4.5</HikariCP.version>
         <HikariCP.artifact.version>2.4.9</HikariCP.artifact.version>
+        <selenium-java.version>3.3.1</selenium-java.version>
     </properties>
 
     <dependencies>
@@ -125,6 +126,14 @@
             <version>${HikariCP.artifact.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium-java.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
