@@ -164,7 +164,7 @@ public class Menu {
             break;
         case 4:
             logger.info("Case Create a computer");
-            menuCreate();
+            menuCreateComputer();
             break;
         case 5:
             logger.info("Case Update a computer");
@@ -199,8 +199,18 @@ public class Menu {
             ComputerPage companyPage = new ComputerPage(selectInt());
             System.out.println(companyPage.getList());
             break;
+
         case 9:
-            logger.info("Case 9 EXIT");
+            logger.info("Case 9 Create Company");
+            menuCreateCompany();
+            break;
+        case 10:
+            logger.info("Case 11 Delete Company");
+            System.out.println("id : ");
+            CompanyService.INSTANCE.delete(selectLong());
+            break;
+        case 11:
+            logger.info("Case 11 EXIT");
             input.close();
             break;
         default:
@@ -254,7 +264,7 @@ public class Menu {
     /**
      * Action du choix create.
      */
-    public void menuCreate() {
+    public void menuCreateComputer() {
         computerDtoFound = new ComputerDto();
         System.out.println("name : ");
         computerDtoFound.setName(selectString());
@@ -283,6 +293,16 @@ public class Menu {
         computerDtoFound.setId(ComputerService.INSTANCE.createComputer(computerDtoFound));
 
         System.out.println(computerDtoFound);
+    }
+
+    /**
+     * Manage the the creation of a company.
+     */
+    public void menuCreateCompany() {
+        CompanyDto companyDto = new CompanyDto();
+        System.out.println("name : ");
+        companyDto.setName(selectString());
+        CompanyService.INSTANCE.create(companyDto);
     }
 
     /**
