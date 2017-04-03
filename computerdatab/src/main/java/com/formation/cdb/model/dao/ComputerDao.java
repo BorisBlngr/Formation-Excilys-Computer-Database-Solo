@@ -480,6 +480,28 @@ public enum ComputerDao implements Dao<Computer> {
     }
 
     /**
+     * Method to delete all computers with a specific company_id.
+     * @param id Id of the company.
+     * @return result
+     */
+    public boolean deleteWithCompanyId(long id) {
+        boolean result = false;
+        String sql = "DELETE FROM computer WHERE company_id = ?";
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+            preparedStatement.setLong(1, id);
+            logger.debug("Send : {}", preparedStatement.toString());
+            preparedStatement.executeUpdate();
+
+            result = true;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
      * Methode pour delete un computer en fonction de son id. renvoit le result
      * de sendToExec
      * @param id L'id du computer à delete

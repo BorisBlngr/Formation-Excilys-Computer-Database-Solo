@@ -9,6 +9,10 @@ import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.util.Order;
 
+/**
+ * @author excilys
+ *
+ */
 public enum CompanyService {
     INSTANCE;
 
@@ -56,8 +60,25 @@ public enum CompanyService {
         return companyDtoList;
     }
 
+    /**
+     * Create a Company with a CompanyDto and return its id.
+     * @param companyDto CompanyDto.
+     * @return id
+     */
+    public long create(CompanyDto companyDto) {
+        return CompanyDao.INSTANCE.create(CompanyMapper.INSTANCE.toEntity(companyDto));
+    }
+
+    /**
+     * Method to delete all the computers of a Company and the Company.
+     * @param id Id of the Company.
+     * @return result
+     */
+    public boolean delete(long id) {
+        return CompanyDao.INSTANCE.delete(id);
+    }
+
     public int getNbCompanies() {
         return CompanyDao.INSTANCE.getRow();
     }
-
 }

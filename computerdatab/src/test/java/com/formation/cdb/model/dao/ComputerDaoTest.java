@@ -1,4 +1,4 @@
-package com.formation.cdb.model;
+package com.formation.cdb.model.dao;
 
 import java.time.LocalDate;
 
@@ -9,7 +9,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.formation.cdb.model.dao.ComputerDao;
+import com.formation.cdb.model.Company;
+import com.formation.cdb.model.Computer;
 
 public class ComputerDaoTest {
 

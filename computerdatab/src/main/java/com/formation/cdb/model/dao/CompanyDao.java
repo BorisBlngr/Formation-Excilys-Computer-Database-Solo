@@ -52,6 +52,7 @@ public enum CompanyDao implements Dao<Company> {
      * @param company La company à delete.
      * @return result
      */
+    @Deprecated
     @Override
     public boolean delete(Company company) {
         boolean result = false;
@@ -60,6 +61,32 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
             preparedStatement.setLong(1, company.getId());
+            logger.debug("Send : {}", preparedStatement.toString());
+            preparedStatement.executeUpdate();
+
+            result = true;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Methode pour supprimer la company en base ainsi que tous les computers
+     * associé à cette company, renvoit true si ok.
+     * @param id L'id de la company à delete.
+     * @return result
+     */
+    public boolean delete(long id) {
+        boolean result = false;
+        ComputerDao.INSTANCE.deleteWithCompanyId(id);
+
+        String sql = "DELETE FROM company WHERE id = ?";
+
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+            preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
 

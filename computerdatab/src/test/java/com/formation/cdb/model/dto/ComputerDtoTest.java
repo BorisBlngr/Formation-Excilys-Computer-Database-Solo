@@ -1,4 +1,4 @@
-package com.formation.cdb.model;
+package com.formation.cdb.model.dto;
 
 import static org.junit.Assert.assertTrue;
 
@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.model.Company;
 
 public class ComputerDtoTest {
 
