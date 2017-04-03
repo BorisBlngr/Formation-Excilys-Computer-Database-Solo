@@ -32,18 +32,16 @@
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline"
 						name="searchForm">
-
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" value="${search}" />
-						 <input type="hidden" id="maxInPage"
-							name="maxInPage" value="${maxInPage}" /> 
-							
-						<label> Search by </label>
-						<select class="form-control" id="searchBy" name="searchBy">
-							<option value="computers" <c:if test="${searchBy == 'computers'}"> selected="selected"</c:if> >Computers</option>
-							<option value="companies" <c:if test="${searchBy == 'companies'}"> selected="selected"</c:if> >Companies</option>
-						</select>
-						<input type="submit" id="searchsubmit" value="Filter by name"
+						<input type="hidden" id="maxInPage" name="maxInPage"
+							value="${maxInPage}" /> <label> Search by </label> <select
+							class="form-control" id="searchBy" name="searchBy">
+							<option value="computers"
+								<c:if test="${searchBy == 'computers'}"> selected="selected"</c:if>>Computers</option>
+							<option value="companies"
+								<c:if test="${searchBy == 'companies'}"> selected="selected"</c:if>>Companies</option>
+						</select> <input type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
 					</form>
 				</div>
@@ -75,12 +73,64 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
+						<th>Computer name <c:choose>
+								<c:when
+									test="${filterBy == 'computers' && order == 'ASC'}">
+									<a
+										href="	?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
+										<span class="glyphicon glyphicon-chevron-down"> </span>
+									</a>
+								</c:when>
+								<c:when
+									test="${(filterBy == 'computers') && (order == 'DESC')}">
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
+										<span class="glyphicon glyphicon-chevron-up"> </span>
+									</a>
+								</c:when>
+								<c:otherwise>
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
+										<span class="glyphicon glyphicon-chevron-up"> </span>
+									</a>
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
+										<span class="glyphicon glyphicon-chevron-down"> </span>
+									</a>
+								</c:otherwise>
+							</c:choose>
+						</th>
 						<th>Introduced date</th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date</th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th>Company <c:choose>
+								<c:when
+									test="${(filterBy == 'companies') && (order == 'ASC')}">
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
+										<span class="glyphicon glyphicon-chevron-down"> </span>
+									</a>
+								</c:when>
+								<c:when
+									test="${(filterBy == 'companies') && (order == 'DESC')}">
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
+										<span class="glyphicon glyphicon-chevron-up"> </span>
+									</a>
+								</c:when>
+								<c:otherwise>
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
+										<span class="glyphicon glyphicon-chevron-up"></span>
+									</a>
+									<a
+										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
+										<span class="glyphicon glyphicon-chevron-down"> </span>
+									</a>
+								</c:otherwise>
+							</c:choose>
+						</th>
 
 					</tr>
 				</thead>
@@ -106,7 +156,8 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<pagination:page pageIndex="${pageIndex}" maxPage="${maxPage}"
-					maxInPage="${maxInPage}" pageList="${pageList}" search="${search}" searchBy="${searchBy}" />
+					maxInPage="${maxInPage}" pageList="${pageList}" search="${search}"
+					searchBy="${searchBy}" filterBy="${filterBy}" order="${order}" />
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">

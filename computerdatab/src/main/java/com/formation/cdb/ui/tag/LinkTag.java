@@ -11,6 +11,10 @@ public class LinkTag extends TagSupport {
     private String target;
     private int index;
     private int maxInPage;
+    private String search;
+    private String searchBy;
+    private String order;
+    private String filterBy;
 
     /**
      * doStartTag.
@@ -19,7 +23,9 @@ public class LinkTag extends TagSupport {
      */
     public int doStartTag() throws JspException {
         try {
-            pageContext.getOut().println("<a href=\"" + target + "?page=" + index + "&maxInPage=" + maxInPage + "\" >");
+            pageContext.getOut()
+                    .println("<a href=\"" + target + "?page=" + index + "&maxInPage=" + maxInPage + "&search=" + search
+                            + "&searchBy=" + searchBy + "&order=" + order + "&filterBy=" + filterBy + "\" >");
 
         } catch (IOException e) {
             throw new JspException("I/O Error", e);
@@ -64,5 +70,37 @@ public class LinkTag extends TagSupport {
 
     public void setMaxInPage(int maxInPage) {
         this.maxInPage = maxInPage;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public String getSearchBy() {
+        return searchBy;
+    }
+
+    public void setSearchBy(String searchBy) {
+        this.searchBy = searchBy;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public String getFilterBy() {
+        return filterBy;
+    }
+
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
     }
 }

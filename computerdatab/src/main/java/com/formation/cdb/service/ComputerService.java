@@ -8,6 +8,7 @@ import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.util.Order;
+import com.formation.cdb.util.Search;
 
 /**
  * @author excilys
@@ -51,12 +52,15 @@ public enum ComputerService {
      * @param index Index of the page.
      * @param maxInPage Max element in the list.
      * @param search String to search.
+     * @param filterBy Sort the list by.
      * @param order ASC or DESC for the List.
      * @return computerDtoList
      */
-    public List<ComputerDto> findComputersInRangeSearchName(int index, int maxInPage, String search, Order order) {
+    public List<ComputerDto> findComputersInRangeSearchName(int index, int maxInPage, String search, Search filterBy,
+            Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, order)) {
+        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, filterBy,
+                order)) {
             computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
         }
         return computerDtoList;
@@ -68,12 +72,15 @@ public enum ComputerService {
      * @param index Index of the page.
      * @param maxInPage Max element in the list.
      * @param search String to search.
+     * @param filterBy Sort the list by.
      * @param order ASC or DESC for the List.
      * @return computerDtoList
      */
-    public List<ComputerDto> findInRangeSearchCompanyName(int index, int maxInPage, String search, Order order) {
+    public List<ComputerDto> findInRangeSearchCompanyName(int index, int maxInPage, String search, Search filterBy,
+            Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchCompanyName(index, maxInPage, search, order)) {
+        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchCompanyName(index, maxInPage, search, filterBy,
+                order)) {
             computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
         }
         return computerDtoList;
@@ -141,6 +148,7 @@ public enum ComputerService {
     public int getNbComputersSearchName(String search) {
         return ComputerDao.INSTANCE.getRowSearchName(search);
     }
+
     /**
      * Get the number of element with a company name like search.
      * @param search String to search.

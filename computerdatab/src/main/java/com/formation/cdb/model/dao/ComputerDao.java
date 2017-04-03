@@ -16,6 +16,7 @@ import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.PersistenceManager;
 import com.formation.cdb.util.Order;
+import com.formation.cdb.util.Search;
 
 public enum ComputerDao implements Dao<Computer> {
     INSTANCE;
@@ -213,15 +214,24 @@ public enum ComputerDao implements Dao<Computer> {
      * @param indexPage Index de la page.
      * @param maxInPage Nombre d'item max dans la list.
      * @param search String to search.
+     * @param filterBy Sort the list by.
      * @param order Order.
      * @return computerList
      */
-    public List<Computer> findInRangeSearchName(int indexPage, int maxInPage, String search, Order order) {
+    public List<Computer> findInRangeSearchName(int indexPage, int maxInPage, String search, Search filterBy,
+            Order order) {
         List<Computer> computerList = new ArrayList<Computer>();
+        String sql = "";
         if (indexPage < 1) {
             return computerList;
         }
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
+
+        if (filterBy.equals(Search.COMPANIES)) {
+            sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY y.name %s LIMIT ? OFFSET ? ";
+        } else {
+            sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
+        }
+
         if (order.equals(Order.DESC)) {
             sql = String.format(sql, "DESC");
         } else {
@@ -256,14 +266,21 @@ public enum ComputerDao implements Dao<Computer> {
      * @param maxInPage Nombre d'item max dans la list.
      * @param search String to search.
      * @param order Order.
+     * @param filterBy Sort the list by.
      * @return computerList
      */
-    public List<Computer> findInRangeSearchCompanyName(int indexPage, int maxInPage, String search, Order order) {
+    public List<Computer> findInRangeSearchCompanyName(int indexPage, int maxInPage, String search, Search filterBy,
+            Order order) {
         List<Computer> computerList = new ArrayList<Computer>();
+        String sql = "";
         if (indexPage < 1) {
             return computerList;
         }
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
+        if (search.equals(Search.COMPANIES)) {
+            sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ORDER BY y.name %s LIMIT ? OFFSET ? ";
+        } else {
+            sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
+        }
         if (order.equals(Order.DESC)) {
             sql = String.format(sql, "DESC");
         } else {
@@ -365,16 +382,18 @@ public enum ComputerDao implements Dao<Computer> {
         }
         return count;
     }
+
     /**
-     * Renvoit le nombre de row dans Computer ayant une company name like search.
+     * Renvoit le nombre de row dans Computer ayant une company name like
+     * search.
      * @param search String to search.
      * @return count
      */
     public int getRowSearchCompanyName(String search) {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn
-                        .prepareStatement("SELECT COUNT(c.id) FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ");) {
+                PreparedStatement preparedStatement = conn.prepareStatement(
+                        "SELECT COUNT(c.id) FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ");) {
             preparedStatement.setString(1, "%" + search + "%");
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
