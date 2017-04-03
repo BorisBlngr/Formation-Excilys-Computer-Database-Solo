@@ -80,12 +80,12 @@ public enum CompanyDao implements Dao<Company> {
      */
     public boolean delete(long id) {
         boolean result = false;
-        ComputerDao.INSTANCE.deleteWithCompanyId(id);
 
         String sql = "DELETE FROM company WHERE id = ?";
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+            ComputerDao.INSTANCE.deleteWithCompanyId(id);
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
