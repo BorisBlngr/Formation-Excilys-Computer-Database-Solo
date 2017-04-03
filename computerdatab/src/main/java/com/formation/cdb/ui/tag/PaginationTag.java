@@ -16,6 +16,7 @@ public class PaginationTag extends TagSupport {
     private int maxInPage;
     private List<Page> pageList;
     private String search;
+    private String searchBy;
 
     /**
      * doStartTag.
@@ -32,22 +33,26 @@ public class PaginationTag extends TagSupport {
                         + search + "\"aria-label=\"Previous\"> <span aria-hidden=\"true\">&laquo;</span></a></li>");
                 pageContext.getOut()
                         .println("<li><a href=\"?page=" + new Integer(pageIndex - 1) + "&maxInPage=" + maxInPage
-                                + "&search=" + search
+                                + "&search=" + search + "&searchBy=" + searchBy
                                 + "\"aria-label=\"Previous\"> <span aria-hidden=\"true\">&lt;</span></a></li>");
             }
 
             for (Page page : pageList) {
-                pageContext.getOut().println("<li class=\"" + page.getActive() + "\"><a href=\"?page=" + page.getIndex()
-                        + "&maxInPage=" + maxInPage + "&search=" + search + "\">" + page.getIndex() + "</a></li>");
+                pageContext.getOut()
+                        .println("<li class=\"" + page.getActive() + "\"><a href=\"?page=" + page.getIndex()
+                                + "&maxInPage=" + maxInPage + "&search=" + search + "&searchBy=" + searchBy + "\">"
+                                + page.getIndex() + "</a></li>");
             }
 
             if (pageIndex != maxPage) {
                 pageContext.getOut()
                         .println("<li><a href=\"?page=" + new Integer(pageIndex + 1) + "&maxInPage=" + maxInPage
-                                + "&search=" + search
+                                + "&search=" + search + "&searchBy=" + searchBy
                                 + "\"aria-label=\"Next\"> <span aria-hidden=\"true\">&gt;</span></a></li>");
-                pageContext.getOut().println("<li><a href=\"?page=" + maxPage + "&maxInPage=" + maxInPage + "&search="
-                        + search + "\"aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>");
+                pageContext.getOut()
+                        .println("<li><a href=\"?page=" + maxPage + "&maxInPage=" + maxInPage + "&search=" + search
+                                + "&searchBy=" + searchBy
+                                + "\"aria-label=\"Next\"> <span aria-hidden=\"true\">&raquo;</span></a></li>");
             }
 
         } catch (IOException e) {
@@ -94,6 +99,14 @@ public class PaginationTag extends TagSupport {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getSearchBy() {
+        return searchBy;
+    }
+
+    public void setSearchBy(String searchBy) {
+        this.searchBy = searchBy;
     }
 
 }

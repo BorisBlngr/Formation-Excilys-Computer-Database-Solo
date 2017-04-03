@@ -30,13 +30,21 @@
 			<h1 id="homeTitle">${nbComputer}&nbsp;Computers&nbsp;found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="GET" class="form-inline">
+					<form id="searchForm" action="#" method="GET" class="form-inline"
+						name="searchForm">
 
 						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" value="${search}" />
+						 <input type="hidden" id="maxInPage"
+							name="maxInPage" value="${maxInPage}" /> 
+							
+						<label> Search by </label>
+						<select class="form-control" id="searchBy" name="searchBy">
+							<option value="computers" <c:if test="${searchBy == 'computers'}"> selected="selected"</c:if> >Computers</option>
+							<option value="companies" <c:if test="${searchBy == 'companies'}"> selected="selected"</c:if> >Companies</option>
+						</select>
 						<input type="submit" id="searchsubmit" value="Filter by name"
-							class="btn btn-primary" /> <input type="hidden" id="maxInPage" name="maxInPage"
-							value="${maxInPage}" />
+							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
@@ -98,7 +106,7 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<pagination:page pageIndex="${pageIndex}" maxPage="${maxPage}"
-					maxInPage="${maxInPage}" pageList="${pageList}" search="${search}" />
+					maxInPage="${maxInPage}" pageList="${pageList}" search="${search}" searchBy="${searchBy}" />
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">

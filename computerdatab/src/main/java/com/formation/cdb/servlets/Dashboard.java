@@ -13,16 +13,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
 import com.formation.cdb.ui.Page;
 import com.formation.cdb.util.Order;
+import com.formation.cdb.util.Search;
 
 /**
  * Servlet implementation class Dashboard.
  */
 @WebServlet("/dashboard")
 public class Dashboard extends HttpServlet {
+    final Logger logger = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
     private final String selectionSplitter = ",";
@@ -46,6 +51,7 @@ public class Dashboard extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        logger.info(request.getParameterMap().toString());
         int pageIndex = 1;
         if (request.getParameterMap().containsKey("page") && request.getParameter("page").matches(regex)) {
             pageIndex = Integer.parseInt(request.getParameter("page"));
@@ -66,11 +72,21 @@ public class Dashboard extends HttpServlet {
             search = request.getParameter("search");
         }
 
+        String searchBy = "";
+        if (request.getParameterMap().containsKey("searchBy")
+                && request.getParameter("searchBy").equals(Search.COMPANIES.toString())) {
+            searchBy = Search.COMPANIES.toString();
+        } else {
+            searchBy = Search.COMPUTERS.toString();
+        }
+
         int nbComputer = 0;
         if (search.isEmpty()) {
             nbComputer = ComputerService.INSTANCE.getNbComputers();
-        } else {
+        } else if (Search.COMPUTERS.equalsName(searchBy)) {
             nbComputer = ComputerService.INSTANCE.getNbComputersSearchName(search);
+        } else if (Search.COMPANIES.equalsName(searchBy)) {
+            nbComputer = ComputerService.INSTANCE.getNbComputersSearchCompanyName(search);
         }
 
         int maxPage = nbComputer / maxInPage;
@@ -83,9 +99,13 @@ public class Dashboard extends HttpServlet {
             computerDtoList = ComputerService.INSTANCE.findComputersInRange(pageIndex, maxInPage);
 
         } else {
-            computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
-                    Order.ASC);
-
+            if (Search.COMPANIES.equalsName(searchBy)) {
+                computerDtoList = ComputerService.INSTANCE.findInRangeSearchCompanyName(pageIndex, maxInPage, search,
+                        Order.ASC);
+            } else {
+                computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
+                        Order.ASC);
+            }
         }
 
         List<Page> pageList = constructionPageChoices(pageIndex, maxPage);
@@ -100,6 +120,7 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("pageList", pageList);
         request.setAttribute("nbComputer", nbComputer);
         request.setAttribute("search", search);
+        request.setAttribute("searchBy", searchBy);
 
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/dashboard.jsp");
         view.forward(request, response);
@@ -184,5 +205,19 @@ public class Dashboard extends HttpServlet {
             }
         }
         return pageList;
+    }
+
+    /**
+     * main.
+     * @param args Arguments.
+     */
+    public static void main(String[] args) {
+        Search search = Search.COMPANIES;
+        System.out.println(search);
+        System.out.println(search.toString());
+        System.out.println(search.equals("companies"));
+        System.out.println("companies".equals(search.toString()));
+        System.out.println("companies".equals(search));
+
     }
 }

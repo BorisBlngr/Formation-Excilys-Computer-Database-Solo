@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
 public class Menu {
@@ -26,7 +27,7 @@ public class Menu {
     private List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
     ComputerDto computerDtoFound = new ComputerDto();
     Scanner input;
-    int nbItem = 9;
+    int nbItem = 11;
     int maxInPage = 0;
 
     /**
@@ -61,7 +62,9 @@ public class Menu {
         System.out.println("6 - Delete a computer");
         System.out.println("7 - List Computers");
         System.out.println("8 - List Companies");
-        System.out.println("9 - Quit");
+        System.out.println("9 - Create Company");
+        System.out.println("10 - Delete Company");
+        System.out.println("11 - Quit");
     }
 
     /**
@@ -147,7 +150,7 @@ public class Menu {
         case 2:
             logger.info("Case List All Companies");
             companyDtoList.clear();
-            companyDtoList = ComputerService.INSTANCE.findAllCompany();
+            companyDtoList = CompanyService.INSTANCE.findAllCompany();
             for (CompanyDto companyDto : companyDtoList) {
                 System.out.println(" id : [" + companyDto.getId() + "]\t| name : " + companyDto.getName());
             }
@@ -186,7 +189,7 @@ public class Menu {
             break;
         case 8:
             logger.info("Case 8 List of Companies");
-            int nbCompany = ComputerService.INSTANCE.getNbCompanies();
+            int nbCompany = CompanyService.INSTANCE.getNbCompanies();
             int nbCompanyPages = nbCompany / maxInPage;
             if (nbCompany % maxInPage != 0) {
                 nbCompanyPages++;
@@ -288,7 +291,7 @@ public class Menu {
     public void showMeTheMagic() {
         printMenu();
         int choice = execute(selectItemMenu(1, nbItem));
-        if (choice == 9) {
+        if (choice == nbItem) {
             return;
         } else {
             printMenu();

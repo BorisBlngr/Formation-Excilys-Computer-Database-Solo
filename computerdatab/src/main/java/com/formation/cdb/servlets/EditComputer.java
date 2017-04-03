@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
 /**
@@ -64,7 +65,7 @@ public class EditComputer extends HttpServlet {
         }
 
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        companyDtoList = ComputerService.INSTANCE.findAllCompany();
+        companyDtoList = CompanyService.INSTANCE.findAllCompany();
 
         request.setAttribute("computerDto", computerDto);
         request.setAttribute("companyDtoList", companyDtoList);

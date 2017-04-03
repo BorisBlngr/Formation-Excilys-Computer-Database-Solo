@@ -12,7 +12,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import com.formation.cdb.model.dto.CompanyDto;
-import com.formation.cdb.service.ComputerService;
+import com.formation.cdb.service.CompanyService;
 
 public class CompanyPage {
 
@@ -39,7 +39,7 @@ public class CompanyPage {
 
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
-        this.list = ComputerService.INSTANCE.findCompaniesInRange(index, maxInPage);
+        this.list = CompanyService.INSTANCE.findCompaniesInRange(index, maxInPage);
     }
 
     public int getMaxInPage() {
@@ -73,7 +73,7 @@ public class CompanyPage {
     public static void main(String[] args) {
         CompanyPage page = new CompanyPage(2);
         System.out.println(page.getList());
-        System.out.println(ComputerService.INSTANCE.getNbCompanies());
+        System.out.println(CompanyService.INSTANCE.getNbCompanies());
     }
 
 }

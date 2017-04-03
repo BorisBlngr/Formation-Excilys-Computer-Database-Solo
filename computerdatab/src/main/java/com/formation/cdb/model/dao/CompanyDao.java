@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.util.Order;
 
 public enum CompanyDao implements Dao<Company> {
     INSTANCE;
@@ -183,6 +184,47 @@ public enum CompanyDao implements Dao<Company> {
     }
 
     /**
+     * Methode pour avoir une liste de companies qui ont le mot clé search de
+     * taille maximale maxInPage. Selectionne les computer en fonction de
+     * l'indexPage (page 1 à x) et ordonné suivant l'enum.
+     * @param indexPage Index de la page.
+     * @param maxInPage Nombre d'item max dans la list.
+     * @param search String to search.
+     * @param order Order.
+     * @return companyList
+     */
+    public List<Company> findInRangeSearchName(int indexPage, int maxInPage, String search, Order order) {
+        List<Company> companyList = new ArrayList<Company>();
+        if (indexPage < 1) {
+            return companyList;
+        }
+        String sql = "SELECT id, name FROM computer WHERE name LIKE ? ORDER BY name %s LIMIT ? OFFSET ? ";
+        if (order.equals(Order.DESC)) {
+            sql = String.format(sql, "DESC");
+        } else {
+            sql = String.format(sql, "ASC");
+        }
+        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setInt(2, maxInPage);
+            preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
+            logger.debug("Send : {}", preparedStatement.toString());
+            preparedStatement.execute();
+
+            try (ResultSet rs = preparedStatement.getResultSet();) {
+                while (rs.next()) {
+                    companyList.add(constructCompanyWithResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return companyList;
+    }
+
+    /**
      * Methode pour trouver une company en fonction de son name en base.
      * @param name Le nom de la company à trouver.
      * @return company
@@ -257,5 +299,16 @@ public enum CompanyDao implements Dao<Company> {
             e.printStackTrace();
         }
         return count;
+    }
+
+    /**
+     * Construct a company based on the result set.
+     * @param rs Resultset.
+     * @return company
+     * @throws SQLException Sql exception.
+     */
+    private Company constructCompanyWithResultSet(ResultSet rs) throws SQLException {
+        Company company = new Company.CompanyBuilder().id(rs.getInt("id")).name(rs.getString("name")).build();
+        return company;
     }
 }

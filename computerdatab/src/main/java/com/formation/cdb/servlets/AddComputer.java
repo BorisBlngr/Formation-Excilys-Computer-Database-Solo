@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
 /**
@@ -46,7 +47,7 @@ public class AddComputer extends HttpServlet {
             throws ServletException, IOException {
 
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        companyDtoList = ComputerService.INSTANCE.findAllCompany();
+        companyDtoList = CompanyService.INSTANCE.findAllCompany();
 
         request.setAttribute("companyDtoList", companyDtoList);
 

@@ -3,13 +3,9 @@ package com.formation.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.formation.cdb.mapper.CompanyMapper;
 import com.formation.cdb.mapper.ComputerMapper;
-import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.dao.CompanyDao;
 import com.formation.cdb.model.dao.ComputerDao;
-import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.util.Order;
 
@@ -67,6 +63,23 @@ public enum ComputerService {
     }
 
     /**
+     * Find a list of computers, or page, with a specific string in their
+     * company's name and with the order Order.DESC or Order.ASC.
+     * @param index Index of the page.
+     * @param maxInPage Max element in the list.
+     * @param search String to search.
+     * @param order ASC or DESC for the List.
+     * @return computerDtoList
+     */
+    public List<ComputerDto> findInRangeSearchCompanyName(int index, int maxInPage, String search, Order order) {
+        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchCompanyName(index, maxInPage, search, order)) {
+            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+        }
+        return computerDtoList;
+    }
+
+    /**
      * Find All Computer.
      * @param id Computer id.
      * @return computerDto
@@ -87,33 +100,6 @@ public enum ComputerService {
             computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
         }
         return computerDtoList;
-    }
-
-    /**
-     * Find a list of company with index et maxInPage.
-     * @param index Index.
-     * @param maxInPage Number max in the list.
-     * @return companyDtoList
-     */
-    public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
-        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : CompanyDao.INSTANCE.findInRange(index, maxInPage)) {
-            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
-        }
-        return companyDtoList;
-    }
-
-    /**
-     * Find all companies.
-     * @return companyDtoList
-     */
-    @Deprecated
-    public List<CompanyDto> findAllCompany() {
-        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : CompanyDao.INSTANCE.findAll()) {
-            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
-        }
-        return companyDtoList;
     }
 
     /**
@@ -155,9 +141,13 @@ public enum ComputerService {
     public int getNbComputersSearchName(String search) {
         return ComputerDao.INSTANCE.getRowSearchName(search);
     }
-
-    public int getNbCompanies() {
-        return CompanyDao.INSTANCE.getRow();
+    /**
+     * Get the number of element with a company name like search.
+     * @param search String to search.
+     * @return count
+     */
+    public int getNbComputersSearchCompanyName(String search) {
+        return ComputerDao.INSTANCE.getRowSearchCompanyName(search);
     }
 
     /**
