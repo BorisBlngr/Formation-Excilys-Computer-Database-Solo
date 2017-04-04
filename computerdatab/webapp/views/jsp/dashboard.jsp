@@ -74,27 +74,25 @@
 							</a>
 						</span></th>
 						<th>Computer name <c:choose>
-								<c:when
-									test="${filterBy == 'computers' && order == 'ASC'}">
+								<c:when test="${filterBy == 'computers' && order == 'ASC'}">
 									<a
-										href="	?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
+										href="	?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
 										<span class="glyphicon glyphicon-chevron-down"> </span>
 									</a>
 								</c:when>
-								<c:when
-									test="${(filterBy == 'computers') && (order == 'DESC')}">
+								<c:when test="${(filterBy == 'computers') && (order == 'DESC')}">
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
 										<span class="glyphicon glyphicon-chevron-up"> </span>
 									</a>
 								</c:when>
 								<c:otherwise>
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=ASC">
 										<span class="glyphicon glyphicon-chevron-up"> </span>
 									</a>
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=computers&order=DESC">
 										<span class="glyphicon glyphicon-chevron-down"> </span>
 									</a>
 								</c:otherwise>
@@ -105,27 +103,25 @@
 						<th>Discontinued date</th>
 						<!-- Table header for Company -->
 						<th>Company <c:choose>
-								<c:when
-									test="${(filterBy == 'companies') && (order == 'ASC')}">
+								<c:when test="${(filterBy == 'companies') && (order == 'ASC')}">
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
 										<span class="glyphicon glyphicon-chevron-down"> </span>
 									</a>
 								</c:when>
-								<c:when
-									test="${(filterBy == 'companies') && (order == 'DESC')}">
+								<c:when test="${(filterBy == 'companies') && (order == 'DESC')}">
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
 										<span class="glyphicon glyphicon-chevron-up"> </span>
 									</a>
 								</c:when>
 								<c:otherwise>
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=ASC">
 										<span class="glyphicon glyphicon-chevron-up"></span>
 									</a>
 									<a
-										href="?page=${pageIndex}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
+										href="?page=${pageIndex}&maxInPage=${maxInPage}&search=${search}&searchBy=${searchBy}&filterBy=companies&order=DESC">
 										<span class="glyphicon glyphicon-chevron-down"> </span>
 									</a>
 								</c:otherwise>
