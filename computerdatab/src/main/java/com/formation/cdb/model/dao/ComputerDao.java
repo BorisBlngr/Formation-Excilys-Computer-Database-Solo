@@ -21,6 +21,19 @@ import com.formation.cdb.util.Search;
 public enum ComputerDao implements Dao<Computer> {
     INSTANCE;
     final Logger logger = LoggerFactory.getLogger(ComputerDao.class);
+    final String sqlCreate = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
+    final String sqlFindById = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = ";
+    final String sqlFindByName = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?";
+    final String sqlFindAll = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
+    final String sqlFindInRange = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?";
+    final String sqlFindIdByName = "SELECT id FROM computer WHERE name = ?";
+    final String sqlCountAll = "SELECT COUNT(id) FROM computer";
+    final String sqlCountSearchName = "SELECT COUNT(id) FROM computer WHERE name LIKE ?";
+    final String sqlCountSearchCompanyName = "SELECT COUNT(c.id) FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ";
+    final String sqlDeleteByComputer = "DELETE FROM computer WHERE id = ?";
+    final String sqlDeleteByCompanyId = "DELETE FROM computer WHERE company_id = ?";
+    final String sqlDeleteById = "DELETE FROM computer WHERE id = ?";
+    final String sqlUpdate = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 
     /**
      * Constructeur.
@@ -79,37 +92,8 @@ public enum ComputerDao implements Dao<Computer> {
         Computer computer = new Computer();
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
-                    + id;
-            logger.debug("Send : {}", sql);
-            try (ResultSet rs = stmt.executeQuery(sql);) {
-                // Extract data from result set
-                if (rs.first()) {
-                    computer = constructComputerWithResultSet(rs);
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return computer;
-    }
-
-    /**
-     * Methode pour trouver un computerUi en base en fonction de son id, renvoit
-     * le premier resultat. Une seule requete.
-     * @param id L'id du computer à trouver.
-     * @return computer
-     */
-    @Deprecated
-    public Computer findComputer(long id) {
-        Computer computer = new Computer();
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = "
-                + id;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-
-            logger.debug("Send : {}", sql);
-            try (ResultSet rs = stmt.executeQuery(sql);) {
+            logger.debug("Send : {}", sqlFindById + id);
+            try (ResultSet rs = stmt.executeQuery(sqlFindById + id);) {
                 // Extract data from result set
                 if (rs.first()) {
                     computer = constructComputerWithResultSet(rs);
@@ -128,12 +112,9 @@ public enum ComputerDao implements Dao<Computer> {
      * @return computer
      */
     public Computer findByName(String name) {
-
         Computer computer = new Computer();
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindByName);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -155,13 +136,10 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public List<Computer> findAll() {
         List<Computer> computerList = new ArrayList<Computer>();
-
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sql);
+            logger.debug("Send : {}", sqlFindAll);
 
-            try (ResultSet rs = stmt.executeQuery(sql);) {
+            try (ResultSet rs = stmt.executeQuery(sqlFindAll);) {
                 // Extract data from result set
                 while (rs.next()) {
                     computerList.add(constructComputerWithResultSet(rs));
@@ -186,10 +164,8 @@ public enum ComputerDao implements Dao<Computer> {
         if (indexPage < 1) {
             return computerList;
         }
-        String sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindInRange);) {
             preparedStatement.setInt(1, maxInPage);
             preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
@@ -225,13 +201,11 @@ public enum ComputerDao implements Dao<Computer> {
         if (indexPage < 1) {
             return computerList;
         }
-
         if (filterBy.equals(Search.COMPANIES)) {
             sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY y.name %s LIMIT ? OFFSET ? ";
         } else {
             sql = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name LIKE ? ORDER BY c.name %s LIMIT ? OFFSET ? ";
         }
-
         if (order.equals(Order.DESC)) {
             sql = String.format(sql, "DESC");
         } else {
@@ -316,8 +290,7 @@ public enum ComputerDao implements Dao<Computer> {
         long id = (long) 0;
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn
-                        .prepareStatement("SELECT id FROM computer WHERE name = ?");) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindIdByName);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -339,19 +312,14 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public int getRow() {
         int count = 0;
-        String sql = "SELECT COUNT(id) FROM computer";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sql);
-            try (ResultSet rs = stmt.executeQuery(sql);) {
-
+            logger.debug("Send : {}", sqlCountAll);
+            try (ResultSet rs = stmt.executeQuery(sqlCountAll);) {
                 if (rs.first()) {
                     count = rs.getInt("COUNT(id)");
                 }
             }
-        } catch (
-
-        SQLException e) {
+        } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -366,8 +334,7 @@ public enum ComputerDao implements Dao<Computer> {
     public int getRowSearchName(String search) {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn
-                        .prepareStatement("SELECT COUNT(id) FROM computer WHERE name LIKE ?");) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchName);) {
             preparedStatement.setString(1, "%" + search + "%");
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -392,8 +359,7 @@ public enum ComputerDao implements Dao<Computer> {
     public int getRowSearchCompanyName(String search) {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(
-                        "SELECT COUNT(c.id) FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE y.name LIKE ? ");) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchCompanyName);) {
             preparedStatement.setString(1, "%" + search + "%");
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -417,15 +383,11 @@ public enum ComputerDao implements Dao<Computer> {
      */
     @Override
     public long create(Computer cmpt) {
-
         if (!computerIsValid(cmpt)) {
             return 0;
         }
-
-        String sql = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlCreate);) {
 
             preparedStatement.setString(1, cmpt.getName());
             if (cmpt.getIntroduced() == null) {
@@ -450,9 +412,7 @@ public enum ComputerDao implements Dao<Computer> {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return
-
-        findIdByName(cmpt.getName());
+        return findIdByName(cmpt.getName());
     }
 
     /**
@@ -464,9 +424,8 @@ public enum ComputerDao implements Dao<Computer> {
     @Override
     public boolean delete(Computer computer) {
         boolean result = false;
-        String sql = "DELETE FROM computer WHERE id = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteByComputer);) {
             preparedStatement.setLong(1, computer.getId());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -486,9 +445,8 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public boolean deleteWithCompanyId(long id) {
         boolean result = false;
-        String sql = "DELETE FROM computer WHERE company_id = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteByCompanyId);) {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -509,9 +467,8 @@ public enum ComputerDao implements Dao<Computer> {
      */
     public boolean delete(long id) {
         boolean result = false;
-        String sql = "DELETE FROM computer WHERE id = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -530,18 +487,13 @@ public enum ComputerDao implements Dao<Computer> {
      * @param cmpt Le computer à update.
      * @return result
      */
-    // Careful with the computer's id
     @Override
     public boolean update(Computer cmpt) {
-
         if (!computerIsValid(cmpt)) {
             return false;
         }
-
-        String sql = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlUpdate);) {
 
             preparedStatement.setString(1, cmpt.getName());
             if (cmpt.getIntroduced() == null) {
@@ -567,6 +519,6 @@ public enum ComputerDao implements Dao<Computer> {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 }

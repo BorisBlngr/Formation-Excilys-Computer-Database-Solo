@@ -18,6 +18,15 @@ import com.formation.cdb.util.Order;
 public enum CompanyDao implements Dao<Company> {
     INSTANCE;
     final Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+    final String sqlCreate = "INSERT INTO company(name) VALUES (?)";
+    final String sqlDeleteById = "DELETE FROM company WHERE id = ?";
+    final String sqlUpdate = "UPDATE company SET name = ? WHERE id = ? ";
+    final String sqlFindById = "SELECT id,name FROM company WHERE id = ";
+    final String sqlFindAll = "SELECT id,name FROM company";
+    final String sqlFindInRange = "SELECT id,name FROM company LIMIT ? OFFSET ?";
+    final String sqlFindByName = "SELECT id,name FROM company WHERE name = ?";
+    final String sqlFindIdByName = "SELECT id FROM company WHERE name = ?";
+    final String sqlCountAll = "SELECT COUNT(*) FROM company";
 
     /**
      * Constructeur qui initialise les properties.
@@ -33,13 +42,11 @@ public enum CompanyDao implements Dao<Company> {
      */
     @Override
     public long create(Company company) {
-        String sql = "INSERT INTO company(name) VALUES (?)";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlCreate);) {
             preparedStatement.setString(1, company.getName());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -56,14 +63,11 @@ public enum CompanyDao implements Dao<Company> {
     @Override
     public boolean delete(Company company) {
         boolean result = false;
-        String sql = "DELETE FROM company WHERE id = ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
             preparedStatement.setLong(1, company.getId());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -79,11 +83,8 @@ public enum CompanyDao implements Dao<Company> {
      */
     public boolean delete(long id) {
         boolean result = false;
-
-        String sql = "DELETE FROM company WHERE id = ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
@@ -103,10 +104,8 @@ public enum CompanyDao implements Dao<Company> {
      */
     @Override
     public boolean update(Company company) {
-        String sql = "UPDATE company SET name = ? WHERE id = ? ";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlUpdate);) {
             preparedStatement.setString(1, company.getName());
             preparedStatement.setLong(2, company.getId());
             logger.debug("Send : {}", preparedStatement.toString());
@@ -127,11 +126,9 @@ public enum CompanyDao implements Dao<Company> {
     @Override
     public Company find(long id) {
         Company company = new Company();
-        String sql = "SELECT id,name FROM company WHERE id = " + id;
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", stmt.toString());
-            try (ResultSet rs = stmt.executeQuery(sql);) {
+            logger.debug("Send : ", sqlFindById + id);
+            try (ResultSet rs = stmt.executeQuery(sqlFindById + id);) {
                 if (rs.first()) {
                     company.setId(id);
                     company.setName(rs.getString("name"));
@@ -151,11 +148,9 @@ public enum CompanyDao implements Dao<Company> {
     @Deprecated
     public List<Company> findAll() {
         List<Company> companyList = new ArrayList<Company>();
-        String sql = "SELECT id,name FROM company";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sql);
-            try (ResultSet rs = stmt.executeQuery(sql);) {
+            logger.debug("Send : {}", sqlFindAll);
+            try (ResultSet rs = stmt.executeQuery(sqlFindAll);) {
                 Company company;
                 while (rs.next()) {
                     company = new Company();
@@ -184,10 +179,8 @@ public enum CompanyDao implements Dao<Company> {
         if (indexPage < 1) {
             return companyList;
         }
-        String sql = "SELECT id,name FROM company LIMIT ? OFFSET ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindInRange);) {
             preparedStatement.setInt(1, maxInPage);
             preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
@@ -256,10 +249,8 @@ public enum CompanyDao implements Dao<Company> {
      */
     public Company findByName(String name) {
         Company company = new Company();
-        String sql = "SELECT id,name FROM company WHERE name = ?";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindByName);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -284,9 +275,8 @@ public enum CompanyDao implements Dao<Company> {
      */
     public long findIdByName(String name) {
         Long id = (long) 0;
-        String sql = "SELECT id FROM company WHERE name = ?";
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
+                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindIdByName);) {
             preparedStatement.setString(1, name);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
@@ -308,11 +298,9 @@ public enum CompanyDao implements Dao<Company> {
      */
     public int getRow() {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM company";
-
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sql);
-            try (ResultSet rs = stmt.executeQuery(sql);) {
+            logger.debug("Send : {}", sqlCountAll);
+            try (ResultSet rs = stmt.executeQuery(sqlCountAll);) {
                 if (rs.first()) {
                     count = rs.getInt("COUNT(*)");
                 }
@@ -333,7 +321,6 @@ public enum CompanyDao implements Dao<Company> {
      * @throws SQLException Sql exception.
      */
     private Company constructCompanyWithResultSet(ResultSet rs) throws SQLException {
-        Company company = new Company.CompanyBuilder().id(rs.getInt("id")).name(rs.getString("name")).build();
-        return company;
+        return new Company.CompanyBuilder().id(rs.getInt("id")).name(rs.getString("name")).build();
     }
 }

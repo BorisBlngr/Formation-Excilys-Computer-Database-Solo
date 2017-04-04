@@ -93,7 +93,7 @@ public enum ComputerService {
      */
     @Deprecated
     public ComputerDto findComputer(long id) {
-        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.findComputer(id));
+        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.find(id));
     }
 
     /**
