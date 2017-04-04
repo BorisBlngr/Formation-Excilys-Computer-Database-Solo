@@ -19,13 +19,13 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public enum PersistenceManager {
-
     INSTANCE;
 
     Parameters params = new Parameters();
     Configuration config;
     final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
     HikariDataSource ds;
+    private static final ThreadLocal<Connection> THREAD_CONNECTION = new ThreadLocal<Connection>();;
 
     /**
      * Constructeur récupérant les propriétés du conf.
@@ -35,11 +35,9 @@ public enum PersistenceManager {
                 PropertiesConfiguration.class).configure(params.properties().setFileName("db.properties"));
         try {
             config = builder.getConfiguration();
-
         } catch (ConfigurationException cex) {
             // loading of the configuration file failed
         }
-
         try {
             Class.forName(config.getString("dataSource.driverClass"));
         } catch (ClassNotFoundException e) {
@@ -60,13 +58,29 @@ public enum PersistenceManager {
     }
 
     /**
-     * Methode se connecter à jdbcUrl et renvoi la Connection.
+     * Methode se connecter à jdbcUrl et renvoi la Connection du threadLocal.
      * @return conn
      */
     public Connection connectToDb() {
+        try {
+            if (THREAD_CONNECTION.get() == null || THREAD_CONNECTION.get().isClosed()) {
+                THREAD_CONNECTION.set(connect());
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return THREAD_CONNECTION.get();
+
+    }
+
+    /**
+     * Methode se connecter à jdbcUrl et renvoi la Connection.
+     * @return conn
+     */
+    private Connection connect() {
         Connection conn = null;
         try {
-
             logger.debug("Connecting to db .... ");
             conn = ds.getConnection();
             logger.debug("Connection opened");
@@ -74,6 +88,7 @@ public enum PersistenceManager {
             e.printStackTrace();
         }
         return conn;
+
     }
 
     /**
