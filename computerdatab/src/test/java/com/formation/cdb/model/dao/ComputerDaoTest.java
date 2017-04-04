@@ -102,8 +102,12 @@ public class ComputerDaoTest {
      */
     @Test
     public void deleteValid() {
-        Computer nullComputer = new Computer();
-        Computer computerFound = ComputerDao.INSTANCE.findByName("Test unitaire create name");
+        Computer newComputer = new Computer.ComputerBuilder().name("computer198494")
+                .introduced(LocalDate.of(1990, 10, 10)).discontinued(LocalDate.of(2000, 10, 10))
+                .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
+        newComputer.setId(ComputerDao.INSTANCE.create(newComputer));
+        ComputerDao.INSTANCE.delete(newComputer.getId());
+        Computer computerFound = ComputerDao.INSTANCE.findByName("computer198494");
         // System.out.println(computerFound);
         // System.out.println(nullComputer);
         Assert.assertTrue(computerFound.equals(nullComputer));

@@ -1,7 +1,5 @@
 package com.formation.cdb.model.dao;
 
-import java.time.LocalDate;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -97,46 +95,11 @@ public class CompanyDaoTest {
      */
     @Test
     public void deleteValid() {
-        Company nullCompany = new Company();
-        Company companyFound = CompanyDao.INSTANCE.findByName("boitetropbien");
+        long id = CompanyDao.INSTANCE.create(new Company.CompanyBuilder().name("company658").build());
+        CompanyDao.INSTANCE.delete(id);
+        Company companyFound = CompanyDao.INSTANCE.findByName("company658");
         // System.out.println(nullCompany.toString());
         // System.out.println(companyFound.toString());
         Assert.assertTrue(companyFound.toString().equals(nullCompany.toString()));
     }
-
-    /**
-     * Test to delete a Company and all its Computers.
-     */
-    @Test
-    public void deleteCompanyAndComputersValid() {
-        Company company1 = new Company.CompanyBuilder().name("company1").build();
-        company1.setId(CompanyDao.INSTANCE.create(company1));
-
-        Computer computer1 = new Computer.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
-                .discontinued(LocalDate.of(1990, 10, 10)).name("computer1")
-                .company(CompanyDao.INSTANCE.find(company1.getId())).build();
-        Computer computer2 = new Computer.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
-                .discontinued(LocalDate.of(1990, 10, 10)).name("computer2")
-                .company(CompanyDao.INSTANCE.find(company1.getId())).build();
-        Computer computer3 = new Computer.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
-                .discontinued(LocalDate.of(1990, 10, 10)).name("computer3")
-                .company(CompanyDao.INSTANCE.find(company1.getId())).build();
-        computer1.setId(ComputerDao.INSTANCE.create(computer1));
-        computer2.setId(ComputerDao.INSTANCE.create(computer2));
-        computer3.setId(ComputerDao.INSTANCE.create(computer3));
-
-        CompanyDao.INSTANCE.delete(company1.getId());
-
-        computer1 = ComputerDao.INSTANCE.findByName("computer1");
-        computer2 = ComputerDao.INSTANCE.findByName("computer2");
-        computer3 = ComputerDao.INSTANCE.findByName("computer3");
-        company1 = CompanyDao.INSTANCE.findByName("company1");
-
-        Assert.assertTrue(computer1.equals(nullComputer));
-        Assert.assertTrue(computer2.equals(nullComputer));
-        Assert.assertTrue(computer3.equals(nullComputer));
-        Assert.assertTrue(company1.equals(nullCompany));
-
-    }
-
 }

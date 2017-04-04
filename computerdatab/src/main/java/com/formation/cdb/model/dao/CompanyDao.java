@@ -73,8 +73,7 @@ public enum CompanyDao implements Dao<Company> {
     }
 
     /**
-     * Methode pour supprimer la company en base ainsi que tous les computers
-     * associé à cette company, renvoit true si ok.
+     * Methode pour supprimer la company en base, renvoit true si ok.
      * @param id L'id de la company à delete.
      * @return result
      */
@@ -85,7 +84,6 @@ public enum CompanyDao implements Dao<Company> {
 
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            ComputerDao.INSTANCE.deleteWithCompanyId(id);
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();

@@ -6,6 +6,7 @@ import java.util.List;
 import com.formation.cdb.mapper.CompanyMapper;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dao.CompanyDao;
+import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.util.Order;
 
@@ -75,7 +76,7 @@ public enum CompanyService {
      * @return result
      */
     public boolean delete(long id) {
-        return CompanyDao.INSTANCE.delete(id);
+        return ComputerDao.INSTANCE.deleteWithCompanyId(id) && CompanyDao.INSTANCE.delete(id);
     }
 
     public int getNbCompanies() {
