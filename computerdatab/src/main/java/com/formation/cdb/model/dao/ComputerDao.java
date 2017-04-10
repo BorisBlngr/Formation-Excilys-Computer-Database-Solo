@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.PersistenceManager;
+import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
 
@@ -50,10 +51,10 @@ public enum ComputerDao implements Dao<Computer> {
         if (computer.getName().equals(null) || computer.getName().trim().isEmpty()) {
             logger.error("A computer has no name !");
             return false;
-        } else if (!computer.getDiscontinued().equals(null) && computer.getIntroduced().equals(null)) {
+        } else if (computer.getDiscontinued() != null && computer.getIntroduced() == null) {
             logger.error("Discontinued Date but no Introduced Date!");
             return false;
-        } else if (!computer.getDiscontinued().equals(null)
+        } else if (computer.getDiscontinued() != null
                 && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
             logger.error("Discontinued Date before Introduced Date!");
             return false;
@@ -213,7 +214,7 @@ public enum ComputerDao implements Dao<Computer> {
         }
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(1, search + "%");
             preparedStatement.setInt(2, maxInPage);
             preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
@@ -262,7 +263,7 @@ public enum ComputerDao implements Dao<Computer> {
         }
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(1, search + "%");
             preparedStatement.setInt(2, maxInPage);
             preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());
@@ -335,7 +336,7 @@ public enum ComputerDao implements Dao<Computer> {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchName);) {
-            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(1, search + "%");
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
 
@@ -360,7 +361,7 @@ public enum ComputerDao implements Dao<Computer> {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchCompanyName);) {
-            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(1, search + "%");
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
 
@@ -407,6 +408,7 @@ public enum ComputerDao implements Dao<Computer> {
             }
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
+            DataInfo.INSTANCE.increaseComputerCount();
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -429,7 +431,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, computer.getId());
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-
+            DataInfo.INSTANCE.decreaseComputerCount();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -450,7 +452,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-
+            DataInfo.INSTANCE.synchronizedWithDb();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -472,7 +474,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, id);
             logger.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-
+            DataInfo.INSTANCE.decreaseComputerCount();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block

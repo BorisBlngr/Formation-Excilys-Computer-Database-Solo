@@ -224,7 +224,7 @@ public enum CompanyDao implements Dao<Company> {
         }
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, "%" + search + "%");
+            preparedStatement.setString(1, search + "%");
             preparedStatement.setInt(2, maxInPage);
             preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
             logger.debug("Send : {}", preparedStatement.toString());

@@ -105,8 +105,8 @@ public class Dashboard extends HttpServlet {
         }
 
         int maxPage = nbComputer / maxInPage;
-        if (nbComputer != 0 && 10 % nbComputer != 0) {
-            maxPage++;
+        if (nbComputer != 0 && maxInPage % nbComputer != 0) {
+            maxPage--;
         }
 
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();

@@ -7,6 +7,7 @@ import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
 
@@ -136,7 +137,20 @@ public enum ComputerService {
         return ComputerDao.INSTANCE.delete(id);
     }
 
+    /**
+     * Get number of computers in the db. The value saved in DataInfo.
+     * @return count
+     */
     public int getNbComputers() {
+        return DataInfo.INSTANCE.getComputerCount();
+        // return ComputerDao.INSTANCE.getRow();
+    }
+
+    /**
+     * Get number of computers in the db. Costly request.
+     * @return count
+     */
+    public int getNbComputersDb() {
         return ComputerDao.INSTANCE.getRow();
     }
 
