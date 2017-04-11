@@ -43,3 +43,4 @@ Thumbs.db
 .settings/
 /computerdatab/doc/
 .checkstyle
+/docker
