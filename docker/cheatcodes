@@ -1,0 +1,40 @@
+#VOL
+docker volume create app
+docker volume create webapp
+
+#NETWORK
+docker network create test-network 		//172.19.0.1
+docker network create prod-network 		//172.20.0.1
+
+#JENKINS
+docker build -t bb-jenkins .
+(dndt)
+docker run -d --name jenkins-computerdb-df -v app:/usr/src/ -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --network test-network --ip 172.19.0.3 -p 9000:8080 bb-jenkins
+
+#MAVEN
+docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src/mymaven -w /usr/src/mymaven maven:3.5.0-jdk-8 mvn clean package
+
+#MYSQL
+docker run --name mysql-computerdb -e MYSQL_ROOT_PASSWORD=root -d mysql:5.5
+
+#FREE STYLE-TEST
+cd /usr/src/
+sudo rm -r /usr/src/*
+sudo cp -r /var/jenkins_home/workspace/Computer-database-docker/computerdatab/. /usr/src
+sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3.5.0-jdk-8 mvn clean test
+sudo docker rm maven-computerdb2
+
+#FREE STYLE-TEST
+cd /usr/src/
+sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3.5.0-jdk-8 mvn clean package
+sudo docker rm maven-computerdb2
+sudo mv  /usr/src/webapp /usr/
+sudo rm -r /usr/src/*
+sudo mv /usr/webapp/* /usr/src/
+sudo rm -d /usr/webapp/
+docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8085 -v app:/usr/local/tomcat/webapps/ROOT tomcat:8.5.13-jre8
+
+#TOMCAT
+docker build -t bb-tomcat .
+(dndt)
+docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/webapps/ROOT bb-tomcat
