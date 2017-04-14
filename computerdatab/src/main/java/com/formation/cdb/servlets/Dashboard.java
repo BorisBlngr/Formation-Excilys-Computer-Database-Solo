@@ -25,7 +25,7 @@ import com.formation.cdb.util.Search;
 /**
  * Servlet implementation class Dashboard.
  */
-@WebServlet("/dashboard")
+@WebServlet(name = "dashboard", urlPatterns = { "/dashboard" })
 public class Dashboard extends HttpServlet {
     final Logger logger = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
