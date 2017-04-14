@@ -140,7 +140,7 @@
         <repository>
             <id>internal.repo</id>
             <name>MyCo Internal Repository</name>
-            <url>${basedir}/target</url>
+            <url>file://${basedir}/target</url>
         </repository>
     </distributionManagement>
     <reporting>
