@@ -37,4 +37,12 @@ docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0
 #TOMCAT
 docker build -t bb-tomcat .
 (dndt)
-docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/webapps/ROOT bb-tomcat
+docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/webapps bb-tomcat
+
+
+##
+apt-get update
+apt-get install sudo
+sudo apt-get install net-tools
+sudo netstat -plnt
+

@@ -133,10 +133,16 @@
             <version>${selenium-java.version}</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>MyCo Internal Repository</name>
+            <url>file:///home/excilys/workspace/training/computerdatab/target</url>
+        </repository>
+    </distributionManagement>
     <reporting>
         <plugins>
             <plugin>

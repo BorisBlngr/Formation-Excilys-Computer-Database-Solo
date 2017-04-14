@@ -2,8 +2,10 @@ FROM tomcat:8.5.13-jre8
 
 RUN apt-get update \
      && apt-get install -y sudo \
+     && sudo apt-get install -y net-tools \
      && rm -rf /var/lib/apt/lists/*
 
 RUN sed -ie 's/port="8080"/port="8181"/g' conf/server.xml
-RUN sed -ie 's/port="8009"/port="8010"/g' conf/server.xml
+RUN sed -ie 's/port="8009"/port="8020"/g' conf/server.xml
+RUN sed -ie 's/port="8005"/port="8021"/g' conf/server.xml
 RUN ./bin/catalina.sh start
