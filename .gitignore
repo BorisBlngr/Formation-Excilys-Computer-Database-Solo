@@ -42,5 +42,6 @@ Thumbs.db
 .project
 .settings/
 /computerdatab/doc/
+/computerdatab/target/
 .checkstyle
 
