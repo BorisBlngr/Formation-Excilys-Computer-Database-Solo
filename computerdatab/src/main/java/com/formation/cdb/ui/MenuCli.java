@@ -19,8 +19,8 @@ import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
-public class Menu {
-    final Logger logger = LoggerFactory.getLogger(Menu.class);
+public class MenuCli {
+    final Logger logger = LoggerFactory.getLogger(MenuCli.class);
     Parameters params = new Parameters();
     Configuration config;
     private List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
@@ -33,7 +33,7 @@ public class Menu {
     /**
      * Constructeur qui instancie les variables en fonction du fichier de conf.
      */
-    public Menu() {
+    public MenuCli() {
         input = new Scanner(System.in);
 
         FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
@@ -327,7 +327,7 @@ public class Menu {
      */
     public static void main(String[] args) {
 
-        Menu menu = new Menu();
+        MenuCli menu = new MenuCli();
         menu.showMeTheMagic();
 
     }
