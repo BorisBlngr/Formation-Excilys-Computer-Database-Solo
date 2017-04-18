@@ -12,32 +12,38 @@ docker build -t bb-jenkins .
 docker run -d --name jenkins-computerdb-df -v app:/usr/src/ -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --network test-network --ip 172.19.0.3 -p 9000:8080 bb-jenkins
 
 #MAVEN
-docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src/mymaven -w /usr/src/mymaven maven:3.5.0-jdk-8 mvn clean package
+docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src/mymaven -w /usr/src/mymaven maven:3 mvn clean package
 
 #MYSQL
 docker run --name mysql-computerdb -e MYSQL_ROOT_PASSWORD=root -d mysql:5.5
 
 #FREE STYLE-TEST
+sudo chmod -R 777 /usr/src/
+if [ "$(sudo docker ps -q -f name=maven-computerdb2)" ]; then
+	sudo docker rm maven-computerdb2
+fi
 cd /usr/src/
 sudo rm -r /usr/src/*
-sudo cp -r /var/jenkins_home/workspace/Computer-database-docker/computerdatab/. /usr/src
-sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3.5.0-jdk-8 mvn clean test
+sudo cp -r /var/jenkins_home/workspace/Computer-database-docker-test/computerdatab/. /usr/src
+sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3 mvn clean test
 sudo docker rm maven-computerdb2
 
-#FREE STYLE-TEST
+#FREE STYLE-PROD
+sudo chmod -R 777 /usr/src/
 cd /usr/src/
-sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3.5.0-jdk-8 mvn clean package
+sudo docker run --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src -w /usr/src maven:3 mvn clean deploy
 sudo docker rm maven-computerdb2
-sudo mv  /usr/src/webapp /usr/
-sudo rm -r /usr/src/*
-sudo mv /usr/webapp/* /usr/src/
-sudo rm -d /usr/webapp/
-docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8085 -v app:/usr/local/tomcat/webapps/ROOT tomcat:8.5.13-jre8
+if [ "$(sudo docker ps -q -f name=tomcat-computerdb)" ]; then
+	sudo docker stop tomcat-computerdb
+fi
+sudo docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/build bb-tomcat
+sudo docker exec -i tomcat-computerdb mkdir /usr/local/tomcat/webapps/app
+sudo docker exec -i tomcat-computerdb cp -r /usr/local/tomcat/build/webapp/* /usr/local/tomcat/webapps/app
 
 #TOMCAT
 docker build -t bb-tomcat .
 (dndt)
-docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/webapps bb-tomcat
+docker run -d --rm --name tomcat-computerdb --network test-network --ip 172.19.0.5 -p 8888:8181 -v app:/usr/local/tomcat/build bb-tomcat
 
 
 ##
@@ -45,4 +51,5 @@ apt-get update
 apt-get install sudo
 sudo apt-get install net-tools
 sudo netstat -plnt
+sudo docker run --rm --name maven-computerdb2 --network test-network --ip 172.19.0.4 -v app:/usr/src/mymaven -w /usr/src/mymaven maven:3 mvn clean deploy
 

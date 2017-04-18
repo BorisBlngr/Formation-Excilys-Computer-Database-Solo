@@ -138,7 +138,7 @@ public enum ComputerService {
     }
 
     /**
-     * Get number of computers in the db. The value saved in DataInfo.
+     * Get number of computers in the db. The value saved in DataInfo. Faster
      * @return count
      */
     public int getNbComputers() {
