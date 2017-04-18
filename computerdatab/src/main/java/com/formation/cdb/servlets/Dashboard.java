@@ -2,6 +2,7 @@ package com.formation.cdb.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -25,7 +26,7 @@ import com.formation.cdb.util.Search;
 /**
  * Servlet implementation class Dashboard.
  */
-@WebServlet(name = "dashboard", urlPatterns = { "/dashboard" })
+@WebServlet(name = "dashboard", urlPatterns = {"/dashboard"})
 public class Dashboard extends HttpServlet {
     final Logger logger = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
@@ -52,78 +53,16 @@ public class Dashboard extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         logger.info(request.getParameterMap().keySet().toString());
-        int pageIndex = 1;
-        if (request.getParameterMap().containsKey("page") && request.getParameter("page").matches(regex)) {
-            pageIndex = Integer.parseInt(request.getParameter("page"));
-        }
-        if (pageIndex <= 0) {
-            pageIndex = 1;
-        }
 
-        int maxInPage = 10;
-        if (request.getParameterMap().containsKey("maxInPage") && request.getParameter("maxInPage").matches(regex)) {
-            maxInPage = Integer.parseInt(request.getParameter("maxInPage"));
-            if (!ArrayUtils.contains(maxsInPage, maxInPage)) {
-                maxInPage = 10;
-            }
-        }
-        String search = "";
-        if (request.getParameterMap().containsKey("search")) {
-            search = request.getParameter("search");
-        }
-
-        String searchBy = "";
-        if (request.getParameterMap().containsKey("searchBy")
-                && request.getParameter("searchBy").equals(Search.COMPANIES.toString())) {
-            searchBy = Search.COMPANIES.toString();
-        } else {
-            searchBy = Search.COMPUTERS.toString();
-        }
-        Order order;
-        if (request.getParameterMap().containsKey("order")
-                && request.getParameter("order").equals(Order.DESC.toString())) {
-            order = Order.DESC;
-        } else {
-            order = Order.ASC;
-        }
-
-        Search filterBy;
-        if (request.getParameterMap().containsKey("filterBy")
-                && request.getParameter("filterBy").equals(Search.COMPANIES.toString())) {
-            filterBy = Search.COMPANIES;
-        } else {
-            filterBy = Search.COMPUTERS;
-        }
-
-        int nbComputer = 0;
-        if (search.isEmpty()) {
-            nbComputer = ComputerService.INSTANCE.getNbComputers();
-        } else if (Search.COMPUTERS.equalsName(searchBy)) {
-            nbComputer = ComputerService.INSTANCE.getNbComputersSearchName(search);
-        } else if (Search.COMPANIES.equalsName(searchBy)) {
-            nbComputer = ComputerService.INSTANCE.getNbComputersSearchCompanyName(search);
-        }
-
-        int maxPage = nbComputer / maxInPage;
-        if (nbComputer != 0 && maxInPage % nbComputer != 0) {
-            maxPage--;
-        }
-
-        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        if (search.isEmpty()) {
-            computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, "",
-                    filterBy, order);
-
-        } else {
-            if (Search.COMPANIES.equalsName(searchBy)) {
-                computerDtoList = ComputerService.INSTANCE.findInRangeSearchCompanyName(pageIndex, maxInPage, search,
-                        filterBy, order);
-            } else {
-                computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
-                        filterBy, order);
-            }
-        }
-
+        int pageIndex = getPageIndexAndValidate(request);
+        int maxInPage = getMaxInPageAndValidate(request);
+        String search = getSearchAndValidate(request);
+        String searchBy = getSearchByAndValidate(request);
+        Order order = getOrderAndValidate(request);
+        Search filterBy = getFilterByAndValidate(request);
+        int nbComputer = getNbComputerAndValidate(request, search, searchBy);
+        int maxPage = getMaxPage(nbComputer, maxInPage);
+        List<ComputerDto> computerDtoList = getComputerDtoList(pageIndex, maxInPage, search, searchBy, filterBy, order);
         List<Page> pageList = constructionPageChoices(pageIndex, maxPage);
 
         // System.out.println(pageIndex + " " + maxPage);
@@ -162,19 +101,171 @@ public class Dashboard extends HttpServlet {
             // System.out.println(selection);
         }
 
-        String[] idToDeleteStr = selection.split(selectionSplitter);
+        List<String> idToDeleteStr = Arrays.asList(selection.split(selectionSplitter));
         List<Long> idToDelete = new ArrayList<Long>();
         for (String id : idToDeleteStr) {
             if (id.matches(regex)) {
                 idToDelete.add(Long.parseLong(id));
             }
         }
-        System.out.println(idToDelete);
+        logger.info(idToDelete.toString());
         doGet(request, response);
 
         for (Long id : idToDelete) {
             ComputerService.INSTANCE.deleteComputer(id);
         }
+    }
+
+    /**
+     * Return the list of ComputersDto depends on the request parameters.
+     * @param pageIndex Index of the page.
+     * @param maxInPage Max element in the page.
+     * @param search Element to search.
+     * @param searchBy What kind of element to search.
+     * @param filterBy Order by what.
+     * @param order Asc or Desc list.
+     * @return computerDtoList
+     */
+    private List<ComputerDto> getComputerDtoList(int pageIndex, int maxInPage, String search, String searchBy,
+            Search filterBy, Order order) {
+        List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
+        if (search.isEmpty()) {
+            computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, "",
+                    filterBy, order);
+
+        } else {
+            if (Search.COMPANIES.equalsName(searchBy)) {
+                computerDtoList = ComputerService.INSTANCE.findInRangeSearchCompanyName(pageIndex, maxInPage, search,
+                        filterBy, order);
+            } else {
+                computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
+                        filterBy, order);
+            }
+        }
+        return computerDtoList;
+    }
+
+    /**
+     * Return the the number of pages.
+     * @param nbComputer Number of computer.
+     * @param maxInPage Max element in the page
+     * @return maxPage
+     */
+    private int getMaxPage(int nbComputer, int maxInPage) {
+        int maxPage = nbComputer / maxInPage;
+        maxPage++;
+        if (nbComputer != 0 && nbComputer % maxInPage == 0) {
+            maxPage--;
+        }
+        return maxPage;
+    }
+
+    /**
+     * Return the number of computer.
+     * @param request The request.
+     * @param search Element to search.
+     * @param searchBy what kinf of element to search.
+     * @return nbComputer
+     */
+    private int getNbComputerAndValidate(HttpServletRequest request, String search, String searchBy) {
+        int nbComputer = 0;
+        if (search.isEmpty()) {
+            nbComputer = ComputerService.INSTANCE.getNbComputers();
+        } else if (Search.COMPUTERS.equalsName(searchBy)) {
+            nbComputer = ComputerService.INSTANCE.getNbComputersSearchName(search);
+        } else if (Search.COMPANIES.equalsName(searchBy)) {
+            nbComputer = ComputerService.INSTANCE.getNbComputersSearchCompanyName(search);
+        }
+        return nbComputer;
+    }
+
+    /**
+     * Return the filterBy param. Computers by default.
+     * @param request The request.
+     * @return filterBy
+     */
+    private Search getFilterByAndValidate(HttpServletRequest request) {
+        Search filterBy;
+        if (request.getParameterMap().containsKey("filterBy")
+                && request.getParameter("filterBy").equals(Search.COMPANIES.toString())) {
+            filterBy = Search.COMPANIES;
+        } else {
+            filterBy = Search.COMPUTERS;
+        }
+        return filterBy;
+    }
+
+    /**
+     * Return the Order in the request parameters. Asc by default.
+     * @param request The request.
+     * @return order
+     */
+    private Order getOrderAndValidate(HttpServletRequest request) {
+        Order order;
+        if (request.getParameterMap().containsKey("order")
+                && request.getParameter("order").equals(Order.DESC.toString())) {
+            order = Order.DESC;
+        } else {
+            order = Order.ASC;
+        }
+        return order;
+    }
+
+    /**
+     * @param request The request.
+     * @return searchBy
+     */
+    private String getSearchByAndValidate(HttpServletRequest request) {
+        String searchBy = "";
+        if (request.getParameterMap().containsKey("searchBy")
+                && request.getParameter("searchBy").equals(Search.COMPANIES.toString())) {
+            searchBy = Search.COMPANIES.toString();
+        } else {
+            searchBy = Search.COMPUTERS.toString();
+        }
+        return searchBy;
+    }
+
+    /**
+     * @param request The request.
+     * @return search
+     */
+    private String getSearchAndValidate(HttpServletRequest request) {
+        String search = "";
+        if (request.getParameterMap().containsKey("search")) {
+            search = request.getParameter("search");
+        }
+        return search;
+    }
+
+    /**
+     * @param request The request.
+     * @return maxInPage
+     */
+    private int getMaxInPageAndValidate(HttpServletRequest request) {
+        int maxInPage = 10;
+        if (request.getParameterMap().containsKey("maxInPage") && request.getParameter("maxInPage").matches(regex)) {
+            maxInPage = Integer.parseInt(request.getParameter("maxInPage"));
+            if (!ArrayUtils.contains(maxsInPage, maxInPage)) {
+                maxInPage = 10;
+            }
+        }
+        return maxInPage;
+    }
+
+    /**
+     * @param request The request.
+     * @return pageIndex
+     */
+    private int getPageIndexAndValidate(HttpServletRequest request) {
+        int pageIndex = 1;
+        if (request.getParameterMap().containsKey("page") && request.getParameter("page").matches(regex)) {
+            pageIndex = Integer.parseInt(request.getParameter("page"));
+        }
+        if (pageIndex <= 0) {
+            pageIndex = 1;
+        }
+        return pageIndex;
     }
 
     /**
