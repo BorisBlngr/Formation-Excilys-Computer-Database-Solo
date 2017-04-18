@@ -14,7 +14,7 @@ public enum CompanyMapper {
      * @param company Company.
      * @return companyDto
      */
-    public CompanyDto toDto(Company company) {
+    public static CompanyDto toDto(Company company) {
         CompanyDto companyDto = new CompanyDto.CompanyDtoBuilder().id(company.getId()).name(company.getName()).build();
         return companyDto;
     }
@@ -24,7 +24,7 @@ public enum CompanyMapper {
      * @param companyDto CompanyDto.
      * @return Company
      */
-    public Company toEntity(CompanyDto companyDto) {
+    public static Company toEntity(CompanyDto companyDto) {
         Company company = new Company.CompanyBuilder().id(companyDto.getId()).name(companyDto.getName()).build();
         return company;
     }

@@ -30,7 +30,7 @@ public enum ComputerService {
      * @return computerDto
      */
     public ComputerDto findComputerDto(long id) {
-        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.find(id));
+        return ComputerMapper.toDto(ComputerDao.INSTANCE.find(id));
     }
 
     /**
@@ -42,7 +42,7 @@ public enum ComputerService {
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         for (Computer computer : ComputerDao.INSTANCE.findInRange(index, maxInPage)) {
-            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+            computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
     }
@@ -62,7 +62,7 @@ public enum ComputerService {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, filterBy,
                 order)) {
-            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+            computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
     }
@@ -82,7 +82,7 @@ public enum ComputerService {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchCompanyName(index, maxInPage, search, filterBy,
                 order)) {
-            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+            computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
     }
@@ -94,7 +94,7 @@ public enum ComputerService {
      */
     @Deprecated
     public ComputerDto findComputer(long id) {
-        return ComputerMapper.INSTANCE.toDto(ComputerDao.INSTANCE.find(id));
+        return ComputerMapper.toDto(ComputerDao.INSTANCE.find(id));
     }
 
     /**
@@ -105,7 +105,7 @@ public enum ComputerService {
     public List<ComputerDto> findAllComputer() {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         for (Computer computer : ComputerDao.INSTANCE.findAll()) {
-            computerDtoList.add(ComputerMapper.INSTANCE.toDto(computer));
+            computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
     }
@@ -116,7 +116,7 @@ public enum ComputerService {
      * @return idComputer
      */
     public long createComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.create(ComputerMapper.INSTANCE.toEntity(computerDto));
+        return ComputerDao.INSTANCE.create(ComputerMapper.toEntity(computerDto));
     }
 
     /**
@@ -125,7 +125,7 @@ public enum ComputerService {
      * @return result
      */
     public boolean updateComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.update(ComputerMapper.INSTANCE.toEntity(computerDto));
+        return ComputerDao.INSTANCE.update(ComputerMapper.toEntity(computerDto));
     }
 
     /**

@@ -29,7 +29,7 @@ public enum CompanyService {
     public List<CompanyDto> findCompaniesInRangeSearchName(int index, int maxInPage, String search, Order order) {
         List<CompanyDto> computerDtoList = new ArrayList<CompanyDto>();
         for (Company company : CompanyDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, order)) {
-            computerDtoList.add(CompanyMapper.INSTANCE.toDto(company));
+            computerDtoList.add(CompanyMapper.toDto(company));
         }
         return computerDtoList;
     }
@@ -43,7 +43,7 @@ public enum CompanyService {
     public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
         for (Company company : CompanyDao.INSTANCE.findInRange(index, maxInPage)) {
-            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
+            companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
     }
@@ -56,7 +56,7 @@ public enum CompanyService {
     public List<CompanyDto> findAllCompany() {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
         for (Company company : CompanyDao.INSTANCE.findAll()) {
-            companyDtoList.add(CompanyMapper.INSTANCE.toDto(company));
+            companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
     }
@@ -67,7 +67,7 @@ public enum CompanyService {
      * @return id
      */
     public long create(CompanyDto companyDto) {
-        return CompanyDao.INSTANCE.create(CompanyMapper.INSTANCE.toEntity(companyDto));
+        return CompanyDao.INSTANCE.create(CompanyMapper.toEntity(companyDto));
     }
 
     /**
