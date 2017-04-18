@@ -2,11 +2,11 @@
 Computer Database from https://github.com/excilys/training-java
 
 # Step
-4.4
+4.5
 
 # Gaitling
 
-### Performance
+### Performance for 4.3
 
 * 575 computers : 8k+ users.
 * 1 million computers : 10k users.
@@ -16,6 +16,7 @@ Computer Database from https://github.com/excilys/training-java
 * Create index on company name and its reverse.
 
 # TODO
-When the user delete a computers refresh the count value or refresh the page.
+* PersonnalException
+* optionnal
 
 
