@@ -6,8 +6,7 @@ import com.formation.cdb.model.dto.CompanyDto;
 /**
  * CompanyDto => Company Company => CompanyDto.
  */
-public enum CompanyMapper {
-    INSTANCE;
+public class CompanyMapper {
 
     /**
      * Transforme un Company en CompanyDto.

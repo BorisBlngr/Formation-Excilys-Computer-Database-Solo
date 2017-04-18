@@ -55,7 +55,7 @@ public class CompanyMapperTest {
      */
     @Test
     public void entityToDtoValid() {
-        Assert.assertTrue(CompanyMapper.INSTANCE.toDto(company).equals(companyDto));
+        Assert.assertTrue(CompanyMapper.toDto(company).equals(companyDto));
     }
 
     /**
@@ -63,6 +63,6 @@ public class CompanyMapperTest {
      */
     @Test
     public void dtoToEntityValid() {
-        Assert.assertTrue(CompanyMapper.INSTANCE.toEntity(companyDto).equals(company));
+        Assert.assertTrue(CompanyMapper.toEntity(companyDto).equals(company));
     }
 }

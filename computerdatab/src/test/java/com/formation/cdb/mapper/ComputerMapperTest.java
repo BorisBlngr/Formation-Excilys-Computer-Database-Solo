@@ -62,7 +62,7 @@ public class ComputerMapperTest {
      */
     @Test
     public void entityToDtoValid() {
-        Assert.assertTrue(ComputerMapper.INSTANCE.toDto(computer).equals(computerDto));
+        Assert.assertTrue(ComputerMapper.toDto(computer).equals(computerDto));
     }
 
     /**
@@ -70,6 +70,6 @@ public class ComputerMapperTest {
      */
     @Test
     public void dtoToEntityValid() {
-        Assert.assertTrue(ComputerMapper.INSTANCE.toEntity(computerDto).equals(computer));
+        Assert.assertTrue(ComputerMapper.toEntity(computerDto).equals(computer));
     }
 }

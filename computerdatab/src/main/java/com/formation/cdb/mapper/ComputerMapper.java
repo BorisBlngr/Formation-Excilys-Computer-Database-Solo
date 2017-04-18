@@ -6,8 +6,7 @@ import com.formation.cdb.model.dto.ComputerDto;
 /**
  * ComputerDto => Computer Computer => ComputerDto.
  */
-public enum ComputerMapper {
-    INSTANCE;
+public class ComputerMapper {
 
     /**
      * Transforme un Computer en ComputerDto.
