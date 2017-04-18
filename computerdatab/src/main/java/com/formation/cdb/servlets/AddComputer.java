@@ -70,37 +70,16 @@ public class AddComputer extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("Post, I will do things soon ...");
 
-        String name = null;
-        LocalDate introduced = null;
-        LocalDate discontinued = null;
-        long companyId = 0;
+        String name = getNameAndValidate(request);
+        LocalDate introduced = getIntroduced(request);
+        LocalDate discontinued = getDiscontinued(request);
+        long companyId = getCompanyId(request);
 
-        // System.out.println(request.getParameterMap().keySet());
-
-        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
-            name = request.getParameter("computerName");
-            // name = name.replaceAll("<", "");
-            // name = name.replaceAll(">", "");
-            // System.out.println(name);
-        }
-        if (request.getParameterMap().containsKey("introduced") && !request.getParameter("introduced").isEmpty()) {
-            // System.out.println(request.getParameter("introduced"));
-            introduced = LocalDate.parse(request.getParameter("introduced"), formatter);
-        }
-        if (request.getParameterMap().containsKey("discontinued") && !request.getParameter("discontinued").isEmpty()) {
-            // System.out.println(request.getParameter("discontinued"));
-            discontinued = LocalDate.parse(request.getParameter("discontinued"), formatter);
-        }
-        if (request.getParameterMap().containsKey("companyId")) {
-            companyId = Long.parseLong(request.getParameter("companyId"));
-            // System.out.println(companyId);
-        }
         ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().name(name).introduced(introduced)
                 .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
 
-        // System.out.println(computerDto);
-        // System.out.println(new ComputerDto());
         RequestDispatcher view;
+
         if (!computerDto.equals(new ComputerDto())) {
             long id = ComputerService.INSTANCE.createComputer(computerDto);
             System.out.println(id);
@@ -110,7 +89,54 @@ public class AddComputer extends HttpServlet {
         }
 
         view.forward(request, response);
-        // response.sendRedirect("/dashboard");
+    }
+
+    /**
+     * @param request The request.
+     * @return companyId
+     */
+    private long getCompanyId(HttpServletRequest request) {
+        long companyId = 0;
+        if (request.getParameterMap().containsKey("companyId")) {
+            companyId = Long.parseLong(request.getParameter("companyId"));
+        }
+        return companyId;
+    }
+
+    /**
+     * @param request The request.
+     * @return discontinued
+     */
+    private LocalDate getDiscontinued(HttpServletRequest request) {
+        LocalDate discontinued = null;
+        if (request.getParameterMap().containsKey("discontinued") && !request.getParameter("discontinued").isEmpty()) {
+            discontinued = LocalDate.parse(request.getParameter("discontinued"), formatter);
+        }
+        return discontinued;
+    }
+
+    /**
+     * @param request The request.
+     * @return introduced
+     */
+    private LocalDate getIntroduced(HttpServletRequest request) {
+        LocalDate introduced = null;
+        if (request.getParameterMap().containsKey("introduced") && !request.getParameter("introduced").isEmpty()) {
+            introduced = LocalDate.parse(request.getParameter("introduced"), formatter);
+        }
+        return introduced;
+    }
+
+    /**
+     * @param request The request.
+     * @return name
+     */
+    private String getNameAndValidate(HttpServletRequest request) {
+        String name = "";
+        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
+            name = request.getParameter("computerName");
+        }
+        return name;
     }
 
 }

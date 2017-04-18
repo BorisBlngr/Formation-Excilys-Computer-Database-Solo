@@ -51,14 +51,9 @@ public class EditComputer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         logger.debug("Get");
-        // System.out.println("Get");
-        // System.out.println(request.getParameterMap().keySet());
 
-        long id = 0;
-        if (request.getParameterMap().containsKey("id") && request.getParameter("id").matches(regex)) {
-            id = Long.parseLong(request.getParameter("id"));
-        }
-        // System.out.println(id);
+        long id = getId(request);
+
         ComputerDto computerDto = new ComputerDto();
         if (id != 0) {
             computerDto = ComputerService.INSTANCE.findComputerDto(id);
@@ -70,12 +65,8 @@ public class EditComputer extends HttpServlet {
         request.setAttribute("computerDto", computerDto);
         request.setAttribute("companyDtoList", companyDtoList);
 
-        // System.out.println(computerDto);
         RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");
         view.forward(request, response);
-
-        // response.getWriter().append("Served at:
-        // ").append(request.getContextPath());
     }
 
     /**
@@ -91,43 +82,17 @@ public class EditComputer extends HttpServlet {
         // TODO Auto-generated method stub
         logger.debug("Post");
         logger.debug(request.getParameterMap().keySet().toString());
-        String name = null;
-        LocalDate introduced = null;
-        LocalDate discontinued = null;
-        long companyId = 0;
-        long computerId = 0;
 
-        // System.out.println(request.getParameterMap().keySet());
+        String name = getNameAndValidate(request);
+        LocalDate introduced = getIntroduced(request);
+        LocalDate discontinued = getDiscontinued(request);
+        long companyId = getCompanyId(request);
+        long computerId = getComputerId(request);
 
-        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
-            name = request.getParameter("computerName");
-            // name = name.replaceAll("<", "");
-            // name = name.replaceAll(">", "");
-            // System.out.println(name);
-        }
-        if (request.getParameterMap().containsKey("introduced") && !request.getParameter("introduced").isEmpty()) {
-            // System.out.println(request.getParameter("introduced"));
-            introduced = LocalDate.parse(request.getParameter("introduced"), formatter);
-        }
-        if (request.getParameterMap().containsKey("discontinued") && !request.getParameter("discontinued").isEmpty()) {
-            // System.out.println(request.getParameter("discontinued"));
-            discontinued = LocalDate.parse(request.getParameter("discontinued"), formatter);
-        }
-        if (request.getParameterMap().containsKey("companyId")) {
-            companyId = Long.parseLong(request.getParameter("companyId"));
-            // System.out.println(companyId);
-        }
-        if (request.getParameterMap().containsKey("id")) {
-            computerId = Long.parseLong(request.getParameter("id"));
-            // System.out.println(companyId);
-        }
         ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computerId).name(name).introduced(introduced)
                 .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
 
-        // System.out.println(computerDto);
-        // System.out.println(new ComputerDto());
         RequestDispatcher view;
-        System.out.println(computerDto);
         if (!computerDto.equals(new ComputerDto())) {
             ComputerService.INSTANCE.updateComputer(computerDto);
             view = request.getRequestDispatcher("/views/jsp/editComputerSuccess.html");
@@ -135,6 +100,78 @@ public class EditComputer extends HttpServlet {
             view = request.getRequestDispatcher("/views/jsp/500.html");
         }
         view.forward(request, response);
+    }
+
+    /**
+     * @param request The request.
+     * @return id
+     */
+    private long getId(HttpServletRequest request) {
+        long id = 0;
+        if (request.getParameterMap().containsKey("id") && request.getParameter("id").matches(regex)) {
+            id = Long.parseLong(request.getParameter("id"));
+        }
+        return id;
+    }
+
+    /**
+     * @param request The request.
+     * @return computerId
+     */
+    private long getComputerId(HttpServletRequest request) {
+        long computerId = 0;
+        if (request.getParameterMap().containsKey("id")) {
+            computerId = Long.parseLong(request.getParameter("id"));
+        }
+        return computerId;
+    }
+
+    /**
+     * @param request The request.
+     * @return companyId
+     */
+    private long getCompanyId(HttpServletRequest request) {
+        long companyId = 0;
+        if (request.getParameterMap().containsKey("companyId")) {
+            companyId = Long.parseLong(request.getParameter("companyId"));
+        }
+        return companyId;
+    }
+
+    /**
+     * @param request The request.
+     * @return discontinued
+     */
+    private LocalDate getDiscontinued(HttpServletRequest request) {
+        LocalDate discontinued = null;
+        if (request.getParameterMap().containsKey("discontinued") && !request.getParameter("discontinued").isEmpty()) {
+            discontinued = LocalDate.parse(request.getParameter("discontinued"), formatter);
+        }
+        return discontinued;
+    }
+
+    /**
+     * @param request The request.
+     * @return introduced
+     */
+    private LocalDate getIntroduced(HttpServletRequest request) {
+        LocalDate introduced = null;
+        if (request.getParameterMap().containsKey("introduced") && !request.getParameter("introduced").isEmpty()) {
+            introduced = LocalDate.parse(request.getParameter("introduced"), formatter);
+        }
+        return introduced;
+    }
+
+    /**
+     * @param request The request.
+     * @return name
+     */
+    private String getNameAndValidate(HttpServletRequest request) {
+        String name = "";
+        if (request.getParameterMap().containsKey("computerName") && !request.getParameter("computerName").isEmpty()) {
+            name = request.getParameter("computerName");
+        }
+        return name;
     }
 
 }

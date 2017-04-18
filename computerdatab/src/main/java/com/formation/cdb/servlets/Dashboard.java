@@ -93,12 +93,11 @@ public class Dashboard extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // System.out.println(request.getParameterMap().keySet());
+
         String selection = "";
 
         if (request.getParameterMap().containsKey("selection") && !request.getParameter("selection").isEmpty()) {
             selection = request.getParameter("selection");
-            // System.out.println(selection);
         }
 
         List<String> idToDeleteStr = Arrays.asList(selection.split(selectionSplitter));
@@ -109,11 +108,10 @@ public class Dashboard extends HttpServlet {
             }
         }
         logger.info(idToDelete.toString());
-        doGet(request, response);
-
         for (Long id : idToDelete) {
             ComputerService.INSTANCE.deleteComputer(id);
         }
+        doGet(request, response);
     }
 
     /**
