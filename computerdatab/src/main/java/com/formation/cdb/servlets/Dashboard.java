@@ -28,7 +28,7 @@ import com.formation.cdb.util.Search;
  */
 @WebServlet(name = "dashboard", urlPatterns = {"/dashboard"})
 public class Dashboard extends HttpServlet {
-    final Logger logger = LoggerFactory.getLogger(HttpServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
     private final String selectionSplitter = ",";
@@ -52,7 +52,7 @@ public class Dashboard extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        logger.info(request.getParameterMap().keySet().toString());
+        LOG.info(request.getParameterMap().keySet().toString());
 
         int pageIndex = getPageIndexAndValidate(request);
         int maxInPage = getMaxInPageAndValidate(request);
@@ -107,7 +107,7 @@ public class Dashboard extends HttpServlet {
                 idToDelete.add(Long.parseLong(id));
             }
         }
-        logger.info(idToDelete.toString());
+        LOG.info(idToDelete.toString());
         for (Long id : idToDelete) {
             ComputerService.INSTANCE.deleteComputer(id);
         }

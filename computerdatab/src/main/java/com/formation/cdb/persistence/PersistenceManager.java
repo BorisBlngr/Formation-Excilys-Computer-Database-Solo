@@ -23,7 +23,7 @@ public enum PersistenceManager {
 
     Parameters params = new Parameters();
     Configuration config;
-    final Logger logger = LoggerFactory.getLogger(PersistenceManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PersistenceManager.class);
     HikariDataSource ds;
     private static final ThreadLocal<Connection> THREAD_CONNECTION = new ThreadLocal<Connection>();;
 
@@ -54,7 +54,7 @@ public enum PersistenceManager {
         cfg.addDataSourceProperty(config.getString("dataSource.prepStmtCacheSqlLimit"), "2048");
         // Prevent failed to initialize pool
         cfg.setConnectionTestQuery("show tables");
-        logger.info(cfg.toString());
+        //LOG.info(cfg.toString());
         ds = new HikariDataSource(cfg);
     }
 
@@ -82,9 +82,9 @@ public enum PersistenceManager {
     private Connection connect() {
         Connection conn = null;
         try {
-            logger.debug("Connecting to db .... ");
+            LOG.debug("Connecting to db .... ");
             conn = ds.getConnection();
-            logger.debug("Connection opened");
+            LOG.debug("Connection opened");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,14 +93,14 @@ public enum PersistenceManager {
     }
 
     /**
-     * Methode qui close la connection. Permet d'afficher l'info en logger.debug
+     * Methode qui close la connection. Permet d'afficher l'info en LOG.debug
      * Inutile mais indispensable...
      * @param conn Connection à close.
      * @throws SQLException Renvoit une SQLException.
      */
     public void close(Connection conn) throws SQLException {
         conn.close();
-        logger.debug("Connection closed");
+        LOG.debug("Connection closed");
     }
 
     /**
@@ -117,7 +117,7 @@ public enum PersistenceManager {
         try {
 
             stmt = conn.createStatement();
-            logger.info("SendQuery : {}", sql);
+            LOG.info("SendQuery : {}", sql);
             rs = stmt.executeQuery(sql);
 
             rs.close();
@@ -143,7 +143,7 @@ public enum PersistenceManager {
         boolean result = false;
         try {
             stmt = conn.createStatement();
-            logger.info("execute : {}", sql);
+            LOG.info("execute : {}", sql);
             result = stmt.execute(sql);
             stmt.close();
             conn.close();

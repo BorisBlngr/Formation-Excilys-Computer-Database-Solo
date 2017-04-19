@@ -17,7 +17,7 @@ import com.formation.cdb.util.Order;
 
 public enum CompanyDao implements Dao<Company> {
     INSTANCE;
-    final Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyDao.class);
     final String sqlCreate = "INSERT INTO company(name) VALUES (?)";
     final String sqlDeleteById = "DELETE FROM company WHERE id = ?";
     final String sqlUpdate = "UPDATE company SET name = ? WHERE id = ? ";
@@ -45,7 +45,7 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlCreate);) {
             preparedStatement.setString(1, company.getName());
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -66,7 +66,7 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
             preparedStatement.setLong(1, company.getId());
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
             result = true;
         } catch (SQLException e) {
@@ -86,7 +86,7 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
             preparedStatement.setLong(1, id);
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
 
             result = true;
@@ -108,7 +108,7 @@ public enum CompanyDao implements Dao<Company> {
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlUpdate);) {
             preparedStatement.setString(1, company.getName());
             preparedStatement.setLong(2, company.getId());
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -127,7 +127,7 @@ public enum CompanyDao implements Dao<Company> {
     public Company find(long id) {
         Company company = new Company();
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : ", sqlFindById + id);
+            LOG.debug("Send : ", sqlFindById + id);
             try (ResultSet rs = stmt.executeQuery(sqlFindById + id);) {
                 if (rs.first()) {
                     company.setId(id);
@@ -149,7 +149,7 @@ public enum CompanyDao implements Dao<Company> {
     public List<Company> findAll() {
         List<Company> companyList = new ArrayList<Company>();
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sqlFindAll);
+            LOG.debug("Send : {}", sqlFindAll);
             try (ResultSet rs = stmt.executeQuery(sqlFindAll);) {
                 Company company;
                 while (rs.next()) {
@@ -183,7 +183,7 @@ public enum CompanyDao implements Dao<Company> {
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlFindInRange);) {
             preparedStatement.setInt(1, maxInPage);
             preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
             try (ResultSet rs = preparedStatement.getResultSet();) {
                 Company company;
@@ -227,7 +227,7 @@ public enum CompanyDao implements Dao<Company> {
             preparedStatement.setString(1, search + "%");
             preparedStatement.setInt(2, maxInPage);
             preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
 
             try (ResultSet rs = preparedStatement.getResultSet();) {
@@ -252,7 +252,7 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlFindByName);) {
             preparedStatement.setString(1, name);
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
             try (ResultSet rs = preparedStatement.getResultSet();) {
                 if (rs.first()) {
@@ -278,7 +278,7 @@ public enum CompanyDao implements Dao<Company> {
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
                 PreparedStatement preparedStatement = conn.prepareStatement(sqlFindIdByName);) {
             preparedStatement.setString(1, name);
-            logger.debug("Send : {}", preparedStatement.toString());
+            LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.execute();
             try (ResultSet rs = preparedStatement.getResultSet();) {
                 if (rs.first()) {
@@ -299,7 +299,7 @@ public enum CompanyDao implements Dao<Company> {
     public int getRow() {
         int count = 0;
         try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            logger.debug("Send : {}", sqlCountAll);
+            LOG.debug("Send : {}", sqlCountAll);
             try (ResultSet rs = stmt.executeQuery(sqlCountAll);) {
                 if (rs.first()) {
                     count = rs.getInt("COUNT(*)");

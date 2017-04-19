@@ -27,7 +27,7 @@ import com.formation.cdb.service.ComputerService;
  */
 @WebServlet("/editcomputer")
 public class EditComputer extends HttpServlet {
-    final Logger logger = LoggerFactory.getLogger(EditComputer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EditComputer.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -50,7 +50,7 @@ public class EditComputer extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        logger.debug("Get");
+        LOG.debug("Get");
 
         long id = getId(request);
 
@@ -80,8 +80,8 @@ public class EditComputer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // TODO Auto-generated method stub
-        logger.debug("Post");
-        logger.debug(request.getParameterMap().keySet().toString());
+        LOG.debug("Post");
+        LOG.debug(request.getParameterMap().keySet().toString());
 
         String name = getNameAndValidate(request);
         LocalDate introduced = getIntroduced(request);

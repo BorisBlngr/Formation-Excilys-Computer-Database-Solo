@@ -25,6 +25,7 @@
         <HikariCP.version>2.4.5</HikariCP.version>
         <HikariCP.artifact.version>2.4.9</HikariCP.artifact.version>
         <selenium-java.version>3.3.1</selenium-java.version>
+        <spring.version></spring.version>
     </properties>
 
     <dependencies>
@@ -132,6 +133,12 @@
             <artifactId>selenium-java</artifactId>
             <version>${selenium-java.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.0.5.RELEASE</version>
         </dependency>
     </dependencies>
 

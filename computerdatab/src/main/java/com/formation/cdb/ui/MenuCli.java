@@ -20,7 +20,7 @@ import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
 public class MenuCli {
-    final Logger logger = LoggerFactory.getLogger(MenuCli.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MenuCli.class);
     Parameters params = new Parameters();
     Configuration config;
     private List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
@@ -75,7 +75,7 @@ public class MenuCli {
     public int selectInt() {
         // tant qu'on a pas un int
         while (!input.hasNextInt()) {
-            logger.info("Not a number.");
+            LOG.info("Not a number.");
             input.next();
         }
         int number = input.nextInt();
@@ -90,7 +90,7 @@ public class MenuCli {
     public long selectLong() {
         // tant qu'on a pas un int
         while (!input.hasNextLong()) {
-            logger.info("Not a number.");
+            LOG.info("Not a number.");
             input.next();
         }
         long lg = input.nextLong();
@@ -117,14 +117,14 @@ public class MenuCli {
         int selection;
         // tant qu'on a pas un int
         while (!input.hasNextInt()) {
-            logger.info("Not a number.");
+            LOG.info("Not a number.");
             input.next();
         }
         selection = input.nextInt();
 
         // tant qu'on a pas un int valable
         if (selection > max || selection < min) {
-            logger.info("Indeed a number but not this one.");
+            LOG.info("Indeed a number but not this one.");
             return selectItemMenu(min, max);
         }
         return selection;
@@ -140,7 +140,7 @@ public class MenuCli {
 
         switch (itemSelected) {
         case 1:
-            logger.info("Case List All Computers");
+            LOG.info("Case List All Computers");
             computerDtoList.clear();
             computerDtoList = ComputerService.INSTANCE.findAllComputer();
             for (ComputerDto computerDto : computerDtoList) {
@@ -148,7 +148,7 @@ public class MenuCli {
             }
             break;
         case 2:
-            logger.info("Case List All Companies");
+            LOG.info("Case List All Companies");
             companyDtoList.clear();
             companyDtoList = CompanyService.INSTANCE.findAllCompany();
             for (CompanyDto companyDto : companyDtoList) {
@@ -156,27 +156,27 @@ public class MenuCli {
             }
             break;
         case 3:
-            logger.info("Case Show computer details");
+            LOG.info("Case Show computer details");
             System.out.println("id : ");
             ComputerDto computerDtoFound = ComputerService.INSTANCE.findComputer(selectLong());
             System.out.println(computerDtoFound);
 
             break;
         case 4:
-            logger.info("Case Create a computer");
+            LOG.info("Case Create a computer");
             menuCreateComputer();
             break;
         case 5:
-            logger.info("Case Update a computer");
+            LOG.info("Case Update a computer");
             menuUpdateComputer();
             break;
         case 6:
-            logger.info("Case Delete a computer");
+            LOG.info("Case Delete a computer");
             System.out.println("id : ");
             ComputerService.INSTANCE.deleteComputer(selectLong());
             break;
         case 7:
-            logger.info("Case 7 List of Computers ");
+            LOG.info("Case 7 List of Computers ");
             int nbComputer = ComputerService.INSTANCE.getNbComputers();
             int nbComputerPages = nbComputer / maxInPage;
             if (nbComputer % maxInPage != 0) {
@@ -188,7 +188,7 @@ public class MenuCli {
             System.out.println(computerPage.getList());
             break;
         case 8:
-            logger.info("Case 8 List of Companies");
+            LOG.info("Case 8 List of Companies");
             int nbCompany = CompanyService.INSTANCE.getNbCompanies();
             int nbCompanyPages = nbCompany / maxInPage;
             if (nbCompany % maxInPage != 0) {
@@ -201,21 +201,21 @@ public class MenuCli {
             break;
 
         case 9:
-            logger.info("Case 9 Create Company");
+            LOG.info("Case 9 Create Company");
             menuCreateCompany();
             break;
         case 10:
-            logger.info("Case 11 Delete Company");
+            LOG.info("Case 11 Delete Company");
             System.out.println("id : ");
             CompanyService.INSTANCE.delete(selectLong());
             break;
         case 11:
-            logger.info("Case 11 EXIT");
+            LOG.info("Case 11 EXIT");
             input.close();
             break;
         default:
             // Cow Level
-            logger.info("Warning : You are now in the Cow Level !");
+            LOG.info("Warning : You are now in the Cow Level !");
         }
         return itemSelected;
 
