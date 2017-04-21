@@ -8,14 +8,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:spring-module.xml")
 public class ComputerDaoTest {
+    @Autowired
     CompanyDao companyDao;
+    @Autowired
     ComputerDao computerDao;
 
     Computer computer = null;
@@ -42,10 +50,6 @@ public class ComputerDaoTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        ApplicationContext appContext = new ClassPathXmlApplicationContext("spring-module.xml");
-        companyDao = (CompanyDao) appContext.getBean("companyDao");
-        computerDao = (ComputerDao) appContext.getBean("computerDao");
-
         computer = new Computer.ComputerBuilder().introduced(LocalDate.of(1980, 10, 10))
                 .discontinued(LocalDate.of(1990, 10, 10)).name("test nom ordi random")
                 .company(new Company.CompanyBuilder().name("Thinking Machines").id(2).build()).build();

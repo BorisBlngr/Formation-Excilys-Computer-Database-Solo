@@ -6,13 +6,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:spring-module.xml")
 public class CompanyDaoTest {
+    @Autowired
     CompanyDao companyDao;
 
     Company company = null;
@@ -42,9 +47,6 @@ public class CompanyDaoTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        ApplicationContext appContext = new ClassPathXmlApplicationContext("spring-module.xml");
-        companyDao = (CompanyDao) appContext.getBean("companyDao");
-
         company = new Company();
         company.setName("boitetropbien");
         nullComputer = new Computer();
