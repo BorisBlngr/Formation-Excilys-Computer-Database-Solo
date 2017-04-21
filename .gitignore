@@ -44,4 +44,5 @@ Thumbs.db
 /computerdatab/doc/
 /computerdatab/target/
 .checkstyle
+/bin/
 
