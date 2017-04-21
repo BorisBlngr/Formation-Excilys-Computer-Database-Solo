@@ -1,4 +1,4 @@
-package com.formation.cdb.model.dao;
+package com.formation.cdb.persistence.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,13 +10,14 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.persistence.PersistenceManager;
 import com.formation.cdb.util.Order;
 
-public enum CompanyDao implements Dao<Company> {
-    INSTANCE;
+@Repository ("companyDao")
+public class CompanyDao implements Dao<Company> {
     private static final Logger LOG = LoggerFactory.getLogger(CompanyDao.class);
     final String sqlCreate = "INSERT INTO company(name) VALUES (?)";
     final String sqlDeleteById = "DELETE FROM company WHERE id = ?";
@@ -27,12 +28,6 @@ public enum CompanyDao implements Dao<Company> {
     final String sqlFindByName = "SELECT id,name FROM company WHERE name = ?";
     final String sqlFindIdByName = "SELECT id FROM company WHERE name = ?";
     final String sqlCountAll = "SELECT COUNT(*) FROM company";
-
-    /**
-     * Constructeur qui initialise les properties.
-     */
-    CompanyDao() {
-    }
 
     /**
      * Methode pour creer une nouvelle company en base, renvoit l'id de la ligne

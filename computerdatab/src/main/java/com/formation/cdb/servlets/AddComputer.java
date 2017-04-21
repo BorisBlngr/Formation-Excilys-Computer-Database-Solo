@@ -8,10 +8,14 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
@@ -22,17 +26,20 @@ import com.formation.cdb.service.ComputerService;
 /**
  * Servlet implementation class Dashboard.
  */
-@WebServlet("/addcomputer")
+@Controller("addcomputer")
 public class AddComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    ComputerService computerService;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public AddComputer() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -43,11 +50,12 @@ public class AddComputer extends HttpServlet {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
+    @RequestMapping(value = "/addcomputer", method = RequestMethod.GET)
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        companyDtoList = CompanyService.INSTANCE.findAllCompany();
+        companyDtoList = companyService.findAllCompany();
 
         request.setAttribute("companyDtoList", companyDtoList);
 
@@ -66,6 +74,7 @@ public class AddComputer extends HttpServlet {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
+    @RequestMapping(value = "/addcomputer", method = RequestMethod.POST)
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("Post, I will do things soon ...");
@@ -81,11 +90,11 @@ public class AddComputer extends HttpServlet {
         RequestDispatcher view;
 
         if (!computerDto.equals(new ComputerDto())) {
-            long id = ComputerService.INSTANCE.createComputer(computerDto);
+            long id = computerService.createComputer(computerDto);
             System.out.println(id);
-            view = request.getRequestDispatcher("/views/jsp/addComputerSuccess.html");
+            view = request.getRequestDispatcher("/views/jsp/addComputerSuccess.jsp");
         } else {
-            view = request.getRequestDispatcher("/views/jsp/500.html");
+            view = request.getRequestDispatcher("/views/jsp/500.jsp");
         }
 
         view.forward(request, response);

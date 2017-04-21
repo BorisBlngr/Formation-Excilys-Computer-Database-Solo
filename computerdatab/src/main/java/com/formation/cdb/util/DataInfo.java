@@ -2,29 +2,37 @@ package com.formation.cdb.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.formation.cdb.service.ComputerService;
 
 /**
  * @author excilys
  *
  */
-public enum DataInfo {
-    INSTANCE;
+@Repository("dataInfo")
+public class DataInfo {
+    @Autowired
+    ComputerService computerService;
 
     private AtomicInteger computerCount = new AtomicInteger(0);
 
     /**
      * Constructeur.
      */
-    DataInfo() {
-        computerCount.set(ComputerService.INSTANCE.getNbComputersDb());
+    @PostConstruct
+    void init() {
+        computerCount.set(computerService.getNbComputersDb());
     }
 
     /**
      * Synchronized the count value with number of element in the db computer.
      */
     public void synchronizedWithDb() {
-        computerCount.set(ComputerService.INSTANCE.getNbComputersDb());
+        computerCount.set(computerService.getNbComputersDb());
     }
 
     public int getComputerCount() {
@@ -35,7 +43,9 @@ public enum DataInfo {
      * Increase the computer count.
      */
     public void increaseComputerCount() {
+        System.out.println("try to increase : " + getComputerCount());
         this.computerCount.incrementAndGet();
+        System.out.println("try to increase : " + getComputerCount());
     }
 
     /**

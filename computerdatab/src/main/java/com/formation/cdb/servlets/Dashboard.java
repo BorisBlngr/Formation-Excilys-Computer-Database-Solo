@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +15,10 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.ComputerService;
@@ -26,7 +29,7 @@ import com.formation.cdb.util.Search;
 /**
  * Servlet implementation class Dashboard.
  */
-@WebServlet(name = "dashboard", urlPatterns = {"/dashboard"})
+@Controller("dashboard")
 public class Dashboard extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
@@ -34,12 +37,14 @@ public class Dashboard extends HttpServlet {
     private final String selectionSplitter = ",";
     private int[] maxsInPage = {10, 50, 100};
 
+    @Autowired
+    ComputerService computerService;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Dashboard() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -50,6 +55,7 @@ public class Dashboard extends HttpServlet {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LOG.info(request.getParameterMap().keySet().toString());
@@ -91,6 +97,7 @@ public class Dashboard extends HttpServlet {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
+    @RequestMapping(value = "/dashboard", method = RequestMethod.POST)
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -109,7 +116,7 @@ public class Dashboard extends HttpServlet {
         }
         LOG.info(idToDelete.toString());
         for (Long id : idToDelete) {
-            ComputerService.INSTANCE.deleteComputer(id);
+            computerService.deleteComputer(id);
         }
         doGet(request, response);
     }
@@ -128,16 +135,15 @@ public class Dashboard extends HttpServlet {
             Search filterBy, Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
         if (search.isEmpty()) {
-            computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, "",
-                    filterBy, order);
+            computerDtoList = computerService.findComputersInRangeSearchName(pageIndex, maxInPage, "", filterBy, order);
 
         } else {
             if (Search.COMPANIES.equalsName(searchBy)) {
-                computerDtoList = ComputerService.INSTANCE.findInRangeSearchCompanyName(pageIndex, maxInPage, search,
-                        filterBy, order);
+                computerDtoList = computerService.findInRangeSearchCompanyName(pageIndex, maxInPage, search, filterBy,
+                        order);
             } else {
-                computerDtoList = ComputerService.INSTANCE.findComputersInRangeSearchName(pageIndex, maxInPage, search,
-                        filterBy, order);
+                computerDtoList = computerService.findComputersInRangeSearchName(pageIndex, maxInPage, search, filterBy,
+                        order);
             }
         }
         return computerDtoList;
@@ -168,11 +174,11 @@ public class Dashboard extends HttpServlet {
     private int getNbComputerAndValidate(HttpServletRequest request, String search, String searchBy) {
         int nbComputer = 0;
         if (search.isEmpty()) {
-            nbComputer = ComputerService.INSTANCE.getNbComputers();
+            nbComputer = computerService.getNbComputers();
         } else if (Search.COMPUTERS.equalsName(searchBy)) {
-            nbComputer = ComputerService.INSTANCE.getNbComputersSearchName(search);
+            nbComputer = computerService.getNbComputersSearchName(search);
         } else if (Search.COMPANIES.equalsName(searchBy)) {
-            nbComputer = ComputerService.INSTANCE.getNbComputersSearchCompanyName(search);
+            nbComputer = computerService.getNbComputersSearchCompanyName(search);
         }
         return nbComputer;
     }

@@ -3,20 +3,26 @@ package com.formation.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.formation.cdb.mapper.CompanyMapper;
 import com.formation.cdb.model.Company;
-import com.formation.cdb.model.dao.CompanyDao;
-import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.CompanyDto;
+import com.formation.cdb.persistence.dao.CompanyDao;
+import com.formation.cdb.persistence.dao.ComputerDao;
 import com.formation.cdb.util.Order;
 
 /**
  * @author excilys
  *
  */
-public enum CompanyService {
-    INSTANCE;
-
+@Service ("companyService")
+public class CompanyService {
+    @Autowired
+    CompanyDao companyDao;
+    @Autowired
+    ComputerDao computerDao;
     /**
      * Find a list of companies, or page, with a specific string in their names
      * and with the order Order.DESC or Order.ASC.
@@ -28,7 +34,7 @@ public enum CompanyService {
      */
     public List<CompanyDto> findCompaniesInRangeSearchName(int index, int maxInPage, String search, Order order) {
         List<CompanyDto> computerDtoList = new ArrayList<CompanyDto>();
-        for (Company company : CompanyDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, order)) {
+        for (Company company : companyDao.findInRangeSearchName(index, maxInPage, search, order)) {
             computerDtoList.add(CompanyMapper.toDto(company));
         }
         return computerDtoList;
@@ -42,7 +48,7 @@ public enum CompanyService {
      */
     public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : CompanyDao.INSTANCE.findInRange(index, maxInPage)) {
+        for (Company company : companyDao.findInRange(index, maxInPage)) {
             companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
@@ -55,7 +61,7 @@ public enum CompanyService {
     @Deprecated
     public List<CompanyDto> findAllCompany() {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : CompanyDao.INSTANCE.findAll()) {
+        for (Company company : companyDao.findAll()) {
             companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
@@ -67,7 +73,7 @@ public enum CompanyService {
      * @return id
      */
     public long create(CompanyDto companyDto) {
-        return CompanyDao.INSTANCE.create(CompanyMapper.toEntity(companyDto));
+        return companyDao.create(CompanyMapper.toEntity(companyDto));
     }
 
     /**
@@ -76,10 +82,10 @@ public enum CompanyService {
      * @return result
      */
     public boolean delete(long id) {
-        return ComputerDao.INSTANCE.deleteWithCompanyId(id) && CompanyDao.INSTANCE.delete(id);
+        return computerDao.deleteWithCompanyId(id) && companyDao.delete(id);
     }
 
     public int getNbCompanies() {
-        return CompanyDao.INSTANCE.getRow();
+        return companyDao.getRow();
     }
 }

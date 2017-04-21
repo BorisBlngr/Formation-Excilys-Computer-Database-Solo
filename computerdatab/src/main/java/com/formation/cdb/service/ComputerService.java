@@ -3,10 +3,13 @@ package com.formation.cdb.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.model.dao.ComputerDao;
 import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.persistence.dao.ComputerDao;
 import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
@@ -15,14 +18,12 @@ import com.formation.cdb.util.Search;
  * @author excilys
  *
  */
-public enum ComputerService {
-    INSTANCE;
-
-    /**
-     * Construteur.
-     */
-    ComputerService() {
-    }
+@Service("computerService")
+public class ComputerService {
+    @Autowired
+    DataInfo dataInfo;
+    @Autowired
+    ComputerDao computerDao;
 
     /**
      * Find Computer.
@@ -30,7 +31,7 @@ public enum ComputerService {
      * @return computerDto
      */
     public ComputerDto findComputerDto(long id) {
-        return ComputerMapper.toDto(ComputerDao.INSTANCE.find(id));
+        return ComputerMapper.toDto(computerDao.find(id));
     }
 
     /**
@@ -41,7 +42,7 @@ public enum ComputerService {
      */
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findInRange(index, maxInPage)) {
+        for (Computer computer : computerDao.findInRange(index, maxInPage)) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -60,8 +61,7 @@ public enum ComputerService {
     public List<ComputerDto> findComputersInRangeSearchName(int index, int maxInPage, String search, Search filterBy,
             Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchName(index, maxInPage, search, filterBy,
-                order)) {
+        for (Computer computer : computerDao.findInRangeSearchName(index, maxInPage, search, filterBy, order)) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -80,8 +80,7 @@ public enum ComputerService {
     public List<ComputerDto> findInRangeSearchCompanyName(int index, int maxInPage, String search, Search filterBy,
             Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findInRangeSearchCompanyName(index, maxInPage, search, filterBy,
-                order)) {
+        for (Computer computer : computerDao.findInRangeSearchCompanyName(index, maxInPage, search, filterBy, order)) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -94,7 +93,7 @@ public enum ComputerService {
      */
     @Deprecated
     public ComputerDto findComputer(long id) {
-        return ComputerMapper.toDto(ComputerDao.INSTANCE.find(id));
+        return ComputerMapper.toDto(computerDao.find(id));
     }
 
     /**
@@ -104,7 +103,7 @@ public enum ComputerService {
     @Deprecated
     public List<ComputerDto> findAllComputer() {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : ComputerDao.INSTANCE.findAll()) {
+        for (Computer computer : computerDao.findAll()) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -116,7 +115,7 @@ public enum ComputerService {
      * @return idComputer
      */
     public long createComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.create(ComputerMapper.toEntity(computerDto));
+        return computerDao.create(ComputerMapper.toEntity(computerDto));
     }
 
     /**
@@ -125,7 +124,7 @@ public enum ComputerService {
      * @return result
      */
     public boolean updateComputer(ComputerDto computerDto) {
-        return ComputerDao.INSTANCE.update(ComputerMapper.toEntity(computerDto));
+        return computerDao.update(ComputerMapper.toEntity(computerDto));
     }
 
     /**
@@ -134,7 +133,7 @@ public enum ComputerService {
      * @return idComputer
      */
     public boolean deleteComputer(Long id) {
-        return ComputerDao.INSTANCE.delete(id);
+        return computerDao.delete(id);
     }
 
     /**
@@ -142,8 +141,9 @@ public enum ComputerService {
      * @return count
      */
     public int getNbComputers() {
-        return DataInfo.INSTANCE.getComputerCount();
-        // return ComputerDao.INSTANCE.getRow();
+        System.out.println(dataInfo.getComputerCount());
+        return dataInfo.getComputerCount();
+        // return computerDao.getRow();
     }
 
     /**
@@ -151,7 +151,7 @@ public enum ComputerService {
      * @return count
      */
     public int getNbComputersDb() {
-        return ComputerDao.INSTANCE.getRow();
+        return computerDao.getRow();
     }
 
     /**
@@ -160,7 +160,7 @@ public enum ComputerService {
      * @return count
      */
     public int getNbComputersSearchName(String search) {
-        return ComputerDao.INSTANCE.getRowSearchName(search);
+        return computerDao.getRowSearchName(search);
     }
 
     /**
@@ -169,7 +169,7 @@ public enum ComputerService {
      * @return count
      */
     public int getNbComputersSearchCompanyName(String search) {
-        return ComputerDao.INSTANCE.getRowSearchCompanyName(search);
+        return computerDao.getRowSearchCompanyName(search);
     }
 
     /**

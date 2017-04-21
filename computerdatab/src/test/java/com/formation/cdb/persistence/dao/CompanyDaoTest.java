@@ -1,4 +1,4 @@
-package com.formation.cdb.model.dao;
+package com.formation.cdb.persistence.dao;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -6,11 +6,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 
 public class CompanyDaoTest {
+    CompanyDao companyDao;
 
     Company company = null;
     Computer nullComputer = null;
@@ -22,6 +25,7 @@ public class CompanyDaoTest {
      */
     @BeforeClass
     public static void executerBeforeClass() throws Exception {
+
     }
 
     /**
@@ -38,6 +42,9 @@ public class CompanyDaoTest {
      */
     @Before
     public void executerAvantChaqueTest() {
+        ApplicationContext appContext = new ClassPathXmlApplicationContext("spring-module.xml");
+        companyDao = (CompanyDao) appContext.getBean("companyDao");
+
         company = new Company();
         company.setName("boitetropbien");
         nullComputer = new Computer();
@@ -58,7 +65,7 @@ public class CompanyDaoTest {
      */
     @Test
     public void findIsValid() {
-        Company companyFound = CompanyDao.INSTANCE.find(1);
+        Company companyFound = companyDao.find(1);
         Assert.assertTrue(companyFound.toString().equals("Company [id=1, name=Apple Inc.]"));
     }
 
@@ -67,12 +74,12 @@ public class CompanyDaoTest {
      */
     @Test
     public void createValid() {
-        company.setId(CompanyDao.INSTANCE.create(company));
-        Company companyFound = CompanyDao.INSTANCE.find(company.getId());
+        company.setId(companyDao.create(company));
+        Company companyFound = companyDao.find(company.getId());
         // System.out.println(companyFound);
         // System.out.println(company);
         Assert.assertTrue(companyFound.toString().equals(company.toString()));
-        CompanyDao.INSTANCE.delete(company);
+        companyDao.delete(company);
     }
 
     /**
@@ -80,14 +87,14 @@ public class CompanyDaoTest {
      */
     @Test
     public void updateValid() {
-        company.setId(CompanyDao.INSTANCE.create(company));
+        company.setId(companyDao.create(company));
         company.setName("boitetropbien2");
-        CompanyDao.INSTANCE.update(company);
-        Company companyFound = CompanyDao.INSTANCE.find(company.getId());
+        companyDao.update(company);
+        Company companyFound = companyDao.find(company.getId());
         // System.out.println(companyFound.toString());
         // System.out.println(company.toString());
         Assert.assertTrue(companyFound.toString().equals(company.toString()));
-        CompanyDao.INSTANCE.delete(company);
+        companyDao.delete(company);
     }
 
     /**
@@ -95,9 +102,9 @@ public class CompanyDaoTest {
      */
     @Test
     public void deleteValid() {
-        long id = CompanyDao.INSTANCE.create(new Company.CompanyBuilder().name("company658").build());
-        CompanyDao.INSTANCE.delete(id);
-        Company companyFound = CompanyDao.INSTANCE.findByName("company658");
+        long id = companyDao.create(new Company.CompanyBuilder().name("company658").build());
+        companyDao.delete(id);
+        Company companyFound = companyDao.findByName("company658");
         // System.out.println(nullCompany.toString());
         // System.out.println(companyFound.toString());
         Assert.assertTrue(companyFound.toString().equals(nullCompany.toString()));

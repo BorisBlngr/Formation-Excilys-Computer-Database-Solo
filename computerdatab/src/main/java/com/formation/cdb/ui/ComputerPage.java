@@ -22,6 +22,8 @@ public class ComputerPage {
     Parameters params = new Parameters();
     Configuration config;
 
+    private ComputerService computerService;
+
     /**
      * Constrcteur.
      * @param index Page index.
@@ -38,7 +40,7 @@ public class ComputerPage {
 
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
-        this.list = ComputerService.INSTANCE.findComputersInRange(index, maxInPage);
+        this.list = computerService.findComputersInRange(index, maxInPage);
     }
 
     public int getMaxInPage() {
@@ -63,15 +65,5 @@ public class ComputerPage {
 
     public void setList(List<ComputerDto> list) {
         this.list = list;
-    }
-
-    /**
-     * Main.
-     * @param args Args.
-     */
-    public static void main(String[] args) {
-        ComputerPage page = new ComputerPage(2);
-        System.out.println(page.getList());
-        System.out.println(ComputerService.INSTANCE.getNbComputers());
     }
 }

@@ -14,7 +14,7 @@
         <slf4j.version>1.7.24</slf4j.version>
         <log4j.core.version>2.8.1</log4j.core.version>
         <logback.version>1.0.1</logback.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <commons.version>2.0</commons.version>
         <commons.beanutils.version>1.9.3</commons.beanutils.version>
@@ -25,7 +25,7 @@
         <HikariCP.version>2.4.5</HikariCP.version>
         <HikariCP.artifact.version>2.4.9</HikariCP.artifact.version>
         <selenium-java.version>3.3.1</selenium-java.version>
-        <spring.version></spring.version>
+        <spring.version>4.3.7.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -138,8 +138,32 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>3.0.5.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <distributionManagement>

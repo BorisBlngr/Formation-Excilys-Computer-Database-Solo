@@ -1,4 +1,4 @@
-package com.formation.cdb.model.dao;
+package com.formation.cdb.persistence.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
@@ -19,8 +21,11 @@ import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
 
-public enum ComputerDao implements Dao<Computer> {
-    INSTANCE;
+@Repository ("computerDao")
+public class ComputerDao implements Dao<Computer> {
+    @Autowired
+    DataInfo dataInfo;
+
     private static final Logger LOG = LoggerFactory.getLogger(ComputerDao.class);
     final String sqlCreate = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
     final String sqlFindById = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = ";
@@ -408,7 +413,7 @@ public enum ComputerDao implements Dao<Computer> {
             }
             LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-            DataInfo.INSTANCE.increaseComputerCount();
+            dataInfo.increaseComputerCount();
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -431,7 +436,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, computer.getId());
             LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-            DataInfo.INSTANCE.decreaseComputerCount();
+            dataInfo.decreaseComputerCount();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -452,7 +457,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, id);
             LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-            DataInfo.INSTANCE.synchronizedWithDb();
+            dataInfo.synchronizedWithDb();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -474,7 +479,7 @@ public enum ComputerDao implements Dao<Computer> {
             preparedStatement.setLong(1, id);
             LOG.debug("Send : {}", preparedStatement.toString());
             preparedStatement.executeUpdate();
-            DataInfo.INSTANCE.decreaseComputerCount();
+            dataInfo.decreaseComputerCount();
             result = true;
         } catch (SQLException e) {
             // TODO Auto-generated catch block

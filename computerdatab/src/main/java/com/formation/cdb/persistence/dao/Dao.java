@@ -1,4 +1,4 @@
-package com.formation.cdb.model.dao;
+package com.formation.cdb.persistence.dao;
 
 public interface Dao<T> {
 

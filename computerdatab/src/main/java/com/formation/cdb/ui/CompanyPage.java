@@ -10,6 +10,8 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.service.CompanyService;
@@ -23,11 +25,16 @@ public class CompanyPage {
     Parameters params = new Parameters();
     Configuration config;
 
+    private CompanyService companyService;
+
     /**
      * Constrcteur.
      * @param index Page index.
      */
     public CompanyPage(int index) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Module.xml");
+        companyService = (CompanyService) context.getBean("companyService");
+
         FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
                 PropertiesConfiguration.class).configure(params.properties().setFileName("conf.properties"));
         try {
@@ -39,7 +46,7 @@ public class CompanyPage {
 
         maxInPage = config.getInt("pagination.maxpage");
         indexMaPage = index;
-        this.list = CompanyService.INSTANCE.findCompaniesInRange(index, maxInPage);
+        this.list = companyService.findCompaniesInRange(index, maxInPage);
     }
 
     public int getMaxInPage() {
@@ -65,15 +72,4 @@ public class CompanyPage {
     public void setList(List<CompanyDto> list) {
         this.list = list;
     }
-
-    /**
-     * Main.
-     * @param args Args.
-     */
-    public static void main(String[] args) {
-        CompanyPage page = new CompanyPage(2);
-        System.out.println(page.getList());
-        System.out.println(CompanyService.INSTANCE.getNbCompanies());
-    }
-
 }

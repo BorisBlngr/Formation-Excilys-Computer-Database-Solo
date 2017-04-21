@@ -13,6 +13,9 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
@@ -30,10 +33,16 @@ public class MenuCli {
     int nbItem = 11;
     int maxInPage = 0;
 
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    ComputerService computerService;
+
     /**
      * Constructeur qui instancie les variables en fonction du fichier de conf.
      */
     public MenuCli() {
+
         input = new Scanner(System.in);
 
         FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
@@ -142,7 +151,7 @@ public class MenuCli {
         case 1:
             LOG.info("Case List All Computers");
             computerDtoList.clear();
-            computerDtoList = ComputerService.INSTANCE.findAllComputer();
+            computerDtoList = computerService.findAllComputer();
             for (ComputerDto computerDto : computerDtoList) {
                 System.out.println(" id : [" + computerDto.getId() + "]\t| name : " + computerDto.getName());
             }
@@ -150,7 +159,7 @@ public class MenuCli {
         case 2:
             LOG.info("Case List All Companies");
             companyDtoList.clear();
-            companyDtoList = CompanyService.INSTANCE.findAllCompany();
+            companyDtoList = companyService.findAllCompany();
             for (CompanyDto companyDto : companyDtoList) {
                 System.out.println(" id : [" + companyDto.getId() + "]\t| name : " + companyDto.getName());
             }
@@ -158,7 +167,7 @@ public class MenuCli {
         case 3:
             LOG.info("Case Show computer details");
             System.out.println("id : ");
-            ComputerDto computerDtoFound = ComputerService.INSTANCE.findComputer(selectLong());
+            ComputerDto computerDtoFound = computerService.findComputer(selectLong());
             System.out.println(computerDtoFound);
 
             break;
@@ -173,11 +182,11 @@ public class MenuCli {
         case 6:
             LOG.info("Case Delete a computer");
             System.out.println("id : ");
-            ComputerService.INSTANCE.deleteComputer(selectLong());
+            computerService.deleteComputer(selectLong());
             break;
         case 7:
             LOG.info("Case 7 List of Computers ");
-            int nbComputer = ComputerService.INSTANCE.getNbComputers();
+            int nbComputer = computerService.getNbComputers();
             int nbComputerPages = nbComputer / maxInPage;
             if (nbComputer % maxInPage != 0) {
                 nbComputerPages++;
@@ -189,7 +198,7 @@ public class MenuCli {
             break;
         case 8:
             LOG.info("Case 8 List of Companies");
-            int nbCompany = CompanyService.INSTANCE.getNbCompanies();
+            int nbCompany = companyService.getNbCompanies();
             int nbCompanyPages = nbCompany / maxInPage;
             if (nbCompany % maxInPage != 0) {
                 nbCompanyPages++;
@@ -207,7 +216,7 @@ public class MenuCli {
         case 10:
             LOG.info("Case 11 Delete Company");
             System.out.println("id : ");
-            CompanyService.INSTANCE.delete(selectLong());
+            companyService.delete(selectLong());
             break;
         case 11:
             LOG.info("Case 11 EXIT");
@@ -229,7 +238,7 @@ public class MenuCli {
         ComputerDto newComputerDto = new ComputerDto();
 
         System.out.println("computer ID : ");
-        computerDtoFound = ComputerService.INSTANCE.findComputerDto(selectLong());
+        computerDtoFound = computerService.findComputerDto(selectLong());
         newComputerDto.setId(computerDtoFound.getId());
         System.out.println("new name[" + computerDtoFound.getName() + "] : ");
         newComputerDto.setName(selectString());
@@ -255,8 +264,8 @@ public class MenuCli {
         newComputerDto.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
         System.out.println(newComputerDto);
-        ComputerService.INSTANCE.updateComputer(newComputerDto);
-        newComputerDto = ComputerService.INSTANCE.findComputerDto(newComputerDto.getId());
+        computerService.updateComputer(newComputerDto);
+        newComputerDto = computerService.findComputerDto(newComputerDto.getId());
         System.out.println(newComputerDto);
 
     }
@@ -290,7 +299,7 @@ public class MenuCli {
         computerDtoFound.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
 
         System.out.println(computerDtoFound);
-        computerDtoFound.setId(ComputerService.INSTANCE.createComputer(computerDtoFound));
+        computerDtoFound.setId(computerService.createComputer(computerDtoFound));
 
         System.out.println(computerDtoFound);
     }
@@ -302,7 +311,7 @@ public class MenuCli {
         CompanyDto companyDto = new CompanyDto();
         System.out.println("name : ");
         companyDto.setName(selectString());
-        CompanyService.INSTANCE.create(companyDto);
+        companyService.create(companyDto);
     }
 
     /**
@@ -326,7 +335,7 @@ public class MenuCli {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-
+        ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Module.xml");
         MenuCli menu = new MenuCli();
         menu.showMeTheMagic();
 
