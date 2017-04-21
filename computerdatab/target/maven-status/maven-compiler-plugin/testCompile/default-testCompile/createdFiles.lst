@@ -1,0 +1,8 @@
+com/formation/cdb/model/dao/ComputerDaoTest.class
+com/formation/cdb/ui/SearchPagination.class
+com/formation/cdb/model/dto/ComputerDtoTest.class
+com/formation/cdb/model/ComputerTest.class
+com/formation/cdb/mapper/ComputerMapperTest.class
+com/formation/cdb/persistence/PersistenceManagerTest.class
+com/formation/cdb/model/dao/CompanyDaoTest.class
+com/formation/cdb/mapper/CompanyMapperTest.class

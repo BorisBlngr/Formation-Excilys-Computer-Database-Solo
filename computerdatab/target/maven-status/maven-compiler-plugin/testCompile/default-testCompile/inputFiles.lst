@@ -1,0 +1,8 @@
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/model/dto/ComputerDtoTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/mapper/ComputerMapperTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/model/dao/CompanyDaoTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/mapper/CompanyMapperTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/ui/SearchPagination.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/model/ComputerTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/persistence/PersistenceManagerTest.java
+/home/excilys/workspace/training/computerdatab/src/test/java/com/formation/cdb/model/dao/ComputerDaoTest.java
