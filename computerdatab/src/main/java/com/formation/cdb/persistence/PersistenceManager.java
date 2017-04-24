@@ -49,6 +49,7 @@ public enum PersistenceManager {
         cfg.setPassword(config.getString("dataSource.password"));
         // cfg.setDataSourceClassName(config.getString("dataSource.driverClass"));
         cfg.setMaximumPoolSize(config.getInt("dataSource.maximumPoolSize"));
+        cfg.setMaxLifetime(config.getInt("dataSource.maxLifetimeMs"));
         cfg.addDataSourceProperty(config.getString("dataSource.cachePrepStmts"), "true");
         cfg.addDataSourceProperty(config.getString("dataSource.prepStmtCacheSize"), "250");
         cfg.addDataSourceProperty(config.getString("dataSource.prepStmtCacheSqlLimit"), "2048");

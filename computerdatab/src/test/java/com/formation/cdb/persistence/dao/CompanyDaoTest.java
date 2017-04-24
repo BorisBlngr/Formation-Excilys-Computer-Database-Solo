@@ -111,4 +111,11 @@ public class CompanyDaoTest {
         // System.out.println(companyFound.toString());
         Assert.assertTrue(companyFound.toString().equals(nullCompany.toString()));
     }
+
+//    @Test
+//    public void jdbcTemplate() {
+//        Company companyJdbc = companyDao.tryjdbcTemplate(1);
+//        int a = 2;
+//        companyJdbc.setName("totot");
+//    }
 }

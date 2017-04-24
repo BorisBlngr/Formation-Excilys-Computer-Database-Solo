@@ -1,33 +1,40 @@
 package com.formation.cdb.persistence.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.model.Company;
-import com.formation.cdb.persistence.PersistenceManager;
 import com.formation.cdb.util.Order;
 
-@Repository ("companyDao")
+@Repository("companyDao")
 public class CompanyDao implements Dao<Company> {
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     private static final Logger LOG = LoggerFactory.getLogger(CompanyDao.class);
     final String sqlCreate = "INSERT INTO company(name) VALUES (?)";
     final String sqlDeleteById = "DELETE FROM company WHERE id = ?";
     final String sqlUpdate = "UPDATE company SET name = ? WHERE id = ? ";
-    final String sqlFindById = "SELECT id,name FROM company WHERE id = ";
+    final String sqlFindById = "SELECT id,name FROM company WHERE id = ?";
     final String sqlFindAll = "SELECT id,name FROM company";
     final String sqlFindInRange = "SELECT id,name FROM company LIMIT ? OFFSET ?";
     final String sqlFindByName = "SELECT id,name FROM company WHERE name = ?";
     final String sqlFindIdByName = "SELECT id FROM company WHERE name = ?";
-    final String sqlCountAll = "SELECT COUNT(*) FROM company";
+    final String sqlCountAll = "SELECT COUNT(id) FROM company";
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
 
     /**
      * Methode pour creer une nouvelle company en base, renvoit l'id de la ligne
@@ -37,16 +44,12 @@ public class CompanyDao implements Dao<Company> {
      */
     @Override
     public long create(Company company) {
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlCreate);) {
-            preparedStatement.setString(1, company.getName());
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        int returnValue = getJdbcTemplate().update(sqlCreate, company.getName());
+        if (1 == returnValue) {
+            return findIdByName(company.getName());
+        } else {
+            return 0;
         }
-        return findIdByName(company.getName());
     }
 
     /**
@@ -57,18 +60,8 @@ public class CompanyDao implements Dao<Company> {
     @Deprecated
     @Override
     public boolean delete(Company company) {
-        boolean result = false;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
-            preparedStatement.setLong(1, company.getId());
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-            result = true;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return result;
+        int returnValue = getJdbcTemplate().update(sqlDeleteById, company.getId());
+        return returnValue == 1;
     }
 
     /**
@@ -77,19 +70,8 @@ public class CompanyDao implements Dao<Company> {
      * @return result
      */
     public boolean delete(long id) {
-        boolean result = false;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
-            preparedStatement.setLong(1, id);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-
-            result = true;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return result;
+        int returnValue = getJdbcTemplate().update(sqlDeleteById, id);
+        return returnValue == 1;
     }
 
     /**
@@ -99,18 +81,8 @@ public class CompanyDao implements Dao<Company> {
      */
     @Override
     public boolean update(Company company) {
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlUpdate);) {
-            preparedStatement.setString(1, company.getName());
-            preparedStatement.setLong(2, company.getId());
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
+        int returnValue = getJdbcTemplate().update(sqlUpdate, company.getName(), company.getId());
+        return returnValue == 1;
     }
 
     /**
@@ -119,20 +91,15 @@ public class CompanyDao implements Dao<Company> {
      * @return company
      */
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Company find(long id) {
-        Company company = new Company();
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : ", sqlFindById + id);
-            try (ResultSet rs = stmt.executeQuery(sqlFindById + id);) {
-                if (rs.first()) {
-                    company.setId(id);
-                    company.setName(rs.getString("name"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try {
+            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindById,
+                    new BeanPropertyRowMapper(Company.class), id);
+            return company;
+        } catch (EmptyResultDataAccessException e) {
+            return new Company();
         }
-        return company;
     }
 
     /**
@@ -140,24 +107,10 @@ public class CompanyDao implements Dao<Company> {
      * sous forme d'arraylist.
      * @return companyList
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Deprecated
     public List<Company> findAll() {
-        List<Company> companyList = new ArrayList<Company>();
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : {}", sqlFindAll);
-            try (ResultSet rs = stmt.executeQuery(sqlFindAll);) {
-                Company company;
-                while (rs.next()) {
-                    company = new Company();
-                    company.setId(rs.getInt("id"));
-                    company.setName(rs.getString("name"));
-                    companyList.add(company);
-                }
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        List<Company> companyList = getJdbcTemplate().query(sqlFindAll, new BeanPropertyRowMapper(Company.class));
         return companyList;
     }
 
@@ -169,30 +122,14 @@ public class CompanyDao implements Dao<Company> {
      * @param maxInPage Nombre d'item max dans la page.
      * @return companyList
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public List<Company> findInRange(int indexPage, int maxInPage) {
         List<Company> companyList = new ArrayList<Company>();
         if (indexPage < 1) {
             return companyList;
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindInRange);) {
-            preparedStatement.setInt(1, maxInPage);
-            preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                Company company;
-                while (rs.next()) {
-                    company = new Company();
-                    company.setId(rs.getInt("id"));
-                    company.setName(rs.getString("name"));
-                    companyList.add(company);
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        companyList = getJdbcTemplate().query(sqlFindInRange, new BeanPropertyRowMapper(Company.class), maxInPage,
+                (indexPage - 1) * maxInPage);
         return companyList;
     }
 
@@ -206,6 +143,7 @@ public class CompanyDao implements Dao<Company> {
      * @param order Order.
      * @return companyList
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public List<Company> findInRangeSearchName(int indexPage, int maxInPage, String search, Order order) {
         List<Company> companyList = new ArrayList<Company>();
         if (indexPage < 1) {
@@ -214,27 +152,13 @@ public class CompanyDao implements Dao<Company> {
         String sql = "SELECT id, name FROM computer WHERE name LIKE ? ORDER BY name %s LIMIT ? OFFSET ? ";
         if (order.equals(Order.DESC)) {
             sql = String.format(sql, "DESC");
+            return companyList = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
+                    maxInPage, (indexPage - 1) * maxInPage);
         } else {
             sql = String.format(sql, "ASC");
+            return companyList = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
+                    maxInPage, (indexPage - 1) * maxInPage);
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, search + "%");
-            preparedStatement.setInt(2, maxInPage);
-            preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                while (rs.next()) {
-                    companyList.add(constructCompanyWithResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return companyList;
     }
 
     /**
@@ -242,24 +166,15 @@ public class CompanyDao implements Dao<Company> {
      * @param name Le nom de la company à trouver.
      * @return company
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Company findByName(String name) {
-        Company company = new Company();
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindByName);) {
-            preparedStatement.setString(1, name);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    company.setId(rs.getInt("id"));
-                    company.setName(rs.getString("name"));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindByName,
+                    new BeanPropertyRowMapper(Company.class), name);
+            return company;
+        } catch (EmptyResultDataAccessException e) {
+            return new Company();
         }
-        return company;
     }
 
     /**
@@ -268,23 +183,15 @@ public class CompanyDao implements Dao<Company> {
      * @param name Le nom de la company à trouver.
      * @return id
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public long findIdByName(String name) {
-        Long id = (long) 0;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindIdByName);) {
-            preparedStatement.setString(1, name);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    id = rs.getLong("id");
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindByName,
+                    new BeanPropertyRowMapper(Company.class), name);
+            return company.getId();
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
         }
-        return id;
     }
 
     /**
@@ -292,21 +199,7 @@ public class CompanyDao implements Dao<Company> {
      * @return count
      */
     public int getRow() {
-        int count = 0;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : {}", sqlCountAll);
-            try (ResultSet rs = stmt.executeQuery(sqlCountAll);) {
-                if (rs.first()) {
-                    count = rs.getInt("COUNT(*)");
-                }
-            }
-        } catch (
-
-        SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return count;
+        return getJdbcTemplate().queryForObject(sqlCountAll, Integer.class);
     }
 
     /**
