@@ -1,34 +1,31 @@
 package com.formation.cdb.persistence.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.formation.cdb.model.Company;
+import com.formation.cdb.mapper.ComputerRowMapper;
 import com.formation.cdb.model.Computer;
-import com.formation.cdb.persistence.PersistenceManager;
 import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
 
-@Repository ("computerDao")
+@Repository("computerDao")
 public class ComputerDao implements Dao<Computer> {
     @Autowired
     DataInfo dataInfo;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     private static final Logger LOG = LoggerFactory.getLogger(ComputerDao.class);
     final String sqlCreate = "INSERT INTO computer(name,introduced,discontinued,company_id) VALUES (?,?,?,?)";
-    final String sqlFindById = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = ";
+    final String sqlFindById = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.id = ?";
     final String sqlFindByName = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id WHERE c.name = ?";
     final String sqlFindAll = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id";
     final String sqlFindInRange = "SELECT c.id, c.name, c.introduced, c.discontinued, y.id, y.name  FROM computer c LEFT JOIN company y ON c.company_id=y.id LIMIT ? OFFSET ?";
@@ -40,12 +37,6 @@ public class ComputerDao implements Dao<Computer> {
     final String sqlDeleteByCompanyId = "DELETE FROM computer WHERE company_id = ?";
     final String sqlDeleteById = "DELETE FROM computer WHERE id = ?";
     final String sqlUpdate = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-
-    /**
-     * Constructeur.
-     */
-    ComputerDao() {
-    }
 
     /**
      * Check if the Computer have a name. Check the dates.
@@ -68,48 +59,20 @@ public class ComputerDao implements Dao<Computer> {
     }
 
     /**
-     * Construct a computer based on the result set.
-     * @param rs Resultset.
-     * @return computer
-     * @throws SQLException Sql exception.
-     */
-    private Computer constructComputerWithResultSet(ResultSet rs) throws SQLException {
-        Computer computer = new Computer();
-        computer.setId(rs.getInt("id"));
-        computer.setName(rs.getString("name"));
-        computer.setCompany(new Company.CompanyBuilder().id(rs.getLong("y.id")).name(rs.getString("y.name")).build());
-        if (rs.getDate("introduced") != null) {
-            computer.setIntroduced(rs.getDate("introduced").toLocalDate());
-        }
-        if (rs.getDate("discontinued") != null) {
-            computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
-        }
-        return computer;
-    }
-
-    /**
      * Methode pour trouver un computer en base en fonction de son id, renvoit
      * le premier resultat.
      * @param id L'id du computer à trouver.
      * @return computer
      */
     @Override
+    @SuppressWarnings({"unchecked"})
     public Computer find(long id) {
-        Computer computer = new Computer();
-
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : {}", sqlFindById + id);
-            try (ResultSet rs = stmt.executeQuery(sqlFindById + id);) {
-                // Extract data from result set
-                if (rs.first()) {
-                    computer = constructComputerWithResultSet(rs);
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            Computer computer = (Computer) jdbcTemplate.queryForObject(sqlFindById, new ComputerRowMapper(), id);
+            return computer;
+        } catch (EmptyResultDataAccessException e) {
+            return new Computer();
         }
-        return computer;
     }
 
     /**
@@ -117,22 +80,14 @@ public class ComputerDao implements Dao<Computer> {
      * @param name Le nom du computer à trouver.
      * @return computer
      */
+    @SuppressWarnings({"unchecked"})
     public Computer findByName(String name) {
-        Computer computer = new Computer();
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindByName);) {
-            preparedStatement.setString(1, name);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    computer = constructComputerWithResultSet(rs);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try {
+            Computer computer = (Computer) jdbcTemplate.queryForObject(sqlFindByName, new ComputerRowMapper(), name);
+            return computer;
+        } catch (EmptyResultDataAccessException e) {
+            return new Computer();
         }
-        return computer;
     }
 
     /**
@@ -140,22 +95,14 @@ public class ComputerDao implements Dao<Computer> {
      * pour les grosses bdd.
      * @return computerList
      */
+    @SuppressWarnings({"unchecked"})
     public List<Computer> findAll() {
-        List<Computer> computerList = new ArrayList<Computer>();
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : {}", sqlFindAll);
-
-            try (ResultSet rs = stmt.executeQuery(sqlFindAll);) {
-                // Extract data from result set
-                while (rs.next()) {
-                    computerList.add(constructComputerWithResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            List<Computer> computerList = jdbcTemplate.query(sqlFindAll, new ComputerRowMapper());
+            return computerList;
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<Computer>();
         }
-        return computerList;
     }
 
     /**
@@ -165,28 +112,15 @@ public class ComputerDao implements Dao<Computer> {
      * @param maxInPage Nombre d'item max dans la list.
      * @return companyList
      */
+    @SuppressWarnings({"unchecked"})
     public List<Computer> findInRange(int indexPage, int maxInPage) {
-        List<Computer> computerList = new ArrayList<Computer>();
-        if (indexPage < 1) {
+        try {
+            List<Computer> computerList = jdbcTemplate.query(sqlFindInRange, new ComputerRowMapper(), maxInPage,
+                    (indexPage - 1) * maxInPage);
             return computerList;
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<Computer>();
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindInRange);) {
-            preparedStatement.setInt(1, maxInPage);
-            preparedStatement.setInt(2, (indexPage - 1) * maxInPage);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                while (rs.next()) {
-                    computerList.add(constructComputerWithResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return computerList;
     }
 
     /**
@@ -200,6 +134,7 @@ public class ComputerDao implements Dao<Computer> {
      * @param order Order.
      * @return computerList
      */
+    @SuppressWarnings({"unchecked"})
     public List<Computer> findInRangeSearchName(int indexPage, int maxInPage, String search, Search filterBy,
             Order order) {
         List<Computer> computerList = new ArrayList<Computer>();
@@ -217,24 +152,13 @@ public class ComputerDao implements Dao<Computer> {
         } else {
             sql = String.format(sql, "ASC");
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, search + "%");
-            preparedStatement.setInt(2, maxInPage);
-            preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                while (rs.next()) {
-                    computerList.add(constructComputerWithResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            computerList = jdbcTemplate.query(sql, new ComputerRowMapper(), search + "%", maxInPage,
+                    (indexPage - 1) * maxInPage);
+            return computerList;
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<Computer>();
         }
-        return computerList;
     }
 
     /**
@@ -249,6 +173,7 @@ public class ComputerDao implements Dao<Computer> {
      * @param filterBy Sort the list by.
      * @return computerList
      */
+    @SuppressWarnings("unchecked")
     public List<Computer> findInRangeSearchCompanyName(int indexPage, int maxInPage, String search, Search filterBy,
             Order order) {
         List<Computer> computerList = new ArrayList<Computer>();
@@ -266,24 +191,13 @@ public class ComputerDao implements Dao<Computer> {
         } else {
             sql = String.format(sql, "ASC");
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);) {
-            preparedStatement.setString(1, search + "%");
-            preparedStatement.setInt(2, maxInPage);
-            preparedStatement.setInt(3, (indexPage - 1) * maxInPage);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                while (rs.next()) {
-                    computerList.add(constructComputerWithResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        try {
+            computerList = jdbcTemplate.query(sql, new ComputerRowMapper(), search + "%", maxInPage,
+                    (indexPage - 1) * maxInPage);
+            return computerList;
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<Computer>();
         }
-        return computerList;
     }
 
     /**
@@ -293,23 +207,11 @@ public class ComputerDao implements Dao<Computer> {
      * @return id
      */
     public long findIdByName(String name) {
-        long id = (long) 0;
-
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlFindIdByName);) {
-            preparedStatement.setString(1, name);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    id = rs.getLong("id");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try {
+            return (Long) jdbcTemplate.queryForObject(sqlFindIdByName, Long.class, name);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
         }
-        return id;
     }
 
     /**
@@ -317,19 +219,7 @@ public class ComputerDao implements Dao<Computer> {
      * @return count
      */
     public int getRow() {
-        int count = 0;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb(); Statement stmt = conn.createStatement();) {
-            LOG.debug("Send : {}", sqlCountAll);
-            try (ResultSet rs = stmt.executeQuery(sqlCountAll);) {
-                if (rs.first()) {
-                    count = rs.getInt("COUNT(id)");
-                }
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return count;
+        return jdbcTemplate.queryForObject(sqlCountAll, Integer.class);
     }
 
     /**
@@ -338,22 +228,7 @@ public class ComputerDao implements Dao<Computer> {
      * @return count
      */
     public int getRowSearchName(String search) {
-        int count = 0;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchName);) {
-            preparedStatement.setString(1, search + "%");
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    count = rs.getInt("COUNT(id)");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
+        return jdbcTemplate.queryForObject(sqlCountSearchName, Integer.class, search + "%");
     }
 
     /**
@@ -363,22 +238,7 @@ public class ComputerDao implements Dao<Computer> {
      * @return count
      */
     public int getRowSearchCompanyName(String search) {
-        int count = 0;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlCountSearchCompanyName);) {
-            preparedStatement.setString(1, search + "%");
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.execute();
-
-            try (ResultSet rs = preparedStatement.getResultSet();) {
-                if (rs.first()) {
-                    count = rs.getInt("COUNT(c.id)");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
+        return jdbcTemplate.queryForObject(sqlCountSearchCompanyName, Integer.class, search + "%");
     }
 
     /**
@@ -392,34 +252,30 @@ public class ComputerDao implements Dao<Computer> {
         if (!computerIsValid(cmpt)) {
             return 0;
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlCreate);) {
-
-            preparedStatement.setString(1, cmpt.getName());
-            if (cmpt.getIntroduced() == null) {
-                preparedStatement.setNull(2, Types.TIMESTAMP);
-            } else {
-                preparedStatement.setDate(2, java.sql.Date.valueOf(cmpt.getIntroduced()));
-            }
-            if (cmpt.getDiscontinued() == null) {
-                preparedStatement.setNull(3, Types.TIMESTAMP);
-            } else {
-                preparedStatement.setDate(3, java.sql.Date.valueOf(cmpt.getDiscontinued()));
-            }
-            if (cmpt.getCompany().getId() == 0) {
-                preparedStatement.setNull(4, Types.INTEGER);
-            } else {
-                preparedStatement.setLong(4, cmpt.getCompany().getId());
-            }
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-            dataInfo.increaseComputerCount();
-
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Object[] params = new Object[4];
+        params[0] = cmpt.getName();
+        if (cmpt.getIntroduced() == null) {
+            params[1] = null;
+        } else {
+            params[1] = java.sql.Date.valueOf(cmpt.getIntroduced());
         }
-        return findIdByName(cmpt.getName());
+        if (cmpt.getDiscontinued() == null) {
+            params[2] = null;
+        } else {
+            params[2] = java.sql.Date.valueOf(cmpt.getDiscontinued());
+        }
+        if (cmpt.getCompany().getId() == 0) {
+            params[3] = null;
+        } else {
+            params[3] = cmpt.getCompany().getId();
+        }
+        int returnValue = jdbcTemplate.update(sqlCreate, params);
+        if (1 == returnValue) {
+            dataInfo.increaseComputerCount();
+            return findIdByName(cmpt.getName());
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -430,19 +286,11 @@ public class ComputerDao implements Dao<Computer> {
      */
     @Override
     public boolean delete(Computer computer) {
-        boolean result = false;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteByComputer);) {
-            preparedStatement.setLong(1, computer.getId());
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
+        int returnValue = jdbcTemplate.update(sqlDeleteByComputer, computer.getId());
+        if (returnValue == 1) {
             dataInfo.decreaseComputerCount();
-            result = true;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        return result;
+        return returnValue == 1;
     }
 
     /**
@@ -451,19 +299,8 @@ public class ComputerDao implements Dao<Computer> {
      * @return result
      */
     public boolean deleteWithCompanyId(long id) {
-        boolean result = false;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteByCompanyId);) {
-            preparedStatement.setLong(1, id);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-            dataInfo.synchronizedWithDb();
-            result = true;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return result;
+        int returnValue = jdbcTemplate.update(sqlDeleteByCompanyId, id);
+        return returnValue == 1;
     }
 
     /**
@@ -473,19 +310,11 @@ public class ComputerDao implements Dao<Computer> {
      * @return result
      */
     public boolean delete(long id) {
-        boolean result = false;
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlDeleteById);) {
-            preparedStatement.setLong(1, id);
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
+        int returnValue = jdbcTemplate.update(sqlDeleteById, id);
+        if (returnValue == 1) {
             dataInfo.decreaseComputerCount();
-            result = true;
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        return result;
+        return returnValue == 1;
     }
 
     /**
@@ -499,33 +328,26 @@ public class ComputerDao implements Dao<Computer> {
         if (!computerIsValid(cmpt)) {
             return false;
         }
-        try (Connection conn = PersistenceManager.INSTANCE.connectToDb();
-                PreparedStatement preparedStatement = conn.prepareStatement(sqlUpdate);) {
 
-            preparedStatement.setString(1, cmpt.getName());
-            if (cmpt.getIntroduced() == null) {
-                preparedStatement.setNull(2, Types.TIMESTAMP);
-            } else {
-                preparedStatement.setDate(2, java.sql.Date.valueOf(cmpt.getIntroduced()));
-            }
-            if (cmpt.getDiscontinued() == null) {
-                preparedStatement.setNull(3, Types.TIMESTAMP);
-            } else {
-                preparedStatement.setDate(3, java.sql.Date.valueOf(cmpt.getDiscontinued()));
-            }
-            if (cmpt.getCompany().getId() == 0) {
-                preparedStatement.setNull(4, Types.INTEGER);
-            } else {
-                preparedStatement.setLong(4, cmpt.getCompany().getId());
-            }
-            preparedStatement.setLong(5, cmpt.getId());
-            LOG.debug("Send : {}", preparedStatement.toString());
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Object[] params = new Object[5];
+        params[0] = cmpt.getName();
+        if (cmpt.getIntroduced() == null) {
+            params[1] = null;
+        } else {
+            params[1] = java.sql.Date.valueOf(cmpt.getIntroduced());
         }
-        return true;
+        if (cmpt.getDiscontinued() == null) {
+            params[2] = null;
+        } else {
+            params[2] = java.sql.Date.valueOf(cmpt.getDiscontinued());
+        }
+        if (cmpt.getCompany().getId() == 0) {
+            params[3] = null;
+        } else {
+            params[3] = cmpt.getCompany().getId();
+        }
+        params[4] = cmpt.getId();
+        int returnValue = jdbcTemplate.update(sqlUpdate, params);
+        return returnValue == 1;
     }
 }

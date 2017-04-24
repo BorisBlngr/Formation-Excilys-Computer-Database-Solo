@@ -32,9 +32,6 @@ public class CompanyDao implements Dao<Company> {
     final String sqlFindIdByName = "SELECT id FROM company WHERE name = ?";
     final String sqlCountAll = "SELECT COUNT(id) FROM company";
 
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
 
     /**
      * Methode pour creer une nouvelle company en base, renvoit l'id de la ligne
@@ -44,7 +41,7 @@ public class CompanyDao implements Dao<Company> {
      */
     @Override
     public long create(Company company) {
-        int returnValue = getJdbcTemplate().update(sqlCreate, company.getName());
+        int returnValue = jdbcTemplate.update(sqlCreate, company.getName());
         if (1 == returnValue) {
             return findIdByName(company.getName());
         } else {
@@ -60,7 +57,7 @@ public class CompanyDao implements Dao<Company> {
     @Deprecated
     @Override
     public boolean delete(Company company) {
-        int returnValue = getJdbcTemplate().update(sqlDeleteById, company.getId());
+        int returnValue = jdbcTemplate.update(sqlDeleteById, company.getId());
         return returnValue == 1;
     }
 
@@ -70,7 +67,7 @@ public class CompanyDao implements Dao<Company> {
      * @return result
      */
     public boolean delete(long id) {
-        int returnValue = getJdbcTemplate().update(sqlDeleteById, id);
+        int returnValue = jdbcTemplate.update(sqlDeleteById, id);
         return returnValue == 1;
     }
 
@@ -81,7 +78,7 @@ public class CompanyDao implements Dao<Company> {
      */
     @Override
     public boolean update(Company company) {
-        int returnValue = getJdbcTemplate().update(sqlUpdate, company.getName(), company.getId());
+        int returnValue = jdbcTemplate.update(sqlUpdate, company.getName(), company.getId());
         return returnValue == 1;
     }
 
@@ -94,7 +91,7 @@ public class CompanyDao implements Dao<Company> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Company find(long id) {
         try {
-            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindById,
+            Company company = (Company) jdbcTemplate.queryForObject(sqlFindById,
                     new BeanPropertyRowMapper(Company.class), id);
             return company;
         } catch (EmptyResultDataAccessException e) {
@@ -110,7 +107,7 @@ public class CompanyDao implements Dao<Company> {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Deprecated
     public List<Company> findAll() {
-        List<Company> companyList = getJdbcTemplate().query(sqlFindAll, new BeanPropertyRowMapper(Company.class));
+        List<Company> companyList = jdbcTemplate.query(sqlFindAll, new BeanPropertyRowMapper(Company.class));
         return companyList;
     }
 
@@ -128,7 +125,7 @@ public class CompanyDao implements Dao<Company> {
         if (indexPage < 1) {
             return companyList;
         }
-        companyList = getJdbcTemplate().query(sqlFindInRange, new BeanPropertyRowMapper(Company.class), maxInPage,
+        companyList = jdbcTemplate.query(sqlFindInRange, new BeanPropertyRowMapper(Company.class), maxInPage,
                 (indexPage - 1) * maxInPage);
         return companyList;
     }
@@ -152,11 +149,11 @@ public class CompanyDao implements Dao<Company> {
         String sql = "SELECT id, name FROM computer WHERE name LIKE ? ORDER BY name %s LIMIT ? OFFSET ? ";
         if (order.equals(Order.DESC)) {
             sql = String.format(sql, "DESC");
-            return companyList = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
+            return companyList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
                     maxInPage, (indexPage - 1) * maxInPage);
         } else {
             sql = String.format(sql, "ASC");
-            return companyList = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
+            return companyList = jdbcTemplate.query(sql, new BeanPropertyRowMapper(Company.class), search + "%",
                     maxInPage, (indexPage - 1) * maxInPage);
         }
     }
@@ -169,7 +166,7 @@ public class CompanyDao implements Dao<Company> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Company findByName(String name) {
         try {
-            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindByName,
+            Company company = (Company) jdbcTemplate.queryForObject(sqlFindByName,
                     new BeanPropertyRowMapper(Company.class), name);
             return company;
         } catch (EmptyResultDataAccessException e) {
@@ -186,7 +183,7 @@ public class CompanyDao implements Dao<Company> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public long findIdByName(String name) {
         try {
-            Company company = (Company) getJdbcTemplate().queryForObject(sqlFindByName,
+            Company company = (Company) jdbcTemplate.queryForObject(sqlFindByName,
                     new BeanPropertyRowMapper(Company.class), name);
             return company.getId();
         } catch (EmptyResultDataAccessException e) {
@@ -195,11 +192,11 @@ public class CompanyDao implements Dao<Company> {
     }
 
     /**
-     * Methode qui renvoit le nombre de row dans la table Company.
+     * Methode qui renvoit le nombre de row dans la jdbcTemplatetable Company.
      * @return count
      */
     public int getRow() {
-        return getJdbcTemplate().queryForObject(sqlCountAll, Integer.class);
+        return jdbcTemplate.queryForObject(sqlCountAll, Integer.class);
     }
 
     /**

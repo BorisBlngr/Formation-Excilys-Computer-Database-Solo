@@ -141,9 +141,8 @@ public class ComputerService {
      * @return count
      */
     public int getNbComputers() {
-        System.out.println(dataInfo.getComputerCount());
+        //System.out.println(dataInfo.getComputerCount());
         return dataInfo.getComputerCount();
-        // return computerDao.getRow();
     }
 
     /**
