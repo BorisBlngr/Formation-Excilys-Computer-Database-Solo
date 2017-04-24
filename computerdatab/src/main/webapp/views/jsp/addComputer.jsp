@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,8 +17,8 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard"> Application -
-                Computer Database </a>
+            <a class="navbar-brand" href="dashboard"> <spring:message code="menu.title"
+                            text="default text" /> </a>
         </div>
     </header>
 
@@ -25,37 +26,44 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
-                    <h1>Add Computer</h1>
+                    <h1>
+                        <spring:message code="addComputer.title"
+                            text="default text" />
+                    </h1>
                     <form action="addcomputer" method="POST">
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer
-                                    name</label> <input type="text"
+                                <label for="computerName"><spring:message code="label.computerName"
+                            text="default text" /></label> <input type="text"
                                     class="form-control"
                                     id="computerName"
                                     name="computerName"
-                                    placeholder="Computer name"
+                                    placeholder="<spring:message code="label.computerName"
+                            text="default text" />"
                                     minlength="2" required>
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced
-                                    date</label> <input type="date"
+                                <label for="introduced"><spring:message code="label.introduced"
+                            text="default text" /></label> <input type="date"
                                     class="form-control" id="introduced"
                                     name="introduced"
-                                    placeholder="Introduced date"
+                                    placeholder="<spring:message code="label.introduced"
+                            text="default text" />"
                                     onchange="introD();">
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued
-                                    date</label> <input type="date"
+                                <label for="discontinued"><spring:message code="label.discontinued"
+                            text="default text" /></label> <input type="date"
                                     class="form-control"
                                     id="discontinued"
                                     name="discontinued"
-                                    placeholder="Discontinued date"
+                                    placeholder="<spring:message code="label.discontinued"
+                            text="default text" />"
                                     onchange="discD();">
                             </div>
                             <div class="form-group">
-                                <label for="companyId">Company</label> <select
+                                <label for="companyId"><spring:message code="label.company"
+                            text="default text" /></label> <select
                                     class="form-control" id="companyId"
                                     name="companyId">
                                     <option value="0">--</option>
@@ -70,9 +78,12 @@
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" formmethod="post"
-                                formaction="addcomputer" value="Add"
-                                class="btn btn-primary"> or <a
-                                href="dashboard" class="btn btn-default">Cancel</a>
+                                formaction="addcomputer" value="<spring:message code="addComputer.add"
+                            text="default text" />"
+                                class="btn btn-primary"> <spring:message code="addComputer.or"
+                            text="default text" /> <a
+                                href="dashboard" class="btn btn-default"><spring:message code="addComputer.cancel"
+                            text="default text" /></a>
                         </div>
                     </form>
                 </div>
