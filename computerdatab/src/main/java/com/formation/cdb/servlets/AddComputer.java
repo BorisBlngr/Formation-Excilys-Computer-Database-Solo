@@ -27,7 +27,7 @@ import com.formation.cdb.service.ComputerService;
  * Servlet implementation class Dashboard.
  */
 @Controller("addcomputer")
-public class AddComputer extends HttpServlet {
+public class AddComputer {
     private static final long serialVersionUID = 1L;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired

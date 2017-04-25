@@ -29,7 +29,7 @@ import com.formation.cdb.service.ComputerService;
  * Servlet implementation class Dashboard.
  */
 @Controller("editcomputer")
-public class EditComputer extends HttpServlet {
+public class EditComputer {
     private static final Logger LOG = LoggerFactory.getLogger(EditComputer.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";

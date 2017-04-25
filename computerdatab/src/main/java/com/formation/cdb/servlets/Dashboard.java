@@ -30,7 +30,7 @@ import com.formation.cdb.util.Search;
  * Servlet implementation class Dashboard.
  */
 @Controller("dashboard")
-public class Dashboard extends HttpServlet {
+public class Dashboard {
     private static final Logger LOG = LoggerFactory.getLogger(HttpServlet.class);
     private static final long serialVersionUID = 1L;
     private final String regex = "\\d+";
