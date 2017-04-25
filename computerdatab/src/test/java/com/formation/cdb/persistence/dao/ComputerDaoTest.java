@@ -83,8 +83,8 @@ public class ComputerDaoTest {
                 .company(new Company.CompanyBuilder().id(2).name("Thinking Machines").build()).build();
         newComputer.setId(computerDao.create(newComputer));
         Computer computerFound = computerDao.find(newComputer.getId());
-        System.out.println(newComputer);
-        System.out.println(computerFound);
+        // System.out.println(newComputer);
+        // System.out.println(computerFound);
         Assert.assertTrue(computerFound.toString().equals(newComputer.toString()));
         computerDao.delete(newComputer);
     }
