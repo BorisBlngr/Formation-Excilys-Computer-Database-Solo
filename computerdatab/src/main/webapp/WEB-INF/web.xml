@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee"
     xmlns:web="http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-    version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee">
-
-    <!--Here we specify about the DispatcherServlet class in the Web Deployment 
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+    <!--Here we specify about the DispatcherServlet class in the Web Deployment
         Descriptor -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
@@ -16,22 +17,6 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
-<!--     <servlet> -->
-<!--         <servlet-name>dashboard</servlet-name> -->
-<!--         <servlet-class>com.formation.cdb.servlets.Dashboard -->
-<!--         </servlet-class> -->
-<!--     </servlet> -->
-<!--     <servlet> -->
-<!--         <servlet-name>addcomputer</servlet-name> -->
-<!--         <servlet-class>com.formation.cdb.servlets.AddComputer -->
-<!--         </servlet-class> -->
-<!--     </servlet> -->
-<!--     <servlet> -->
-<!--         <servlet-name>editcomputer</servlet-name> -->
-<!--         <servlet-class>com.formation.cdb.servlets.EditComputer -->
-<!--         </servlet-class> -->
-<!--     </servlet> -->
 
     <error-page>
         <error-code>403</error-code>
