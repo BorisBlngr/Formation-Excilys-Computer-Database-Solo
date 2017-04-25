@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="pagination" uri="/WEB-INF/tld/pagination.tld"%>
 <%@ taglib prefix="link" uri="/WEB-INF/tld/link.tld"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <!DOCTYPE html>
 <html>
@@ -21,13 +21,20 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard"> <spring:message code="menu.title" text="default text" /> </a>
+            <a class="navbar-brand" href="dashboard"> <spring:message
+                    code="menu.title" text="default text" />
+            </a><a class="navbar-brand navbar-right" href="?lang=fr"> fr
+            </a><a class="navbar-brand navbar-right" href="?lang=en"> en
+            </a>
         </div>
     </header>
 
     <section id="main">
         <div class="container">
-            <h1 id="homeTitle">${nbComputer} <spring:message code="dashboard.nbComputer" text="default text" /></h1>
+            <h1 id="homeTitle">${nbComputer}
+                <spring:message code="dashboard.nbComputer"
+                    text="default text" />
+            </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
                     <form id="searchForm" action="#" method="GET"
@@ -37,12 +44,18 @@
                             placeholder="Search name" value="${search}" />
                         <input type="hidden" id="maxInPage"
                             name="maxInPage" value="${maxInPage}" /> <label>
-                            <spring:message code="dashboard.searchBy" text="default text" /> </label> <select class="form-control"
-                            id="searchBy" name="searchBy">
+                            <spring:message code="dashboard.searchBy"
+                                text="default text" />
+                        </label> <select class="form-control" id="searchBy"
+                            name="searchBy">
                             <option value="computers"
-                                <c:if test="${searchBy == 'computers'}"> selected="selected"</c:if>><spring:message code="label.computers" text="default text" /></option>
+                                <c:if test="${searchBy == 'computers'}"> selected="selected"</c:if>><spring:message
+                                    code="label.computers"
+                                    text="default text" /></option>
                             <option value="companies"
-                                <c:if test="${searchBy == 'companies'}"> selected="selected"</c:if>><spring:message code="label.companies" text="default text" /></option>
+                                <c:if test="${searchBy == 'companies'}"> selected="selected"</c:if>><spring:message
+                                    code="label.companies"
+                                    text="default text" /></option>
                         </select> <input type="submit" id="searchsubmit"
                             value="<spring:message code="dashboard.filterByName" text="default text" />"
                             class="btn btn-primary" />
@@ -50,9 +63,12 @@
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-success" id="addComputer"
-                        href="addcomputer"><spring:message code="dashboard.addComputer" text="default text" /></a> <a
+                        href="addcomputer"><spring:message
+                            code="dashboard.addComputer"
+                            text="default text" /></a> <a
                         class="btn btn-default" id="editcomputer"
-                        href="#" onclick="$.fn.toggleEditMode();"><spring:message code="dashboard.edit" text="default text" /></a>
+                        href="#" onclick="$.fn.toggleEditMode();"><spring:message
+                            code="dashboard.edit" text="default text" /></a>
                 </div>
             </div>
         </div>
@@ -80,7 +96,9 @@
                                     class="fa fa-trash-o fa-lg"></i>
                             </a>
                         </span></th>
-                        <th><spring:message code="label.computerName" text="default text" /> <c:choose>
+                        <th><spring:message
+                                code="label.computerName"
+                                text="default text" /> <c:choose>
                                 <c:when
                                     test="${filterBy == 'computers' && order == 'ASC'}">
                                     <a
@@ -113,13 +131,16 @@
                                     </span>
                                     </a>
                                 </c:otherwise>
-                            </c:choose>
-                        </th>
-                        <th><spring:message code="label.introduced" text="default text" /></th>
+                            </c:choose></th>
+                        <th><spring:message code="label.introduced"
+                                text="default text" /></th>
                         <!-- Table header for Discontinued Date -->
-                        <th><spring:message code="label.discontinued" text="default text" /></th>
+                        <th><spring:message
+                                code="label.discontinued"
+                                text="default text" /></th>
                         <!-- Table header for Company -->
-                        <th><spring:message code="label.company" text="default text" /> <c:choose>
+                        <th><spring:message code="label.company"
+                                text="default text" /> <c:choose>
                                 <c:when
                                     test="${(filterBy == 'companies') && (order == 'ASC')}">
                                     <a
@@ -151,8 +172,7 @@
                                     </span>
                                     </a>
                                 </c:otherwise>
-                            </c:choose>
-                        </th>
+                            </c:choose></th>
 
                     </tr>
                 </thead>

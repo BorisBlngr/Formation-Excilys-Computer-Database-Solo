@@ -19,7 +19,8 @@
         <div class="container">
             <a class="navbar-brand" href="dashboard"> <spring:message
                     code="menu.title" text="default text" />
-            </a>
+            </a> <a class="navbar-brand navbar-right" href="?lang=fr">fr</a>
+            <a class="navbar-brand navbar-right" href="?lang=en">en</a>
         </div>
     </header>
     <section id="main">
@@ -67,8 +68,8 @@
                             <div class="form-group">
                                 <label for="discontinued"><spring:message
                                         code="label.discontinued"
-                                        text="default text" /></label> <input type="date"
-                                    class="form-control"
+                                        text="default text" /></label> <input
+                                    type="date" class="form-control"
                                     id="discontinued"
                                     name="discontinued"
                                     placeholder="<spring:message
@@ -95,15 +96,16 @@
                             </div>
                         </fieldset>
                         <div class="actions pull-right">
-                            <input type="submit" value="<spring:message
+                            <input type="submit"
+                                value="<spring:message
                                         code="editComputer.edit"
                                         text="default text" />"
-                                class="btn btn-primary"> <spring:message
-                                        code="editComputer.or"
-                                        text="default text" /> <a
-                                href="dashboard" class="btn btn-default"><spring:message
-                                        code="editComputer.cancel"
-                                        text="default text" /></a>
+                                class="btn btn-primary">
+                            <spring:message code="editComputer.or"
+                                text="default text" />
+                            <a href="dashboard" class="btn btn-default"><spring:message
+                                    code="editComputer.cancel"
+                                    text="default text" /></a>
                         </div>
                     </form>
                 </div>

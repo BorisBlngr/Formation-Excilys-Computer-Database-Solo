@@ -18,13 +18,15 @@
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <a class="navbar-brand" href="dashboard"> <spring:message code="menu.title" text="default text" /> </a>
+            <a class="navbar-brand navbar-right" href="?lang=fr">fr</a>
+            <a class="navbar-brand navbar-right"href="?lang=en">en</a>
         </div>
     </header>
 
     <section id="main">
         <div class="container">
             <div class="alert alert-danger">
-                Error 500: An error has occured! <br />
+                <spring:message code="500.message" text="default text" /> <br />
                 <!-- stacktrace -->
             </div>
         </div>
