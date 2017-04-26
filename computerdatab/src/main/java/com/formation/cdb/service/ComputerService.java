@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dto.ComputerDto;
-import com.formation.cdb.persistence.dao.ComputerDao;
 import com.formation.cdb.persistence.repository.ComputerRepository;
 import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
@@ -25,8 +24,6 @@ import com.formation.cdb.util.Search;
 public class ComputerService {
     @Autowired
     DataInfo dataInfo;
-    @Autowired
-    ComputerDao computerDao;
     @Autowired
     ComputerRepository computerRepository;
 

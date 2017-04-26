@@ -1,7 +1,7 @@
 package com.formation.cdb.persistence.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     /**
      * @param name name
-     * @return companyList
+     * @param pageable page request
+     * @return computerList
      */
-    List<Company> findByNameLike(String name);
+    Page<Company> findByNameStartingWith(String name, Pageable pageable);
 }

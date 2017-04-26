@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.formation.cdb.mapper.CompanyMapper;
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
-import com.formation.cdb.persistence.dao.CompanyDao;
-import com.formation.cdb.persistence.dao.ComputerDao;
 import com.formation.cdb.persistence.repository.CompanyRepository;
 import com.formation.cdb.util.Order;
 
@@ -20,10 +20,6 @@ import com.formation.cdb.util.Order;
  */
 @Service("companyService")
 public class CompanyService {
-    @Autowired
-    CompanyDao companyDao;
-    @Autowired
-    ComputerDao computerDao;
     @Autowired
     CompanyRepository companyRepository;
 
@@ -37,12 +33,18 @@ public class CompanyService {
      * @return companyDtoList
      */
     public List<CompanyDto> findCompaniesInRangeSearchName(int index, int maxInPage, String search, Order order) {
-        // TODO use companyRepo
-        List<CompanyDto> computerDtoList = new ArrayList<CompanyDto>();
-        for (Company company : companyDao.findInRangeSearchName(index, maxInPage, search, order)) {
-            computerDtoList.add(CompanyMapper.toDto(company));
+
+        List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        PageRequest request;
+        if (order.equals(Order.DESC)) {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.DESC, "name");
+        } else {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, "name");
         }
-        return computerDtoList;
+        for (Company company : companyRepository.findByNameStartingWith(search, request).getContent()) {
+            companyDtoList.add(CompanyMapper.toDto(company));
+        }
+        return companyDtoList;
     }
 
     /**
@@ -52,9 +54,9 @@ public class CompanyService {
      * @return companyDtoList
      */
     public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
-        // TODO use companyRepo
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : companyDao.findInRange(index, maxInPage)) {
+        PageRequest request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, "name");
+        for (Company company : companyRepository.findAll(request).getContent()) {
             companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
