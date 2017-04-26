@@ -1,8 +1,17 @@
 package com.formation.cdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "company")
 public class Company {
 
+    @Id
     private long id = 0;
+    @Column
     private String name = null;
 
     /**

@@ -335,7 +335,7 @@ public class MenuCli {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Module.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring-module.xml");
         MenuCli menu = new MenuCli();
         menu.showMeTheMagic();
 

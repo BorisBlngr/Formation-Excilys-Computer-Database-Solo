@@ -2,14 +2,14 @@
 Computer Database from https://github.com/excilys/training-java
 
 # Step
-4.5
+4.6
 
 # Gaitling
 
 ### Performance in 4.3 (t+12)
 
 * 575 computers : 8k+ users.
-* 1 million computers : 10k users.
+* 1 million computers : 9k users.
 
 ### Index
 * Create index on computer name and its reverse.

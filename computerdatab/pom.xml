@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.formation.cdb</groupId>
     <artifactId>computerdatab</artifactId>
-    <version>1.5-release</version>
+    <version>1.6-snapshot</version>
     <name>training</name>
     <packaging>war</packaging>
 
@@ -26,6 +28,9 @@
         <HikariCP.artifact.version>2.4.9</HikariCP.artifact.version>
         <selenium-java.version>3.3.1</selenium-java.version>
         <spring.version>4.3.7.RELEASE</spring.version>
+        <spring.data.jpa.version>1.11.3.RELEASE</spring.data.jpa.version>
+        <hibernate.jpa2.version>1.0.1.Final</hibernate.jpa2.version>
+        <hibernate.entity.version>5.2.9.Final</hibernate.entity.version>
     </properties>
 
     <dependencies>
@@ -166,6 +171,22 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.data.jpa.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.0-api -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>${hibernate.jpa2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.entity.version}</version>
         </dependency>
 
     </dependencies>

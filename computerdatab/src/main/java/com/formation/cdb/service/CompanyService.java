@@ -11,18 +11,22 @@ import com.formation.cdb.model.Company;
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.persistence.dao.CompanyDao;
 import com.formation.cdb.persistence.dao.ComputerDao;
+import com.formation.cdb.persistence.repository.CompanyRepository;
 import com.formation.cdb.util.Order;
 
 /**
  * @author excilys
  *
  */
-@Service ("companyService")
+@Service("companyService")
 public class CompanyService {
     @Autowired
     CompanyDao companyDao;
     @Autowired
     ComputerDao computerDao;
+    @Autowired
+    CompanyRepository companyRepository;
+
     /**
      * Find a list of companies, or page, with a specific string in their names
      * and with the order Order.DESC or Order.ASC.
@@ -61,7 +65,7 @@ public class CompanyService {
     @Deprecated
     public List<CompanyDto> findAllCompany() {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
-        for (Company company : companyDao.findAll()) {
+        for (Company company : companyRepository.findAll()) {
             companyDtoList.add(CompanyMapper.toDto(company));
         }
         return companyDtoList;
