@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.formation.cdb.mapper.ComputerMapper;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.persistence.dao.ComputerDao;
+import com.formation.cdb.persistence.repository.ComputerRepository;
 import com.formation.cdb.util.DataInfo;
 import com.formation.cdb.util.Order;
 import com.formation.cdb.util.Search;
@@ -24,6 +27,8 @@ public class ComputerService {
     DataInfo dataInfo;
     @Autowired
     ComputerDao computerDao;
+    @Autowired
+    ComputerRepository computerRepository;
 
     /**
      * Find Computer.
@@ -31,7 +36,7 @@ public class ComputerService {
      * @return computerDto
      */
     public ComputerDto findComputerDto(long id) {
-        return ComputerMapper.toDto(computerDao.find(id));
+        return ComputerMapper.toDto(computerRepository.findOne(id));
     }
 
     /**
@@ -42,7 +47,8 @@ public class ComputerService {
      */
     public List<ComputerDto> findComputersInRange(int index, int maxInPage) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : computerDao.findInRange(index, maxInPage)) {
+        PageRequest request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, "name");
+        for (Computer computer : computerRepository.findAll(request).getContent()) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -61,7 +67,19 @@ public class ComputerService {
     public List<ComputerDto> findComputersInRangeSearchName(int index, int maxInPage, String search, Search filterBy,
             Order order) {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : computerDao.findInRangeSearchName(index, maxInPage, search, filterBy, order)) {
+        PageRequest request;
+        String filterByStr;
+        if (filterBy.equals(Search.COMPANIES)) {
+            filterByStr = "company.name";
+        } else {
+            filterByStr = "name";
+        }
+        if (order.equals(Order.DESC)) {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.DESC, filterByStr);
+        } else {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, filterByStr);
+        }
+        for (Computer computer : computerRepository.findByNameStartingWith(search, request).getContent()) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -79,8 +97,21 @@ public class ComputerService {
      */
     public List<ComputerDto> findInRangeSearchCompanyName(int index, int maxInPage, String search, Search filterBy,
             Order order) {
+
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : computerDao.findInRangeSearchCompanyName(index, maxInPage, search, filterBy, order)) {
+        PageRequest request;
+        String filterByStr;
+        if (filterBy.equals(Search.COMPANIES)) {
+            filterByStr = "company.name";
+        } else {
+            filterByStr = "name";
+        }
+        if (order.equals(Order.DESC)) {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.DESC, filterByStr);
+        } else {
+            request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, filterByStr);
+        }
+        for (Computer computer : computerRepository.findByCompanyNameStartingWith(search, request).getContent()) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -93,7 +124,7 @@ public class ComputerService {
      */
     @Deprecated
     public ComputerDto findComputer(long id) {
-        return ComputerMapper.toDto(computerDao.find(id));
+        return ComputerMapper.toDto(computerRepository.findOne(id));
     }
 
     /**
@@ -103,7 +134,7 @@ public class ComputerService {
     @Deprecated
     public List<ComputerDto> findAllComputer() {
         List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
-        for (Computer computer : computerDao.findAll()) {
+        for (Computer computer : computerRepository.findAll()) {
             computerDtoList.add(ComputerMapper.toDto(computer));
         }
         return computerDtoList;
@@ -115,7 +146,12 @@ public class ComputerService {
      * @return idComputer
      */
     public long createComputer(ComputerDto computerDto) {
-        return computerDao.create(ComputerMapper.toEntity(computerDto));
+        System.out.println(computerDto);
+        long id = computerRepository.save(ComputerMapper.toEntity(computerDto)).getId();
+        if (id != 0) {
+            dataInfo.increaseComputerCount();
+        }
+        return id;
     }
 
     /**
@@ -124,7 +160,9 @@ public class ComputerService {
      * @return result
      */
     public boolean updateComputer(ComputerDto computerDto) {
-        return computerDao.update(ComputerMapper.toEntity(computerDto));
+        // TODO return false if it does nothing
+        computerRepository.save(ComputerMapper.toEntity(computerDto));
+        return true;
     }
 
     /**
@@ -133,7 +171,9 @@ public class ComputerService {
      * @return idComputer
      */
     public boolean deleteComputer(Long id) {
-        return computerDao.delete(id);
+        computerRepository.delete(id);
+        dataInfo.decreaseComputerCount();
+        return true;
     }
 
     /**
@@ -141,7 +181,6 @@ public class ComputerService {
      * @return count
      */
     public int getNbComputers() {
-        //System.out.println(dataInfo.getComputerCount());
         return dataInfo.getComputerCount();
     }
 
@@ -150,7 +189,7 @@ public class ComputerService {
      * @return count
      */
     public int getNbComputersDb() {
-        return computerDao.getRow();
+        return Math.toIntExact(computerRepository.count());
     }
 
     /**
@@ -159,7 +198,7 @@ public class ComputerService {
      * @return count
      */
     public int getNbComputersSearchName(String search) {
-        return computerDao.getRowSearchName(search);
+        return computerRepository.countByNameStartingWith(search);
     }
 
     /**
@@ -168,7 +207,7 @@ public class ComputerService {
      * @return count
      */
     public int getNbComputersSearchCompanyName(String search) {
-        return computerDao.getRowSearchCompanyName(search);
+        return computerRepository.countByCompanyNameStartingWith(search);
     }
 
     /**

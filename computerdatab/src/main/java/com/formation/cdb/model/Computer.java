@@ -2,12 +2,25 @@ package com.formation.cdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+    @Id
     private long id = 0;
+    @Column
     private String name;
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDate introduced = null;
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDate discontinued = null;
+    @ManyToOne(optional = true)
     private Company company = new Company();
 
     /**

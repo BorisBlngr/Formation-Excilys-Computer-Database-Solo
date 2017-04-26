@@ -37,6 +37,7 @@ public class CompanyService {
      * @return companyDtoList
      */
     public List<CompanyDto> findCompaniesInRangeSearchName(int index, int maxInPage, String search, Order order) {
+        // TODO use companyRepo
         List<CompanyDto> computerDtoList = new ArrayList<CompanyDto>();
         for (Company company : companyDao.findInRangeSearchName(index, maxInPage, search, order)) {
             computerDtoList.add(CompanyMapper.toDto(company));
@@ -51,6 +52,7 @@ public class CompanyService {
      * @return companyDtoList
      */
     public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
+        // TODO use companyRepo
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
         for (Company company : companyDao.findInRange(index, maxInPage)) {
             companyDtoList.add(CompanyMapper.toDto(company));
@@ -77,7 +79,7 @@ public class CompanyService {
      * @return id
      */
     public long create(CompanyDto companyDto) {
-        return companyDao.create(CompanyMapper.toEntity(companyDto));
+        return companyRepository.save(CompanyMapper.toEntity(companyDto)).getId();
     }
 
     /**
@@ -86,10 +88,12 @@ public class CompanyService {
      * @return result
      */
     public boolean delete(long id) {
-        return computerDao.deleteWithCompanyId(id) && companyDao.delete(id);
+        // TODO return false if it does nothing
+        companyRepository.delete(id);
+        return true;
     }
 
     public int getNbCompanies() {
-        return companyDao.getRow();
+        return Math.toIntExact(companyRepository.count());
     }
 }

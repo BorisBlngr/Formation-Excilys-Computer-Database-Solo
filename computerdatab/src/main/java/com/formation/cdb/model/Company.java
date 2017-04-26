@@ -80,6 +80,9 @@ public class Company {
          * @return company
          */
         public Company build() {
+            if (id == 0) {
+                return null;
+            }
             return new Company(this);
         }
 

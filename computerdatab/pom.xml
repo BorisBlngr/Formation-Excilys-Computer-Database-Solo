@@ -31,6 +31,7 @@
         <spring.data.jpa.version>1.11.3.RELEASE</spring.data.jpa.version>
         <hibernate.jpa2.version>1.0.1.Final</hibernate.jpa2.version>
         <hibernate.entity.version>5.2.9.Final</hibernate.entity.version>
+        <hibernate.java8.version>5.2.6.Final</hibernate.java8.version>
     </properties>
 
     <dependencies>
@@ -188,7 +189,12 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.entity.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-java8 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+            <version>${hibernate.java8.version}</version>
+        </dependency>
     </dependencies>
 
     <distributionManagement>
