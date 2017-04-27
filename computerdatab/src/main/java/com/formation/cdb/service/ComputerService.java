@@ -145,9 +145,7 @@ public class ComputerService {
     public long createComputer(ComputerDto computerDto) {
         System.out.println(computerDto);
         long id = computerRepository.save(ComputerMapper.toEntity(computerDto)).getId();
-        if (id != 0) {
-            dataInfo.increaseComputerCount();
-        }
+        dataInfo.increaseComputerCount();
         return id;
     }
 
