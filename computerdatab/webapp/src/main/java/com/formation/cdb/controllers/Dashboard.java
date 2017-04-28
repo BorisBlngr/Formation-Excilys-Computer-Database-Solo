@@ -1,4 +1,4 @@
-package com.formation.cdb.servlets;
+package com.formation.cdb.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;

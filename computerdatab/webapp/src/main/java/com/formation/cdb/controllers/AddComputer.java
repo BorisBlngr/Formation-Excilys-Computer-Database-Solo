@@ -1,4 +1,4 @@
-package com.formation.cdb.servlets;
+package com.formation.cdb.controllers;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +26,10 @@ import com.formation.cdb.service.ComputerService;
 /**
  * Servlet implementation class Dashboard.
  */
-@Controller("editcomputer")
-public class EditComputer {
-    private static final Logger LOG = LoggerFactory.getLogger(EditComputer.class);
+@Controller("addcomputer")
+public class AddComputer {
     private static final long serialVersionUID = 1L;
-    private final String regex = "\\d+";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     @Autowired
     CompanyService companyService;
     @Autowired
@@ -43,9 +38,8 @@ public class EditComputer {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditComputer() {
+    public AddComputer() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -56,26 +50,20 @@ public class EditComputer {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
-    @RequestMapping(value = "/editcomputer", method = RequestMethod.GET)
+    @RequestMapping(value = "/addcomputer", method = RequestMethod.GET)
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LOG.debug("Get");
-
-        long id = getId(request);
-
-        ComputerDto computerDto = new ComputerDto();
-        if (id != 0) {
-            computerDto = computerService.findComputerDto(id);
-        }
 
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
         companyDtoList = companyService.findAllCompany();
 
-        request.setAttribute("computerDto", computerDto);
         request.setAttribute("companyDtoList", companyDtoList);
 
-        RequestDispatcher view = request.getRequestDispatcher("/views/jsp/editComputer.jsp");
+        RequestDispatcher view = request.getRequestDispatcher("/views/jsp/addComputer.jsp");
         view.forward(request, response);
+
+        // response.getWriter().append("Served at:
+        // ").append(request.getContextPath());
     }
 
     /**
@@ -86,54 +74,30 @@ public class EditComputer {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
-    @RequestMapping(value = "/editcomputer", method = RequestMethod.POST)
+    @RequestMapping(value = "/addcomputer", method = RequestMethod.POST)
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        LOG.debug("Post");
-        LOG.debug(request.getParameterMap().keySet().toString());
+        System.out.println("Post, I will do things soon ...");
 
         String name = getNameAndValidate(request);
         LocalDate introduced = getIntroduced(request);
         LocalDate discontinued = getDiscontinued(request);
         long companyId = getCompanyId(request);
-        long computerId = getComputerId(request);
 
-        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computerId).name(name).introduced(introduced)
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().name(name).introduced(introduced)
                 .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
 
         RequestDispatcher view;
+
         if (!computerDto.equals(new ComputerDto())) {
-            computerService.updateComputer(computerDto);
-            view = request.getRequestDispatcher("/views/jsp/editComputerSuccess.jsp");
+            long id = computerService.createComputer(computerDto);
+            System.out.println(id);
+            view = request.getRequestDispatcher("/views/jsp/addComputerSuccess.jsp");
         } else {
             view = request.getRequestDispatcher("/views/jsp/500.jsp");
         }
+
         view.forward(request, response);
-    }
-
-    /**
-     * @param request The request.
-     * @return id
-     */
-    private long getId(HttpServletRequest request) {
-        long id = 0;
-        if (request.getParameterMap().containsKey("id") && request.getParameter("id").matches(regex)) {
-            id = Long.parseLong(request.getParameter("id"));
-        }
-        return id;
-    }
-
-    /**
-     * @param request The request.
-     * @return computerId
-     */
-    private long getComputerId(HttpServletRequest request) {
-        long computerId = 0;
-        if (request.getParameterMap().containsKey("id")) {
-            computerId = Long.parseLong(request.getParameter("id"));
-        }
-        return computerId;
     }
 
     /**

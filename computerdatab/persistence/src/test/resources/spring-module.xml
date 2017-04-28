@@ -22,8 +22,42 @@
        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <context:component-scan base-package="com.formation.cdb.*" />
-    <jpa:repositories base-package="com.formation.cdb.*" />
+
     <mvc:annotation-driven />
+    
+    <jpa:repositories base-package="com.formation.cdb.persistence.repository" />
+
+    <!-- Spring data jpa -->
+    <bean
+        id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property
+            name="packagesToScan"
+            value="com.formation.cdb.model" />
+        <property
+            name="dataSource"
+            ref="dataSource" />
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+            </props>
+        </property>
+
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"></bean>
+        </property>
+    </bean>
+
+    <bean
+        name="transactionManager"
+        class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property
+            name="entityManagerFactory"
+            ref="entityManagerFactory" />
+    </bean>
 
     <!-- jdbcTemplate uses dataSource -->
     <bean
@@ -54,5 +88,29 @@
         <!-- <property name="prepStmtCacheSqlLimit" value="2048" /> -->
         <!-- <property name="maximumPoolSize" value="30" /> -->
         <!-- <property name="maxLifetimeMs" value="20000" /> -->
+    </bean>
+    <bean
+        id="localeResolver"
+        class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property
+            name="defaultLocale"
+            value="en" />
+    </bean>
+    <mvc:interceptors>
+        <bean
+            id="localeChangeInterceptor"
+            class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property
+                name="paramName"
+                value="lang" />
+        </bean>
+    </mvc:interceptors>
+    <!-- Register the multi.properties -->
+    <bean
+        id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property
+            name="basename"
+            value="resources/i18n/multi" />
     </bean>
 </beans>

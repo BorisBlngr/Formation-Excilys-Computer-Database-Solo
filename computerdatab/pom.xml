@@ -31,6 +31,7 @@
         <selenium-java.version>3.3.1</selenium-java.version>
         <spring.version>4.3.7.RELEASE</spring.version>
         <spring.data.jpa.version>1.11.3.RELEASE</spring.data.jpa.version>
+        <spring.security.version>4.2.2.RELEASE</spring.security.version>
         <hibernate.jpa2.version>1.0.1.Final</hibernate.jpa2.version>
         <hibernate.entity.version>5.2.9.Final</hibernate.entity.version>
         <hibernate.java8.version>5.2.6.Final</hibernate.java8.version>
@@ -182,6 +183,19 @@
                 <artifactId>spring-data-jpa</artifactId>
                 <version>${spring.data.jpa.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.0-api -->
             <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>

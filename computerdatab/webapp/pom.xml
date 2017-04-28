@@ -121,7 +121,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -130,6 +129,15 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.0-api -->
         <dependency>
@@ -145,16 +153,16 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-java8</artifactId>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>${parent.groupId}</groupId>
             <artifactId>core</artifactId>
             <version>${parent.version}</version>
         </dependency>
-	<dependency>
+        <dependency>
             <groupId>${parent.groupId}</groupId>
             <artifactId>service</artifactId>
             <version>${parent.version}</version>
-        </dependency>	
+        </dependency>
     </dependencies>
 
     <distributionManagement>
