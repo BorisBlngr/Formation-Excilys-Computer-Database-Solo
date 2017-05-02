@@ -22,9 +22,11 @@
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <a class="navbar-brand" href="dashboard"> <spring:message
-                    code="menu.title" text="default text" />
-            </a><a class="navbar-brand navbar-right" href="?lang=fr"> fr
+                    code="menu.title" text="default text" /></a>
+            
+            <a class="navbar-brand navbar-right" href="?lang=fr"> fr
             </a><a class="navbar-brand navbar-right" href="?lang=en"> en
+            </a><a class="navbar-brand navbar-right" href="logout"> logout
             </a>
         </div>
     </header>
@@ -78,7 +80,9 @@
         <form id="deleteForm"
             action="?page=${pageIndex}&maxInPage=${maxInPage}"
             method="POST">
-            <input type="hidden" name="selection" value="">
+            <input type="hidden" name="${_csrf.parameterName}"
+                value="${_csrf.token}" /> <input type="hidden"
+                name="selection" value="">
         </form>
         <div class="container" style="margin-top: 10px;">
             <table class="table table-striped table-bordered">

@@ -81,6 +81,8 @@
 
                                 </select>
                             </div>
+                            <input type="hidden" name="${_csrf.parameterName}"
+                    value="${_csrf.token}" />
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" formmethod="post"
@@ -94,6 +96,7 @@
                                     code="addComputer.cancel"
                                     text="default text" /></a>
                         </div>
+                        
                     </form>
                 </div>
             </div>
