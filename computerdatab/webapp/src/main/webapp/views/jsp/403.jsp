@@ -20,6 +20,7 @@
             <a class="navbar-brand" href="dashboard"> <spring:message code="menu.title" text="default text" /> </a>
             <a class="navbar-brand navbar-right" href="?lang=fr">fr</a>
             <a class="navbar-brand navbar-right"href="?lang=en">en</a>
+            <a class="navbar-brand navbar-right" href="logout"> logout</a>
         </div>
     </header>
 

@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <!DOCTYPE html>
 <html>
@@ -27,25 +28,33 @@
 
     <section id="main">
         <div class="container">
-            <c:if test="${param.error ne null}"><div th:if="${param.error}" class="alert alert-danger">Invalid
-                username and password.</div>
+            <c:if test="${param.error ne null}">
+                <div class="alert alert-danger">
+                    <spring:message code="login.error"
+                        text="default text" />
+                </div>
             </c:if>
-            <c:if test="${param.logout ne null}"><div th:if="${param.logout}" class="alert alert-success">You
-                have been logged out.</div>
+            <c:if test="${param.logout ne null}">
+                <div class="alert alert-success">
+                    <spring:message code="login.logout"
+                        text="default text" />
+                </div>
             </c:if>
-            
-            
+
+
             <form th:action="@{/login}" method="post">
                 <div>
-                    <label> User Name : <input type="text"
-                        name="username" />
+                    <label> <spring:message
+                            code="login.username" text="default text" />
+                        : <input type="text" name="username" />
                     </label>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}"
                     value="${_csrf.token}" />
                 <div>
-                    <label> Password: <input type="password"
-                        name="password" />
+                    <label> <spring:message
+                            code="login.password" text="default text" />
+                        : <input type="password" name="password" />
                     </label>
                 </div>
                 <div>

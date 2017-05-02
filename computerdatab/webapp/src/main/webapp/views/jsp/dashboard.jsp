@@ -26,7 +26,8 @@
             
             <a class="navbar-brand navbar-right" href="?lang=fr"> fr
             </a><a class="navbar-brand navbar-right" href="?lang=en"> en
-            </a><a class="navbar-brand navbar-right" href="logout"> logout
+            </a><a class="navbar-brand navbar-right" href="logout"> <spring:message code="menu.logout"
+                        text="default text" />
             </a>
         </div>
     </header>
