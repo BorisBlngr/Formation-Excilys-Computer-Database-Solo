@@ -62,14 +62,6 @@
             ref="entityManagerFactory" />
     </bean>
 
-    <!-- jdbcTemplate uses dataSource -->
-    <bean
-        id="jdbcTemplate"
-        class="org.springframework.jdbc.core.JdbcTemplate">
-        <property
-            name="dataSource"
-            ref="dataSource" />
-    </bean>
     <!-- dataSource configuration -->
     <bean
         id="dataSource"
