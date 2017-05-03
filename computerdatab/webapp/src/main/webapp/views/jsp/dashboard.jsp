@@ -22,13 +22,10 @@
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <a class="navbar-brand" href="dashboard"> <spring:message
-                    code="menu.title" text="default text" /></a>
-            
-            <a class="navbar-brand navbar-right" href="?lang=fr"> fr
-            </a><a class="navbar-brand navbar-right" href="?lang=en"> en
-            </a><a class="navbar-brand navbar-right" href="logout"> <spring:message code="menu.logout"
-                        text="default text" />
-            </a>
+                    code="menu.title" text="default text" /></a> <a
+                class="navbar-brand navbar-right" href="?lang=fr">
+                fr </a><a class="navbar-brand navbar-right" href="?lang=en">
+                en </a>
         </div>
     </header>
 

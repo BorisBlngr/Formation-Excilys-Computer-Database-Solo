@@ -55,7 +55,7 @@ public class Dashboard {
      * @throws ServletException ServletException.
      * @throws IOException IOException.
      */
-    @RequestMapping(value = {"/", "/dashboard"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/dashboard", "/"}, method = RequestMethod.GET)
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LOG.info(request.getParameterMap().keySet().toString());
