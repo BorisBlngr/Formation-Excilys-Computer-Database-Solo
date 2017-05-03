@@ -2,18 +2,17 @@ package com.formation.cdb.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
+
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.codec.Hex;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -23,7 +22,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String REALM_NAME = "digest";
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+
+      auth.jdbcAuthentication().dataSource(dataSource)
+        .usersByUsernameQuery(
+            "select username,password, enabled from users where username=?")
+        .authoritiesByUsernameQuery(
+            "select username, role from user_roles where username=?");
+    }
     
+    @Bean
+    public BCryptPasswordEncoder passEncoder(){
+        return new BCryptPasswordEncoder();        
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         DigestAuthenticationEntryPoint authenticationEntryPoint = new DigestAuthenticationEntryPoint();
@@ -44,9 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
             .formLogin()
-                //.loginPage("/login")
                 .defaultSuccessUrl("/dashboard")
-                //.failureUrl("/login?error")
                 .permitAll()
                 .and()
             .logout()
@@ -55,15 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        Properties users = new Properties();
-        users.setProperty("user", digest("user", "pwd") + ",USER");
-        users.setProperty("admin", digest("admin", "admin") + ",USER,ADMIN");
-        return new InMemoryUserDetailsManager(users);
-    }
 
-    private String digest(String username, String password) {
+    private static String digest(String username, String password) {
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("MD5");
@@ -73,5 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         String data = username + ":" + REALM_NAME + ":" + password;
         return new String(Hex.encode(digest.digest(data.getBytes())));
+    }
+    public static void main (String[] args){
+        System.out.println(digest("user","pwd"));
     }
 }

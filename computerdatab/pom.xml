@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.formation.cdb</groupId>
     <artifactId>computerdatab</artifactId>
-    <version>1.6-snapshot</version>
+    <version>1.6-release</version>
     <name>training</name>
     <packaging>pom</packaging>
 
