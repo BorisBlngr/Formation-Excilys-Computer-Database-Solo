@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -16,12 +18,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
+@Component("menuCli")
 public class MenuCli {
     private static final Logger LOG = LoggerFactory.getLogger(MenuCli.class);
     Parameters params = new Parameters();
@@ -34,14 +38,16 @@ public class MenuCli {
     int maxInPage = 0;
 
     @Autowired
-    CompanyService companyService;
-    @Autowired
-    ComputerService computerService;
+    private CompanyService companyService;
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
+    }
 
-    /**
-     * Constructeur qui instancie les variables en fonction du fichier de conf.
-     */
-    public MenuCli() {
+    @Autowired
+    public ComputerService computerService;
+
+    @PostConstruct
+    public void init() {
 
         input = new Scanner(System.in);
 
@@ -227,7 +233,6 @@ public class MenuCli {
             LOG.info("Warning : You are now in the Cow Level !");
         }
         return itemSelected;
-
     }
 
     /**
@@ -336,7 +341,7 @@ public class MenuCli {
      */
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-module.xml");
-        MenuCli menu = new MenuCli();
+        MenuCli menu = context.getBean(MenuCli.class);
         menu.showMeTheMagic();
 
     }

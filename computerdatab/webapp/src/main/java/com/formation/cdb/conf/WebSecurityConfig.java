@@ -1,4 +1,4 @@
-package com.formation.cdb.security;
+package com.formation.cdb.conf;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         DigestAuthenticationEntryPoint authenticationEntryPoint = new DigestAuthenticationEntryPoint();
-        authenticationEntryPoint.setKey("sewatech");
+        authenticationEntryPoint.setKey("cdb");
         authenticationEntryPoint.setRealmName(REALM_NAME);
 
         DigestAuthenticationFilter filter = new DigestAuthenticationFilter();
