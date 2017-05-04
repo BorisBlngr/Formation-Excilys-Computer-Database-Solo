@@ -37,6 +37,9 @@ public interface ComputerRepository extends JpaRepository<Computer, Long> {
      */
     int countByCompanyNameStartingWith(String name);
 
+    /**
+     * @param id id
+     */
     @Transactional
     void deleteByCompanyId(long id);
 }

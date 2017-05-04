@@ -18,6 +18,10 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+/**
+ * @author excilys
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,6 +29,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
+    /**
+     * @param auth auth
+     * @throws Exception exc
+     */
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 
@@ -34,10 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authoritiesByUsernameQuery(
             "select username, role from user_roles where username=?");
     }
-    
+
+    /**
+     * @return BCryptPasswordEncoder
+     */
     @Bean
-    public BCryptPasswordEncoder passEncoder(){
-        return new BCryptPasswordEncoder();        
+    public BCryptPasswordEncoder passEncoder() {
+        return new BCryptPasswordEncoder();
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationEntryPoint(authenticationEntryPoint);
         filter.setUserDetailsService(userDetailsService());
         filter.setPasswordAlreadyEncoded(true);
-            
+
         http
             .authorizeRequests()
                 .antMatchers("/dashboard", "/home").permitAll()
@@ -59,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
             .formLogin()
-                .defaultSuccessUrl("/dashboard",true)
+                .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
                 .and()
             .logout()
@@ -69,6 +80,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    /**
+     * @param username username
+     * @param password pass
+     * @return digest
+     */
     private static String digest(String username, String password) {
         MessageDigest digest;
         try {
@@ -80,7 +96,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         String data = username + ":" + REALM_NAME + ":" + password;
         return new String(Hex.encode(digest.digest(data.getBytes())));
     }
-    public static void main (String[] args){
-        System.out.println(digest("user","pwd"));
+
+    /**
+     * @param args args
+     */
+    public static void main(String[] args) {
+        System.out.println(digest("user", "pwd"));
     }
 }

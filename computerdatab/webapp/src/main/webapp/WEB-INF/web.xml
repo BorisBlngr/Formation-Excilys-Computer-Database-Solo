@@ -6,7 +6,7 @@
     version="3.1"
     xmlns="http://xmlns.jcp.org/xml/ns/javaee">
 
-    <!--Here we specify about the DispatcherServlet class in the Web Deployment 
+    <!--Here we specify about the DispatcherServlet class in the Web Deployment
         Descriptor -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>

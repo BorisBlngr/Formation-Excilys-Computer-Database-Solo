@@ -21,8 +21,8 @@
                     code="menu.title" text="default text" />
             </a> <a class="navbar-brand navbar-right" href="?lang=fr">fr</a>
             <a class="navbar-brand navbar-right" href="?lang=en">en</a>
-             <a class="navbar-brand navbar-right" href="logout"> <spring:message code="menu.logout"
-                        text="default text" /></a>
+            <a class="navbar-brand navbar-right" href="logout"> <spring:message
+                    code="menu.logout" text="default text" /></a>
         </div>
     </header>
 
@@ -83,8 +83,9 @@
 
                                 </select>
                             </div>
-                            <input type="hidden" name="${_csrf.parameterName}"
-                    value="${_csrf.token}" />
+                            <input type="hidden"
+                                name="${_csrf.parameterName}"
+                                value="${_csrf.token}" />
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" formmethod="post"
@@ -98,7 +99,7 @@
                                     code="addComputer.cancel"
                                     text="default text" /></a>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>
