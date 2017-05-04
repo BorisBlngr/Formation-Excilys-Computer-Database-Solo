@@ -59,12 +59,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
             .formLogin()
-                .defaultSuccessUrl("/dashboard")
+                .defaultSuccessUrl("/dashboard",true)
                 .permitAll()
                 .and()
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/dashboard")
                 .permitAll();
     }
 

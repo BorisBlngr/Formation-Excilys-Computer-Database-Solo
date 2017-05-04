@@ -1,10 +1,6 @@
-package com.formation.cdb.controllers;
+package com.formation.cdb.webControllers;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,30 +11,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.formation.cdb.model.Company;
-import com.formation.cdb.model.dto.CompanyDto;
-import com.formation.cdb.model.dto.ComputerDto;
 import com.formation.cdb.service.CompanyService;
 import com.formation.cdb.service.ComputerService;
 
 /**
  * Servlet implementation class Dashboard.
  */
-@Controller("login")
-public class Login {
-    private static final Logger LOG = LoggerFactory.getLogger(Login.class);
+@RestController("webServices")
+public class WebServices {
+    private static final Logger LOG = LoggerFactory.getLogger(WebServices.class);
     private final String regex = "\\d+";
+    
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    ComputerService computerService;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public WebServices() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -58,22 +54,5 @@ public class Login {
         view.forward(request, response);
     }
 
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public class ResourceNotFoundException extends RuntimeException {
-        private static final long serialVersionUID = -4103180427762618619L;
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response).
-     * @param request Request
-     * @param response Response
-     * @throws ServletException ServletException.
-     * @throws IOException IOException.
-     */
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    protected void logout(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        throw new ResourceNotFoundException();
-    }
+  
 }
