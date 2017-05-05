@@ -38,11 +38,7 @@ public class MenuCli {
     int maxInPage = 0;
 
     @Autowired
-    private CompanyService companyService;
-    public void setCompanyService(CompanyService companyService) {
-        this.companyService = companyService;
-    }
-
+    public CompanyService companyService;
     @Autowired
     public ComputerService computerService;
 
@@ -342,6 +338,7 @@ public class MenuCli {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-module.xml");
         MenuCli menu = context.getBean(MenuCli.class);
+        //MenuCli menu = new MenuCli();
         menu.showMeTheMagic();
 
     }

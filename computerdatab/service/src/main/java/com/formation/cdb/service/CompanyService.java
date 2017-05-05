@@ -48,6 +48,14 @@ public class CompanyService {
     }
 
     /**
+     * @param id id
+     * @return companyDto
+     */
+    public CompanyDto findOne(long id) {
+        return CompanyMapper.toDto(companyRepository.findOne(id));
+    }
+
+    /**
      * Find a list of company with index et maxInPage.
      * @param index Index.
      * @param maxInPage Number max in the list.

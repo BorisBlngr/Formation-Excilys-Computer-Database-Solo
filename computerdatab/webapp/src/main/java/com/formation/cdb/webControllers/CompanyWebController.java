@@ -13,34 +13,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.formation.cdb.model.dto.ComputerDto;
+import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.service.CompanyService;
-import com.formation.cdb.service.ComputerService;
 
 /**
  * Servlet implementation class Dashboard.
  */
-@RestController("webServices")
-public class WebServices {
-    private static final Logger LOG = LoggerFactory.getLogger(WebServices.class);
+@RestController("companyWebController")
+public class CompanyWebController {
+    private static final Logger LOG = LoggerFactory.getLogger(CompanyWebController.class);
     private final String regex = "\\d+";
 
     @Autowired
     CompanyService companyService;
-    @Autowired
-    ComputerService computerService;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public WebServices() {
+    public CompanyWebController() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-    @RequestMapping(value = "/computer/{computerId}", method = RequestMethod.GET)
-    protected ComputerDto getComputer(@PathVariable long computerId) throws ServletException, IOException {
-        return computerService.findComputerDto(computerId);
+    @RequestMapping(value = "/company/{id}", method = RequestMethod.GET)
+    protected CompanyDto getComany(@PathVariable long id) throws ServletException, IOException {
+        return companyService.findOne(id);
     }
 
 }
