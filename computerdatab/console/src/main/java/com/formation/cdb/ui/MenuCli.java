@@ -34,7 +34,7 @@ public class MenuCli {
     private List<ComputerDto> computerDtoList = new ArrayList<ComputerDto>();
     ComputerDto computerDtoFound = new ComputerDto();
     Scanner input;
-    int nbItem = 11;
+    int nbItem = 9;
     int maxInPage = 0;
 
     @Autowired
@@ -71,11 +71,9 @@ public class MenuCli {
         System.out.println("4 - Create a computer");
         System.out.println("5 - Update a computer");
         System.out.println("6 - Delete a computer");
-        System.out.println("7 - List Computers");
-        System.out.println("8 - List Companies");
-        System.out.println("9 - Create Company");
-        System.out.println("10 - Delete Company");
-        System.out.println("11 - Quit");
+        System.out.println("7 - Create Company");
+        System.out.println("8 - Delete Company");
+        System.out.println("9 - Quit");
     }
 
     /**
@@ -187,40 +185,15 @@ public class MenuCli {
             computerService.deleteComputer(selectLong());
             break;
         case 7:
-            LOG.info("Case 7 List of Computers ");
-            int nbComputer = computerService.getNbComputers();
-            int nbComputerPages = nbComputer / maxInPage;
-            if (nbComputer % maxInPage != 0) {
-                nbComputerPages++;
-            }
-            System.out.println("page[" + nbComputerPages + "] : ");
-            computerDtoList.clear();
-            ComputerPage computerPage = new ComputerPage(selectInt());
-            System.out.println(computerPage.getList());
-            break;
-        case 8:
-            LOG.info("Case 8 List of Companies");
-            int nbCompany = companyService.getNbCompanies();
-            int nbCompanyPages = nbCompany / maxInPage;
-            if (nbCompany % maxInPage != 0) {
-                nbCompanyPages++;
-            }
-            System.out.println("page[" + nbCompanyPages + "] : ");
-            computerDtoList.clear();
-            ComputerPage companyPage = new ComputerPage(selectInt());
-            System.out.println(companyPage.getList());
-            break;
-
-        case 9:
             LOG.info("Case 9 Create Company");
             menuCreateCompany();
             break;
-        case 10:
+        case 8:
             LOG.info("Case 11 Delete Company");
             System.out.println("id : ");
             companyService.delete(selectLong());
             break;
-        case 11:
+        case 9:
             LOG.info("Case 11 EXIT");
             input.close();
             break;

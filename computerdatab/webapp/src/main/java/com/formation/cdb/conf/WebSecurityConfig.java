@@ -62,8 +62,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setPasswordAlreadyEncoded(true);
 
         http
+            .csrf()
+                .ignoringAntMatchers("/computers", "/companies/**")
+                .and()
             .authorizeRequests()
                 .antMatchers("/dashboard", "/home").permitAll()
+                .antMatchers("/computers/**").permitAll()
+                .antMatchers("/companies/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .addFilter(filter)
@@ -76,9 +81,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/dashboard")
-                .permitAll();
+                .permitAll()
+                .and();
     }
-
 
     /**
      * @param username username

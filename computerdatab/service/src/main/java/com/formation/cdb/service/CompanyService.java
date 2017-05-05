@@ -33,8 +33,10 @@ public class CompanyService {
      * @return companyDtoList
      */
     public List<CompanyDto> findCompaniesInRangeSearchName(int index, int maxInPage, String search, Order order) {
-
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        if (index < 1) {
+            return companyDtoList;
+        }
         PageRequest request;
         if (order.equals(Order.DESC)) {
             request = new PageRequest(index - 1, maxInPage, Sort.Direction.DESC, "name");
@@ -63,6 +65,9 @@ public class CompanyService {
      */
     public List<CompanyDto> findCompaniesInRange(int index, int maxInPage) {
         List<CompanyDto> companyDtoList = new ArrayList<CompanyDto>();
+        if (index < 1) {
+            return companyDtoList;
+        }
         PageRequest request = new PageRequest(index - 1, maxInPage, Sort.Direction.ASC, "name");
         for (Company company : companyRepository.findAll(request).getContent()) {
             companyDtoList.add(CompanyMapper.toDto(company));

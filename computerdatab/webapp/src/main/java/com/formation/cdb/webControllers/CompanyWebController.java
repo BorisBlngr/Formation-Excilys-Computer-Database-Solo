@@ -1,6 +1,7 @@
 package com.formation.cdb.webControllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,9 +36,24 @@ public class CompanyWebController {
         // TODO Auto-generated constructor stub
     }
 
-    @RequestMapping(value = "/company/{id}", method = RequestMethod.GET)
-    protected CompanyDto getComany(@PathVariable long id) throws ServletException, IOException {
+    @RequestMapping(value = "/companies/{id}", method = RequestMethod.GET)
+    protected CompanyDto getCompany(@PathVariable long id) throws ServletException, IOException {
         return companyService.findOne(id);
     }
 
+    @RequestMapping(value = "/companies", method = RequestMethod.GET)
+    protected List<CompanyDto> getCompanies() throws ServletException, IOException {
+        return companyService.findAllCompany();
+    }
+
+    @RequestMapping(value = "/companies/pages/{index}/max/{maxInPage}", method = RequestMethod.GET)
+    protected List<CompanyDto> getCompaniesPage(@PathVariable int index, @PathVariable int maxInPage)
+            throws ServletException, IOException {
+        return companyService.findCompaniesInRange(index, maxInPage);
+    }
+
+    @RequestMapping(value = "/companies/count/", method = RequestMethod.GET)
+    protected int getNbCompanies() throws ServletException, IOException {
+        return companyService.getNbCompanies();
+    }
 }

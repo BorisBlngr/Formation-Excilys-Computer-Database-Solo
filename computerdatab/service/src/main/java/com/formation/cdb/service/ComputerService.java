@@ -161,6 +161,15 @@ public class ComputerService {
     }
 
     /**
+     * Create or Update id the id is set or not.
+     * @param computerDto cmpt
+     * @return id
+     */
+    public long saveComputer(ComputerDto computerDto) {
+        return computerRepository.save(ComputerMapper.toEntity(computerDto)).getId();
+    }
+
+    /**
      * Delete a computer in base.
      * @param id Computer id.
      * @return idComputer
