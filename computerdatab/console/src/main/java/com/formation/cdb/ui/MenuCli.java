@@ -1,11 +1,10 @@
 package com.formation.cdb.ui;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
@@ -15,17 +14,11 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
 
 import com.formation.cdb.model.dto.CompanyDto;
 import com.formation.cdb.model.dto.ComputerDto;
-import com.formation.cdb.service.CompanyService;
-import com.formation.cdb.service.ComputerService;
+import com.formation.cdb.rest.ComputerRestService;
 
-@Component("menuCli")
 public class MenuCli {
     private static final Logger LOG = LoggerFactory.getLogger(MenuCli.class);
     Parameters params = new Parameters();
@@ -37,13 +30,12 @@ public class MenuCli {
     int nbItem = 9;
     int maxInPage = 0;
 
-    @Autowired
-    public CompanyService companyService;
-    @Autowired
-    public ComputerService computerService;
+    public ComputerRestService computerRestService = new ComputerRestService();
 
-    @PostConstruct
-    public void init() {
+    /**
+     * Constructeur.
+     */
+    public MenuCli() {
 
         input = new Scanner(System.in);
 
@@ -151,7 +143,12 @@ public class MenuCli {
         case 1:
             LOG.info("Case List All Computers");
             computerDtoList.clear();
-            computerDtoList = computerService.findAllComputer();
+            try {
+                computerDtoList = computerRestService.getComputers();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             for (ComputerDto computerDto : computerDtoList) {
                 System.out.println(" id : [" + computerDto.getId() + "]\t| name : " + computerDto.getName());
             }
@@ -159,7 +156,7 @@ public class MenuCli {
         case 2:
             LOG.info("Case List All Companies");
             companyDtoList.clear();
-            companyDtoList = companyService.findAllCompany();
+            // companyDtoList = companyService.findAllCompany();
             for (CompanyDto companyDto : companyDtoList) {
                 System.out.println(" id : [" + companyDto.getId() + "]\t| name : " + companyDto.getName());
             }
@@ -167,7 +164,8 @@ public class MenuCli {
         case 3:
             LOG.info("Case Show computer details");
             System.out.println("id : ");
-            ComputerDto computerDtoFound = computerService.findComputer(selectLong());
+            // ComputerDto computerDtoFound =
+            // computerService.findComputer(selectLong());
             System.out.println(computerDtoFound);
 
             break;
@@ -182,7 +180,7 @@ public class MenuCli {
         case 6:
             LOG.info("Case Delete a computer");
             System.out.println("id : ");
-            computerService.deleteComputer(selectLong());
+            // computerService.deleteComputer(selectLong());
             break;
         case 7:
             LOG.info("Case 9 Create Company");
@@ -191,7 +189,7 @@ public class MenuCli {
         case 8:
             LOG.info("Case 11 Delete Company");
             System.out.println("id : ");
-            companyService.delete(selectLong());
+            // companyService.delete(selectLong());
             break;
         case 9:
             LOG.info("Case 11 EXIT");
@@ -212,7 +210,7 @@ public class MenuCli {
         ComputerDto newComputerDto = new ComputerDto();
 
         System.out.println("computer ID : ");
-        computerDtoFound = computerService.findComputerDto(selectLong());
+        // computerDtoFound = computerService.findComputerDto(selectLong());
         newComputerDto.setId(computerDtoFound.getId());
         System.out.println("new name[" + computerDtoFound.getName() + "] : ");
         newComputerDto.setName(selectString());
@@ -220,26 +218,27 @@ public class MenuCli {
         System.out.println("company [" + computerDtoFound.getCompany() + "] : ");
         newComputerDto.getCompany().setId(selectInt());
 
-        System.out.println("introduced year [" + computerDtoFound.getIntroduced().getYear() + "] : ");
+        System.out.println("introduced year [" + computerDtoFound.getIntroduced() + "] : ");
         int iyear = selectInt();
-        System.out.println("introduced month [" + computerDtoFound.getIntroduced().getMonthValue() + "] : ");
+        System.out.println("introduced month [" + computerDtoFound.getIntroduced() + "] : ");
         int imonth = selectInt();
-        System.out.println("introduced day [" + computerDtoFound.getIntroduced().getDayOfMonth() + "] : ");
+        System.out.println("introduced day [" + computerDtoFound.getIntroduced() + "] : ");
         int iday = selectInt();
 
-        System.out.println("discontinued year [" + computerDtoFound.getDiscontinued().getYear() + "] : ");
+        System.out.println("discontinued year [" + computerDtoFound.getDiscontinued() + "] : ");
         int dyear = selectInt();
-        System.out.println("discontinued month [" + computerDtoFound.getDiscontinued().getMonthValue() + "] : ");
+        System.out.println("discontinued month [" + computerDtoFound.getDiscontinued() + "] : ");
         int dmonth = selectInt();
-        System.out.println("discontinued day [" + computerDtoFound.getDiscontinued().getDayOfMonth() + "] : ");
+        System.out.println("discontinued day [" + computerDtoFound.getDiscontinued() + "] : ");
         int dday = selectInt();
 
-        newComputerDto.setIntroduced(LocalDate.of(iyear, imonth, iday));
-        newComputerDto.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
+        newComputerDto.setIntroduced(iyear + "-" + imonth + "-" + iday);
+        newComputerDto.setDiscontinued(dyear + "-" + dmonth + "-" + dday);
 
         System.out.println(newComputerDto);
-        computerService.updateComputer(newComputerDto);
-        newComputerDto = computerService.findComputerDto(newComputerDto.getId());
+        // computerService.updateComputer(newComputerDto);
+        // newComputerDto =
+        // computerService.findComputerDto(newComputerDto.getId());
         System.out.println(newComputerDto);
 
     }
@@ -269,11 +268,11 @@ public class MenuCli {
         System.out.println("discontinued day : ");
         int dday = selectInt();
 
-        computerDtoFound.setIntroduced(LocalDate.of(iyear, imonth, iday));
-        computerDtoFound.setDiscontinued(LocalDate.of(dyear, dmonth, dday));
+        computerDtoFound.setIntroduced(iyear + "-" + imonth + "-" + iday);
+        computerDtoFound.setDiscontinued(dyear + "-" + dmonth + "-" + dday);
 
         System.out.println(computerDtoFound);
-        computerDtoFound.setId(computerService.createComputer(computerDtoFound));
+        // computerDtoFound.setId(computerService.createComputer(computerDtoFound));
 
         System.out.println(computerDtoFound);
     }
@@ -285,7 +284,7 @@ public class MenuCli {
         CompanyDto companyDto = new CompanyDto();
         System.out.println("name : ");
         companyDto.setName(selectString());
-        companyService.create(companyDto);
+        // companyService.create(companyDto);
     }
 
     /**
@@ -309,10 +308,12 @@ public class MenuCli {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring-module.xml");
-        MenuCli menu = context.getBean(MenuCli.class);
-        //MenuCli menu = new MenuCli();
-        menu.showMeTheMagic();
+        // ApplicationContext context = new
+        // ClassPathXmlApplicationContext("spring-module.xml");
+        // MenuCli menu = context.getBean(MenuCli.class);
+        MenuCli menu = new MenuCli();
+        // menu.showMeTheMagic();
+        System.out.println(LocalDate.of(1999, 01, 11).toString());
 
     }
 }

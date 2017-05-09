@@ -96,11 +96,24 @@ public class EditComputer {
         String name = getNameAndValidate(request);
         LocalDate introduced = getIntroduced(request);
         LocalDate discontinued = getDiscontinued(request);
+        String discontinuedStr;
+        String introducedStr;
+        if (introduced == null) {
+            introducedStr = "";
+        } else {
+            introducedStr = introduced.toString();
+        }
+        if (discontinued == null) {
+            discontinuedStr = "";
+        } else {
+            discontinuedStr = introduced.toString();
+        }
         long companyId = getCompanyId(request);
         long computerId = getComputerId(request);
 
-        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computerId).name(name).introduced(introduced)
-                .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().id(computerId).name(name)
+                .introduced(introducedStr).discontinued(discontinuedStr)
+                .company(new Company.CompanyBuilder().id(companyId).build()).build();
 
         RequestDispatcher view;
         if (!computerDto.equals(new ComputerDto())) {

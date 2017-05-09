@@ -39,8 +39,8 @@ public class ComputerMapperTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
-                .discontinued(LocalDate.of(1999, 10, 10))
+        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced("1990-10-10")
+                .discontinued("1999-10-10")
                 .company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
         computer = new Computer.ComputerBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
                 .discontinued(LocalDate.of(1999, 10, 10))

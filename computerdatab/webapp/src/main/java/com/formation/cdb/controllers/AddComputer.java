@@ -82,10 +82,24 @@ public class AddComputer {
         String name = getNameAndValidate(request);
         LocalDate introduced = getIntroduced(request);
         LocalDate discontinued = getDiscontinued(request);
+        String discontinuedStr;
+        String introducedStr;
+        if (introduced == null) {
+            introducedStr = "";
+        } else {
+            introducedStr = introduced.toString();
+        }
+        if (discontinued == null) {
+            discontinuedStr = "";
+        } else {
+            discontinuedStr = introduced.toString();
+        }
         long companyId = getCompanyId(request);
 
-        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().name(name).introduced(introduced)
-                .discontinued(discontinued).company(new Company.CompanyBuilder().id(companyId).build()).build();
+        System.out.println("toto" + "\n");
+        ComputerDto computerDto = new ComputerDto.ComputerDtoBuilder().name(name).introduced(introducedStr)
+                .discontinued(discontinuedStr).company(new Company.CompanyBuilder().id(companyId).build()).build();
+        System.out.println("toto" + "\n" + computerDto);
 
         RequestDispatcher view;
 

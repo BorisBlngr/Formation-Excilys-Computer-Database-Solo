@@ -2,8 +2,6 @@ package com.formation.cdb.model.dto;
 
 import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDate;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,9 +36,8 @@ public class ComputerDtoTest {
      */
     @Before
     public void executerAvantChaqueTest() {
-        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced(LocalDate.of(1990, 10, 10))
-                .discontinued(LocalDate.of(1999, 10, 10))
-                .company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
+        computerDto = new ComputerDto.ComputerDtoBuilder().name("toto").id(36).introduced("1990-10-10")
+                .discontinued("1999-10-10").company(new Company.CompanyBuilder().name("titi").id(6).build()).build();
     }
 
     /**

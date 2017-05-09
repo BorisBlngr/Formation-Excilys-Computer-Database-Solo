@@ -1,14 +1,12 @@
 package com.formation.cdb.model.dto;
 
-import java.time.LocalDate;
-
 import com.formation.cdb.model.Company;
 
 public class ComputerDto {
     private long id = 0;
     private String name;
-    private LocalDate introduced = null;
-    private LocalDate discontinued = null;
+    private String introduced = null;
+    private String discontinued = null;
     private Company company = new Company();
 
     /**
@@ -25,7 +23,7 @@ public class ComputerDto {
      * @param company Company.
      * @param discontinued Discontinued date.
      */
-    public ComputerDto(int id, String name, LocalDate introduced, Company company, LocalDate discontinued) {
+    public ComputerDto(int id, String name, String introduced, Company company, String discontinued) {
         this.id = id;
         this.name = name;
         this.introduced = introduced;
@@ -50,11 +48,11 @@ public class ComputerDto {
         this.name = name;
     }
 
-    public LocalDate getIntroduced() {
+    public String getIntroduced() {
         return introduced;
     }
 
-    public void setIntroduced(LocalDate introduced) {
+    public void setIntroduced(String introduced) {
         this.introduced = introduced;
     }
 
@@ -66,11 +64,11 @@ public class ComputerDto {
         this.company = company;
     }
 
-    public LocalDate getDiscontinued() {
+    public String getDiscontinued() {
         return discontinued;
     }
 
-    public void setDiscontinued(LocalDate discontinued) {
+    public void setDiscontinued(String discontinued) {
         this.discontinued = discontinued;
     }
 
@@ -153,9 +151,9 @@ public class ComputerDto {
     public static class ComputerDtoBuilder {
         String name;
         long id;
-        LocalDate introduced = null;
+        String introduced = null;
         Company company = new Company();
-        LocalDate discontinued = null;
+        String discontinued = null;
 
         /**
          * Constructeur builder.
@@ -188,8 +186,12 @@ public class ComputerDto {
          * @param introduced Introduced date.
          * @return this
          */
-        public ComputerDtoBuilder introduced(LocalDate introduced) {
-            this.introduced = introduced;
+        public ComputerDtoBuilder introduced(String introduced) {
+            if (introduced == null) {
+                this.introduced = "";
+            } else {
+                this.introduced = introduced;
+            }
             return this;
         }
 
@@ -198,8 +200,12 @@ public class ComputerDto {
          * @param discontinued Discontinued date.
          * @return this
          */
-        public ComputerDtoBuilder discontinued(LocalDate discontinued) {
-            this.discontinued = discontinued;
+        public ComputerDtoBuilder discontinued(String discontinued) {
+            if (discontinued == null) {
+                this.discontinued = "";
+            } else {
+                this.discontinued = discontinued;
+            }
             return this;
         }
 
@@ -220,14 +226,6 @@ public class ComputerDto {
         public ComputerDto build() {
             return new ComputerDto(this);
         }
-
-    }
-
-    /**
-     * Main.
-     * @param args Args.
-     */
-    public static void main(String[] args) {
 
     }
 }
